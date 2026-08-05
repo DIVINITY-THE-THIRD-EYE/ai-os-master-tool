@@ -7,9 +7,12 @@ Implements routing rules from capability_registry.yaml:
 3. Apply load balancing across agents providing same capability
 4. Fall back to next available agent if primary is unhealthy
 5. Escalate to orchestrator if no agent available
+
+FIX: Added threading.Lock for thread-safe round-robin counters.
 """
 
 import logging
+import threading
 from typing import Dict, List, Optional, Tuple
 
 from .agent_registry import AgentRecord, AgentRegistry
@@ -25,11 +28,13 @@ class CapabilityRouter:
     - deny_by_default: capabilities not registered are rejected
     - least_privilege: routing respects agent permission boundaries
     - health-first: only healthy agents receive assignments
+    - thread-safe: round-robin counters protected by Lock
     """
 
     def __init__(self, registry: AgentRegistry):
         self._registry = registry
         self._round_robin_counters: Dict[str, int] = {}
+        self._counter_lock = threading.Lock()   # FIX: thread-safe counters
         logger.info("CapabilityRouter initialized")
 
     def route(
@@ -66,10 +71,11 @@ class CapabilityRouter:
                 )
                 return preferred
 
-        # Load-balance using round-robin within capability group
-        counter = self._round_robin_counters.get(capability, 0)
-        selected = candidates[counter % len(candidates)]
-        self._round_robin_counters[capability] = counter + 1
+        # Thread-safe load-balance using round-robin within capability group
+        with self._counter_lock:
+            counter = self._round_robin_counters.get(capability, 0)
+            selected = candidates[counter % len(candidates)]
+            self._round_robin_counters[capability] = counter + 1
 
         logger.info(
             f"Routing capability '{capability}' to agent '{selected.agent_id}' "

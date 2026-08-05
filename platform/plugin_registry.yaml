@@ -1,0 +1,131 @@
+plugin_registry:
+  version: "1.0.0"
+  description: "Registry of all plugins and external tools available to AI OS agents. All agents use deny-by-default — only plugins listed here may be invoked."
+
+  schema:
+    plugin_id: "Unique identifier for this plugin (e.g. tool_web_search)"
+    name: "Human-readable plugin name"
+    version: "Semantic version"
+    type: "tool | model | api | binary"
+    description: "What this plugin does and when to use it"
+    interface_schema: "JSON Schema defining inputs/outputs"
+    permissions:
+      type: array
+      description: "Whitelist of operations this plugin is permitted to perform"
+    sandbox_required: "true if plugin must execute in isolated sandbox"
+    rate_limit_per_minute: "Maximum invocations per minute per agent"
+    timeout_seconds: "Maximum execution time before timeout"
+
+  rules:
+    - "No plugin may be invoked unless registered and active in this registry"
+    - "Each plugin must declare its complete permission whitelist"
+    - "sandbox_required: true plugins must not run with host system access"
+    - "All invocations are logged to the Audit Trail (immutable)"
+    - "Rate limits are enforced per agent, not globally"
+    - "Any plugin invocation failure is reported as an event to the Event Bus"
+    - "Plugins with error_rate > 10% are automatically flagged for review"
+
+  plugins:
+    tool_web_search:
+      name: "Web Search Tool"
+      version: "1.0.0"
+      type: tool
+      description: "Searches the web for information using a configured search provider"
+      permissions: [search, read_url]
+      sandbox_required: true
+      rate_limit_per_minute: 30
+      timeout_seconds: 15
+      interface_schema:
+        input: {query: string, max_results: integer}
+        output: {results: array, sources: array}
+
+    tool_code_executor:
+      name: "Code Execution Tool"
+      version: "1.0.0"
+      type: tool
+      description: "Executes code in a sandboxed environment and returns output"
+      permissions: [execute_code]
+      sandbox_required: true
+      rate_limit_per_minute: 10
+      timeout_seconds: 60
+      interface_schema:
+        input: {language: string, code: string, stdin: string}
+        output: {stdout: string, stderr: string, exit_code: integer}
+
+    tool_file_read:
+      name: "File Read Tool"
+      version: "1.0.0"
+      type: tool
+      description: "Reads files from the permitted file system path only"
+      permissions: [read_file]
+      sandbox_required: false
+      rate_limit_per_minute: 100
+      timeout_seconds: 10
+      interface_schema:
+        input: {path: string, encoding: string}
+        output: {content: string, size_bytes: integer}
+
+    tool_file_write:
+      name: "File Write Tool"
+      version: "1.0.0"
+      type: tool
+      description: "Writes files to permitted output directories only"
+      permissions: [write_file]
+      sandbox_required: false
+      rate_limit_per_minute: 50
+      timeout_seconds: 10
+      interface_schema:
+        input: {path: string, content: string, overwrite: boolean}
+        output: {success: boolean, bytes_written: integer}
+
+    model_gemini_pro:
+      name: "Gemini 2.5 Pro Model"
+      version: "2.5"
+      type: model
+      description: "Google Gemini 2.5 Pro — primary reasoning model for complex tasks"
+      permissions: [text_generation, code_generation, analysis]
+      sandbox_required: false
+      rate_limit_per_minute: 20
+      timeout_seconds: 120
+      interface_schema:
+        input: {prompt: string, system_prompt: string, max_tokens: integer, temperature: number}
+        output: {text: string, usage: object, finish_reason: string}
+
+    model_gemini_flash:
+      name: "Gemini 2.0 Flash Model"
+      version: "2.0"
+      type: model
+      description: "Google Gemini 2.0 Flash — fast model for simple tasks and routing"
+      permissions: [text_generation, classification, routing]
+      sandbox_required: false
+      rate_limit_per_minute: 60
+      timeout_seconds: 30
+      interface_schema:
+        input: {prompt: string, max_tokens: integer}
+        output: {text: string, usage: object}
+
+    api_github:
+      name: "GitHub API"
+      version: "v4"
+      type: api
+      description: "GitHub GraphQL and REST API for repository operations"
+      permissions: [read_repo, create_issue, read_pr]
+      sandbox_required: false
+      rate_limit_per_minute: 30
+      timeout_seconds: 20
+      interface_schema:
+        input: {endpoint: string, method: string, payload: object}
+        output: {data: object, status_code: integer}
+
+    tool_secret_manager:
+      name: "Secret Manager"
+      version: "1.0.0"
+      type: tool
+      description: "Retrieves secrets by name from the approved Secret Manager. Never returns raw values in logs."
+      permissions: [get_secret]
+      sandbox_required: false
+      rate_limit_per_minute: 20
+      timeout_seconds: 5
+      interface_schema:
+        input: {secret_name: string, version: string}
+        output: {secret_value: string}

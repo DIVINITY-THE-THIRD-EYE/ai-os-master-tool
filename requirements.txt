@@ -1,0 +1,30 @@
+# AI OS Runtime Requirements
+# Python 3.10+
+
+# Core — standard library only (no external deps for runtime core)
+# yaml parsing
+PyYAML>=6.0
+
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+
+# Type checking (optional dev dependency)
+# mypy>=1.5
+
+# For production event bus backends (optional — configure in platform/configuration.yaml)
+# redis>=5.0           # when event_bus.backend = redis
+# confluent-kafka>=2.0 # when event_bus.backend = kafka
+
+# For production persistence backends (optional)
+# sqlalchemy>=2.0      # when persistence.backend = sqlite or postgresql
+# psycopg2-binary>=2.9 # when persistence.backend = postgresql
+
+# For LLM integration (required for production agent execution)
+# google-generativeai>=0.7   # Gemini API
+# openai>=1.0                # OpenAI GPT API
+# anthropic>=0.20            # Anthropic Claude API
+
+# For REST API layer (required when api.enabled = true)
+# fastapi>=0.110
+# uvicorn>=0.27
