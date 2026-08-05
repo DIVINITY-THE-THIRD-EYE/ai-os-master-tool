@@ -1,0 +1,76 @@
+configuration:
+  version: "1.0.0"
+  description: "Runtime configuration for the AI OS multi-agent-skill platform"
+
+  runtime:
+    environment: development          # development | staging | production
+    log_level: INFO
+    log_format: json
+    max_parallel_workers_per_task: 5
+    default_timeout_seconds: 1800    # 30 minutes
+    checkpoint_enabled: true
+    checkpoint_dir: .checkpoints/
+
+  models:
+    primary_model: model_gemini_pro
+    fast_model: model_gemini_flash
+    fallback_model: model_gemini_flash
+    model_selection_strategy: capability_match
+
+  event_bus:
+    backend: in_memory               # in_memory | redis | kafka
+    redis_url: null                  # Set for production: redis://localhost:6379/0
+    kafka_bootstrap_servers: null    # Set for production: localhost:9092
+    max_history_size: 10000
+    persistent_topics_auto_load: true
+
+  persistence:
+    backend: in_memory               # in_memory | sqlite | postgresql
+    sqlite_path: .ai_os.db           # Used when backend=sqlite
+    database_url: null               # Used when backend=postgresql
+    auto_migrate: true
+
+  api:
+    enabled: false                   # Set true when REST API layer is implemented
+    host: 0.0.0.0
+    port: 8080
+    auth_required: true
+    cors_origins: []
+
+  budgets:
+    token_budget_per_task: 100000
+    cost_budget_usd_per_task: 5.00
+    time_budget_minutes_per_task: 30
+    api_budget_calls_per_task: 500
+    storage_budget_mb_per_task: 500
+    warn_at_pct: 0.80
+    hard_stop_at_pct: 1.00
+
+  quality:
+    quality_score_min: 0.85
+    confidence_min: 0.80
+    test_coverage_min: 0.80
+    risk_max: medium
+
+  retries:
+    max_retries: 3
+    backoff_schedule_seconds: [60, 300, 900]
+
+  security:
+    secrets_backend: environment     # environment | secret_manager
+    audit_log_enabled: true
+    audit_log_path: .audit/
+    deny_by_default: true
+    sandbox_high_risk_tools: true
+
+  human_approval:
+    enabled: true
+    channel: log                     # log | email | slack | webhook
+    webhook_url: null
+    slack_webhook_url: null
+    response_sla_minutes: 30
+
+  observability:
+    metrics_enabled: false           # Set true with Prometheus/Datadog
+    tracing_enabled: false           # Set true with OpenTelemetry
+    health_check_interval_seconds: 30

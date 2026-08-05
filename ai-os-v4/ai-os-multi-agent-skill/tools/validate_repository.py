@@ -132,14 +132,14 @@ class Validator:
     def check(self, name: str, condition: bool, error_msg: str = "") -> None:
         if condition:
             self.passed += 1
-            print(f"  ✅ {name}")
+            print(f"  [PASS] {name}")
         else:
             self.errors.append(f"{name}: {error_msg}")
-            print(f"  ❌ {name}: {error_msg}")
+            print(f"  [FAIL] {name}: {error_msg}")
 
     def warn(self, name: str, msg: str) -> None:
         self.warnings.append(f"{name}: {msg}")
-        print(f"  ⚠️  {name}: {msg}")
+        print(f"  [WARN] {name}: {msg}")
 
     def run(self) -> int:
         print("\n" + "=" * 60)
@@ -232,7 +232,7 @@ class Validator:
                 print(f"  - {e}")
             return 1
         else:
-            print("\n✅ All checks passed. Repository is structurally valid.")
+            print("\n[OK] All checks passed. Repository is structurally valid.")
             return 0
 
 
