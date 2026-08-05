@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Organization Schema",
+  "type": "object",
+  "description": "Schema for tenant organization profile, subscription, and limits.",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "community",
+        "pro",
+        "enterprise",
+        "sovereign"
+      ]
+    },
+    "max_users": {
+      "type": "integer"
+    },
+    "max_agents": {
+      "type": "integer"
+    },
+    "resource_quota": {
+      "type": "object"
+    },
+    "settings": {
+      "type": "object"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "organization_id",
+    "name",
+    "domain",
+    "tier",
+    "max_users",
+    "max_agents",
+    "created_at"
+  ]
+}

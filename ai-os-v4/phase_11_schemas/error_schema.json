@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "System Error Schema",
+  "type": "object",
+  "description": "Schema for standard exception reports across AI OS components.",
+  "properties": {
+    "error_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error_code": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "runtime",
+        "validation",
+        "timeout",
+        "permission",
+        "plugin",
+        "model_api",
+        "network"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical",
+        "fatal"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "stack_trace": {
+      "type": "string"
+    },
+    "component": {
+      "type": "string"
+    },
+    "context_data": {
+      "type": "object"
+    },
+    "resolved": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "error_id",
+    "timestamp",
+    "error_code",
+    "category",
+    "severity",
+    "message",
+    "component",
+    "resolved"
+  ]
+}

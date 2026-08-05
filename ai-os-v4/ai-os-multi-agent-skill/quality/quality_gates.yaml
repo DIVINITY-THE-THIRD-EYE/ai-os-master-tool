@@ -1,0 +1,138 @@
+quality_gates:
+  version: "1.0.0"
+  description: "All 8 quality gates enforced by the AI OS verification pipeline"
+
+  gates:
+
+    gate_0:
+      id: gate_0
+      name: "Task Registration Gate"
+      phase: intake
+      agent: A01
+      checks:
+        - Task objective is clear and unambiguous
+        - Acceptance criteria are testable (not subjective)
+        - Task type is classified from approved taxonomy
+        - Risk level is explicitly assigned
+        - Dependencies are declared
+      pass_condition: All checks must pass
+      failure_action: Return to intake agent for clarification
+      escalation_target: Human task owner via A13
+
+    gate_1:
+      id: gate_1
+      name: "Planning Gate"
+      phase: planning
+      agent: A04
+      checks:
+        - Execution plan (DAG) has no circular dependencies
+        - Critical path identified
+        - Resource budgets allocated for all tasks
+        - Required agents are registered and READY
+        - Retry policy configured per task
+        - Checkpoint strategy defined
+      pass_condition: All checks must pass
+      failure_action: Revise execution plan
+      escalation_target: A00 (Master Orchestrator)
+
+    gate_2:
+      id: gate_2
+      name: "Policy Pre-Check Gate"
+      phase: pre_execution
+      agent: A08
+      checks:
+        - Execution plan complies with governance policies
+        - Security policies satisfied for all proposed tool calls
+        - Compliance policies satisfied for data types involved
+        - Risk level within allowed autonomous execution threshold
+        - All required approvals identified before work begins
+      pass_condition: All policy checks pass
+      failure_action: Reject plan, request plan revision
+      escalation_target: A13 (Human Collaboration) for high risk
+
+    gate_3:
+      id: gate_3
+      name: "Worker Self-Validation Gate"
+      phase: execution
+      agent: A06
+      checks:
+        - Output matches task requirements and acceptance criteria
+        - Linting passes with zero errors
+        - Unit tests pass where applicable
+        - Documentation is present and complete
+        - No secrets or credentials present in any output
+        - Artifact metadata is complete (id, version, type, trace_id)
+        - All dependencies declared and version-pinned
+      pass_condition: All checks must pass
+      failure_action: Retry execution (max 2 times)
+      escalation_target: A04 (Scheduler) for retry scheduling
+
+    gate_4:
+      id: gate_4
+      name: "Verification Gate"
+      phase: verification
+      agent: A07
+      checks:
+        - All 10 verification modules executed
+        - Quality score >= 0.85
+        - Confidence score >= 0.80
+        - Risk score <= medium
+        - Zero critical security findings
+        - Zero high security findings
+        - Test coverage >= 80%
+        - Zero lint errors
+        - Documentation complete
+        - All acceptance criteria verifiably met
+        - Evidence traceable for all decisions
+      pass_condition: All checks must pass
+      failure_action: Generate required fixes list; return to A06
+      escalation_target: A08 (Policy Agent) for decision
+
+    gate_5:
+      id: gate_5
+      name: "Governance Decision Gate"
+      phase: governance
+      agent: A08
+      checks:
+        - All 10 policy categories evaluated
+        - Decision includes rationale referencing specific rule IDs
+        - Human approval obtained if required by risk level
+        - No unresolved policy conflicts
+        - All approvals logged with timestamp and approver identity
+        - Artifact version referenced in decision
+      pass_condition: All checks must pass
+      failure_action: Reject or escalate based on severity
+      escalation_target: A13 (Human Collaboration) for human approval
+
+    gate_6:
+      id: gate_6
+      name: "Release Gate"
+      phase: release
+      agent: A10
+      checks:
+        - Approval from A08 confirmed and logged
+        - Rollback plan documented and tested
+        - Environment configuration validated for target environment
+        - Health checks defined and ready to execute
+        - Monitoring and alerting active for deployment
+        - Release notes complete with scope, risks, rollback, and validation steps
+        - All release policies in release_policies.yaml satisfied
+      pass_condition: All checks must pass
+      failure_action: Block release; notify A00 and human approver
+      escalation_target: A13 (Human Collaboration) for production release
+
+    gate_7:
+      id: gate_7
+      name: "Learning Gate"
+      phase: learning
+      agent: A12
+      checks:
+        - Task outcome completely recorded before learning begins
+        - All candidate knowledge is evidence-backed with traceable source
+        - Candidate passed validation check before entering approval pipeline
+        - Candidate received explicit approval before publication
+        - Version history maintained for all published knowledge
+        - Learning does not directly mutate production behavior without approval
+      pass_condition: All checks must pass
+      failure_action: Archive candidate with failure reason; do not publish
+      escalation_target: A05-GOV (Governance Authority) for policy-affecting knowledge

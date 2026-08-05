@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Telemetry Event Schema",
+  "type": "object",
+  "description": "Schema for system performance metrics, latency, and observability data.",
+  "properties": {
+    "telemetry_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metric_name": {
+      "type": "string"
+    },
+    "value": {
+      "type": "number"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "dimensions": {
+      "type": "object"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "host": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "telemetry_id",
+    "timestamp",
+    "metric_name",
+    "value",
+    "unit",
+    "environment"
+  ]
+}

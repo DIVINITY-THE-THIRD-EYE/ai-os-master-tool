@@ -1,0 +1,10 @@
+# Git ignore for AI OS Master Tool repository
+.gemini/
+*.log
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv/
+node_modules/
+*.tmp

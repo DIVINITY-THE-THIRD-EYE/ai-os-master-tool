@@ -1,0 +1,105 @@
+escalation_matrix:
+  version: "1.0.0"
+  description: "Risk-based escalation matrix defining who to contact, when, and what action to take"
+
+  levels:
+
+    sev1:
+      name: "Critical — Immediate Halt"
+      conditions:
+        - Security breach detected
+        - Compliance violation confirmed
+        - Production outage or data loss
+        - Secrets or credentials exposed
+        - Unauthorized access to production systems
+        - Malicious output detected
+      escalate_to:
+        - Human incident owner (on-call)
+        - Security Authority (A09)
+        - Governance Authority (A05-GOV)
+      response: "Immediate halt of all affected tasks. No retry. Human decision required."
+      sla: "< 5 minutes"
+      auto_action: halt_execution
+      notification: immediate
+
+    sev2:
+      name: "High — Pause and Review"
+      conditions:
+        - Task risk level classified as HIGH or CRITICAL
+        - Budget overrun (token, cost, time, or API)
+        - Repeated task failure after maximum retries (3)
+        - Policy conflict that cannot be auto-resolved
+        - Human approval SLA missed
+        - Architecture violation requiring authority review
+      escalate_to:
+        - Master Orchestrator (A00)
+        - Human approver via A13
+        - Relevant Domain Authority (A05-*)
+      response: "Pause execution. Notify human approver. Resume only after explicit approval."
+      sla: "< 30 minutes"
+      auto_action: pause_execution
+      notification: urgent
+
+    sev3:
+      name: "Medium — Return for Fixes"
+      conditions:
+        - Quality score < 0.85
+        - Confidence score < 0.80
+        - Verification failed on non-critical checks
+        - Missing evidence or traceability
+        - Test coverage below threshold (80%)
+        - Documentation incomplete
+      escalate_to:
+        - Verification Agent (A07)
+        - Relevant Domain Authority (A05-*)
+        - Worker Agent (A06) for fixes
+      response: "Return artifact with required fixes. Worker must resubmit after correction."
+      sla: "< 2 hours"
+      auto_action: return_for_fixes
+      notification: standard
+
+    sev4:
+      name: "Low — Conditional Approval"
+      conditions:
+        - Minor documentation gap
+        - Metadata field missing or incomplete
+        - Non-critical lint warning
+        - Style guide deviation
+        - Minor test coverage gap on non-critical path
+      escalate_to:
+        - Worker Agent (A06)
+        - Learning Agent (A12) for pattern capture
+      response: "Conditionally approve with fix request. Worker applies fix before release."
+      sla: "< 24 hours"
+      auto_action: conditional_approval
+      notification: low
+
+    sev5:
+      name: "Info — Capture for Improvement"
+      conditions:
+        - Non-blocking improvement recommendation
+        - Potential prompt optimization identified
+        - Pattern worth capturing for knowledge base
+        - Workflow inefficiency detected
+        - Better alternative approach observed
+      escalate_to:
+        - Learning Agent (A12)
+        - Knowledge Graph (A03)
+      response: "Capture as candidate knowledge. No execution impact."
+      sla: "Next learning cycle"
+      auto_action: capture_for_learning
+      notification: none
+
+  escalation_rules:
+    ESC-001:
+      rule: "Security incidents escalate immediately to Sev-1 without exception"
+    ESC-002:
+      rule: "Budget overruns of any type require Sev-2 human approval before continuation"
+    ESC-003:
+      rule: "Repeated failures (>3 retries) require Sev-2 human review before any further retry"
+    ESC-004:
+      rule: "Policy conflicts escalate to Governance Authority at Sev-2"
+    ESC-005:
+      rule: "Missing human response within SLA escalates to alternate approver at same severity level"
+    ESC-006:
+      rule: "Production incidents escalate to Operations Agent (A11) and human owner at Sev-1 or Sev-2"

@@ -1,0 +1,48 @@
+scoring_thresholds:
+  version: "1.0.0"
+  description: "All numeric scoring thresholds enforced across the AI OS"
+
+  quality:
+    quality_score_min: 0.85
+    confidence_min: 0.80
+    risk_max: medium
+    test_coverage_min: 0.80
+    lint_errors_max: 0
+    critical_security_findings_max: 0
+    high_security_findings_max: 0
+    documentation_required: true
+    traceability_required: true
+    rollback_plan_required_for_release: true
+
+  budgets:
+    token_budget_per_task: 100000
+    cost_budget_usd_per_task: 5.00
+    time_budget_minutes_per_task: 30
+    api_budget_calls_per_task: 500
+    storage_budget_mb_per_task: 500
+
+  alerts:
+    token_usage_warning_pct: 0.80
+    cost_usage_warning_pct: 0.90
+    time_usage_warning_pct: 0.80
+    task_success_rate_min: 0.95
+    verification_pass_rate_min: 0.85
+    retry_rate_max: 0.10
+    escalation_rate_max: 0.05
+    sla_compliance_min: 0.99
+    agent_availability_min: 0.90
+
+  retries:
+    max_retries: 3
+    backoff_schedule_minutes: [1, 5, 15]
+
+  human_approval_thresholds:
+    auto_approve_max_risk: low
+    human_approval_required_risk: [high, critical]
+    human_response_sla_minutes: 30
+    alternate_approver_escalation_minutes: 30
+
+  knowledge:
+    candidate_quality_min: 0.80
+    candidate_evidence_required: true
+    candidate_approval_required: true

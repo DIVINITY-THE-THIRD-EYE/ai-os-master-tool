@@ -1,0 +1,152 @@
+state_machine:
+  version: "1.0.0"
+  description: "Universal Agent State Machine governing lifecycle of every AI OS agent"
+
+  groups:
+
+    initialization:
+      description: "Agent is being created and prepared to receive work"
+      states:
+        created:
+          meaning: "Agent instance created in registry"
+          entry_criteria: "Registration request received with valid metadata"
+          exit_to: registered
+        registered:
+          meaning: "Agent exists in Agent Registry with validated metadata"
+          entry_criteria: "Metadata schema validated, agent ID assigned"
+          exit_to: configured
+        configured:
+          meaning: "Agent configuration loaded from Configuration Manager"
+          entry_criteria: "Config valid, capabilities declared, tools permissioned"
+          exit_to: ready
+        ready:
+          meaning: "Agent is healthy and can receive task assignments"
+          entry_criteria: "Health check passed, resources available, heartbeat active"
+          exit_to: [waiting, queued]
+
+    scheduling:
+      description: "Agent is being assigned work by the Scheduler"
+      states:
+        waiting:
+          meaning: "Agent is idle, waiting for a trigger or dependency"
+          exit_to: [queued, waiting_dependency]
+        queued:
+          meaning: "Task placed in the appropriate queue (priority, task, retry)"
+          exit_to: prioritized
+        prioritized:
+          meaning: "Priority score assigned, task ordered within queue"
+          exit_to: assigned
+        assigned:
+          meaning: "Task assigned to this agent by Scheduler (A04)"
+          exit_to: context_loaded
+        context_loaded:
+          meaning: "Worker context successfully loaded from Context Manager (A02)"
+          entry_criteria: "Context is permission-checked, token-optimized, and versioned"
+          exit_to: planning
+
+    execution:
+      description: "Agent is actively performing work"
+      states:
+        planning:
+          meaning: "Agent is creating its internal execution plan for the assigned task"
+          exit_to: [researching, executing]
+        researching:
+          meaning: "Agent is querying Knowledge Graph (A03) for relevant rules and evidence"
+          exit_to: executing
+        executing:
+          meaning: "Agent is performing the core work (coding, analysis, writing, etc.)"
+          exit_to: [collaborating, generating_artifacts, self_validation]
+        collaborating:
+          meaning: "Agent is coordinating with another agent via Event Bus"
+          exit_to: executing
+        generating_artifacts:
+          meaning: "Agent is producing output artifacts (code, docs, reports, configs)"
+          exit_to: self_validation
+        self_validation:
+          meaning: "Agent is checking its own output against acceptance criteria"
+          exit_to: [submitted, blocked, retrying]
+
+    verification:
+      description: "Output is being independently reviewed by the Verification Engine"
+      states:
+        submitted:
+          meaning: "Artifact submitted to Verification Agent (A07)"
+          exit_to: under_review
+        under_review:
+          meaning: "Verification process has started"
+          exit_to: verification_running
+        verification_running:
+          meaning: "Automated verification modules are executing"
+          exit_to: policy_validation
+        policy_validation:
+          meaning: "Policy Engine (A08) is evaluating governance, security, and compliance policies"
+          exit_to: quality_scoring
+        quality_scoring:
+          meaning: "Quality score, confidence score, and risk score are being calculated"
+          exit_to: decision_generated
+        decision_generated:
+          meaning: "Final decision produced: Approved / Conditionally Approved / Rejected / Escalated"
+          exit_to: [approved, conditionally_approved, escalated, failed]
+
+    recovery:
+      description: "Agent encountered a problem and is attempting to recover"
+      states:
+        waiting_dependency:
+          meaning: "Task is blocked waiting for a dependency to become available"
+          exit_to: [queued, escalated, cancelled]
+        blocked:
+          meaning: "Agent cannot proceed due to an unresolvable issue"
+          exit_to: [retrying, escalated, cancelled]
+        retrying:
+          meaning: "Retry is in progress with exponential backoff"
+          max_retries: 3
+          backoff: exponential
+          exit_to: [executing, escalated, failed]
+        timeout:
+          meaning: "Task exceeded its time budget"
+          exit_to: [retrying, cancelled, escalated]
+        cancelled:
+          meaning: "Task was explicitly cancelled by Orchestrator or human"
+          exit_to: [archived]
+        rolled_back:
+          meaning: "Change was reversed via rollback procedure"
+          exit_to: [archived, escalated]
+        escalated:
+          meaning: "Issue sent to higher authority (Orchestrator, human, Governance)"
+          exit_to: [retrying, cancelled, failed]
+
+    completion:
+      description: "Work is finished and transitioning to final state"
+      states:
+        approved:
+          meaning: "Artifact fully accepted — all gates passed"
+          exit_to: [completed, published]
+        conditionally_approved:
+          meaning: "Accepted with conditions — fixes required before full release"
+          exit_to: [executing, completed]
+        completed:
+          meaning: "Work is finished and recorded"
+          exit_to: archived
+        archived:
+          meaning: "Task stored in Artifact Store for historical reference"
+          is_terminal: false
+        published:
+          meaning: "Artifact released or made available to consumers"
+          is_terminal: false
+
+    terminal:
+      description: "Agent or task has reached an unrecoverable or permanent end state"
+      states:
+        failed:
+          meaning: "Unrecoverable failure — max retries exceeded or fatal error"
+          is_terminal: true
+        rejected:
+          meaning: "Artifact not accepted — quality or policy thresholds not met"
+          is_terminal: true
+        disabled:
+          meaning: "Agent disabled by administrator — cannot receive work"
+          is_terminal: false
+          reactivation: "Requires administrator action"
+        retired:
+          meaning: "Agent permanently removed from registry — version deprecated"
+          is_terminal: true

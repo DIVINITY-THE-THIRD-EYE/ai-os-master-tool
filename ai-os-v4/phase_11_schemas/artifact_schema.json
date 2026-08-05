@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Artifact Schema",
+  "type": "object",
+  "description": "Schema defining generated project artifacts, code files, documents, or data deliverables.",
+  "properties": {
+    "artifact_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "artifact_type": {
+      "type": "string",
+      "enum": [
+        "code",
+        "document",
+        "schema",
+        "config",
+        "data",
+        "report",
+        "binary"
+      ]
+    },
+    "format": {
+      "type": "string",
+      "description": "MIME type or file extension format."
+    },
+    "version": {
+      "type": "string"
+    },
+    "size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "checksum": {
+      "type": "string",
+      "description": "SHA-256 hash of content."
+    },
+    "creator_agent_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "artifact_id",
+    "name",
+    "path",
+    "artifact_type",
+    "format",
+    "created_at"
+  ]
+}

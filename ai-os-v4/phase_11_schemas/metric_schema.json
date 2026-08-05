@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Metric Definition Schema",
+  "type": "object",
+  "description": "Schema defining performance, quality, and operational metrics.",
+  "properties": {
+    "metric_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "performance",
+        "quality",
+        "cost",
+        "throughput",
+        "reliability",
+        "security"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "value_type": {
+      "type": "string",
+      "enum": [
+        "float",
+        "integer",
+        "boolean",
+        "counter",
+        "histogram"
+      ]
+    },
+    "unit": {
+      "type": "string"
+    },
+    "thresholds": {
+      "type": "object",
+      "properties": {
+        "warning": {
+          "type": "number"
+        },
+        "critical": {
+          "type": "number"
+        }
+      }
+    },
+    "aggregation_method": {
+      "type": "string",
+      "enum": [
+        "avg",
+        "sum",
+        "min",
+        "max",
+        "p95",
+        "p99"
+      ]
+    }
+  },
+  "required": [
+    "metric_id",
+    "name",
+    "category",
+    "value_type",
+    "unit",
+    "aggregation_method"
+  ]
+}

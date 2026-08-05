@@ -1,0 +1,104 @@
+skill:
+  id: ai-os-multi-agent-skill
+  name: AI Operating System Multi-Agent Skill
+  version: 1.0.0
+  mode: production
+  objective: >
+    Orchestrate specialized AI agents to plan, execute, verify, govern,
+    release, and learn from enterprise work with high quality, security,
+    traceability, and operational reliability.
+
+  orchestration:
+    master_orchestrator: A00
+    event_bus: platform.event-bus
+    scheduler: A04
+    workflow_engine: platform.workflow-engine
+    capability_router: platform.capability-router
+    agent_registry: platform.agent-registry
+
+  execution:
+    parallelism: enabled
+    dependency_model: DAG
+    max_parallel_workers_per_task: 5
+    max_global_parallel_agents: 20
+    checkpointing: required
+    retry_policy:
+      max_retries: 3
+      backoff: exponential
+      retry_on:
+        - transient_error
+        - timeout
+        - rate_limit
+        - dependency_unavailable
+      no_retry_on:
+        - security_violation
+        - policy_violation
+        - invalid_permissions
+        - fatal_code_error
+
+  budgets:
+    token_budget_per_task: 100000
+    cost_budget_usd_per_task: 5.00
+    time_budget_minutes_per_task: 30
+    api_budget_calls_per_task: 500
+    storage_budget_mb_per_task: 500
+    cpu_budget: enforced_by_platform
+    memory_budget: enforced_by_platform
+
+  quality_gates:
+    quality_score_min: 0.85
+    confidence_min: 0.80
+    risk_max: medium
+    test_coverage_min: 0.80
+    lint_errors_max: 0
+    critical_security_findings_max: 0
+    high_security_findings_max: 0
+    documentation_required: true
+    traceability_required: true
+    rollback_plan_required_for_release: true
+
+  memory:
+    working_memory: enabled
+    session_memory: enabled
+    persistent_memory: governed
+    knowledge_graph: enabled
+    experience_repository: enabled
+
+  governance:
+    policy_engine: required
+    human_approval_gates: required_for_high_risk
+    audit_logging: mandatory
+    versioning: mandatory
+    escalation_matrix: enabled
+
+  optimization:
+    token_optimization: aggressive
+    context_compression: enabled
+    semantic_retrieval: enabled
+    duplicate_removal: enabled
+    relevance_ranking: enabled
+    model_routing: enabled
+    cost_optimization: enabled
+    latency_optimization: enabled
+
+  non_negotiable_principles:
+    conflict_resolution_order:
+      1: Human safety, ethics, and harm prevention
+      2: Legal, regulatory, and compliance requirements
+      3: Security and data protection
+      4: Data integrity and privacy
+      5: Production stability and reliability
+      6: Approved business requirements
+      7: Architecture and code quality
+      8: Cost, token usage, and speed
+    core_guardrails:
+      - No agent may act outside its registered capabilities
+      - No agent may access tools, data, or systems without explicit permissions
+      - No production mutation is allowed without approval and rollback plan
+      - No secret, credential, token, or API key may appear in prompts, logs, artifacts, or reports
+      - All high-risk actions require audit logging
+      - All generated code must pass linting, tests, security checks, and verification before approval
+      - All external tool calls must be sandboxed where possible
+      - All irreversible operations require human approval
+      - All failed tasks must be recoverable, retryable, cancellable, or escalatable
+      - All knowledge promoted to persistent memory must pass validation and approval

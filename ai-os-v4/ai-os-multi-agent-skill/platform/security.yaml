@@ -1,0 +1,93 @@
+security:
+  version: "1.0.0"
+  description: "Security controls for the AI OS platform"
+
+  principles:
+    - deny_by_default: "All access denied unless explicitly permitted"
+    - least_privilege: "Every agent receives minimum permissions required for its task"
+    - audit_all: "Every governed action logged immutably"
+    - block_secrets: "Any secret in output halts the task immediately"
+    - isolate_risk: "Dangerous tools run in sandbox environments"
+    - monitor_anomalies: "Continuous behavioral analysis of all agent actions"
+
+  authentication:
+    type: API_KEY_AND_JWT
+    jwt_algorithm: RS256
+    jwt_expiry_minutes: 60
+    api_key_rotation_days: 90
+    mfa_required_for: [production_deployment, policy_override, human_approval]
+
+  authorization:
+    model: RBAC
+    roles:
+      orchestrator:
+        permissions: [read_all, write_all, schedule, approve, escalate]
+      domain_authority:
+        permissions: [read_task, review_artifact, approve_domain, escalate]
+      worker:
+        permissions: [read_task_context, write_artifacts, use_permitted_tools]
+      verifier:
+        permissions: [read_all_artifacts, write_verification_report]
+      human_approver:
+        permissions: [read_escalations, approve, reject, override]
+      observer:
+        permissions: [read_metrics, read_logs]
+
+  secrets_management:
+    provider: secret_manager
+    secrets_in_code: forbidden
+    secrets_in_config: forbidden
+    secrets_in_logs: forbidden
+    secrets_in_artifacts: forbidden
+    secrets_in_prompts: forbidden
+    rotation_schedule_days: 90
+    scanning: continuous
+
+  encryption:
+    data_in_transit: TLS_1_3
+    data_at_rest: AES_256
+    sensitive_fields: encrypted
+    key_management: KMS
+
+  data_classification:
+    public: no_controls
+    internal: access_controlled
+    confidential: encrypted_and_access_controlled
+    restricted: encrypted_with_audit_and_need_to_know
+
+  sandbox:
+    high_risk_tools: sandboxed
+    untrusted_plugins: sandboxed
+    resource_limits_enforced: true
+    network_isolation: enforced_for_high_risk
+
+  tool_permissions:
+    model: whitelist
+    default: deny
+    audit_all_tool_calls: true
+    rate_limiting: enforced
+
+  api_security:
+    input_validation: required
+    output_validation: required
+    rate_limiting: required
+    cors_policy: restrictive
+    csp: enforced
+
+  threat_detection:
+    anomaly_detection: enabled
+    behavioral_analysis: enabled
+    alert_on_anomaly: immediate
+    block_on_critical: automatic
+
+  audit_logs:
+    immutable: true
+    retention_days: 365
+    fields_required: [who, what, when, result, artifact_version]
+    tamper_evident: true
+
+  compliance_frameworks:
+    - SOC2_Type2
+    - GDPR
+    - ISO_27001
+    - OWASP_Top_10

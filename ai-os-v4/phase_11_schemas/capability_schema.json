@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Capability Schema",
+  "type": "object",
+  "description": "Schema defining tool and functional capabilities available to agents.",
+  "properties": {
+    "capability_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "filesystem",
+        "network",
+        "code_execution",
+        "database",
+        "api",
+        "ai_model"
+      ]
+    },
+    "input_schema": {
+      "type": "object"
+    },
+    "output_schema": {
+      "type": "object"
+    },
+    "permissions_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sandbox_required": {
+      "type": "boolean"
+    },
+    "rate_limit": {
+      "type": "object",
+      "properties": {
+        "max_calls_per_minute": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "required": [
+    "capability_id",
+    "name",
+    "category",
+    "input_schema",
+    "output_schema"
+  ]
+}

@@ -1,0 +1,58 @@
+---
+title: "BIM Execution Standards, Urban Zoning & Building Envelope Performance"
+document_id: "SPEC-P12-ARCH-KNB-001"
+phase: "phase_12_domain_skill_packs"
+domain: "architecture"
+version: "1.0.0"
+status: "APPROVED"
+owner: "Domain Engineering Guild"
+last_updated: "2026-08-05"
+---
+
+# BIM Execution Standards, Urban Zoning & Building Envelope Performance
+
+## 1. Domain Knowledge Repository Overview
+This document serves as the authoritative knowledge base for **Architectural Design** in the AI OS v4 platform. It encapsulates core theoretical principles, industry standards, standard architectural patterns, and critical anti-patterns necessary for high-precision autonomous operations.
+
+---
+
+## 2. Core Theories & Governing Frameworks
+
+### 2.1 Domain Fundamentals
+Operations in **Architectural Design** are grounded in established scientific and engineering principles governed by **AIA Document Standards, ISO 19650 (BIM), LEED v4.1, IBC Accessibility (ADA)**.
+
+### 2.2 Domain System Metric Equation
+- **Formula:** Domain Performance Score = (Verified Outputs / Total Resources) * Compliance Factor
+- **Where:**
+  - Compliance Factor = 1.0 if fully compliant with AIA Document Standards.
+  - Compliance Factor < 0.5 if any policy violation occurs.
+
+---
+
+## 3. Proven Industry Architectural Patterns
+
+### Pattern 1: Modular Domain Layering
+- **Description:** Decouple core domain logic from infrastructure adapters.
+- **Application:** Use `Autodesk Revit, Rhino3D/Grasshopper, ArchiCAD, Enscape, V-Ray, Solibri Model Checker` to implement strict separation of concerns.
+- **Benefit:** Guarantees zero side-effect mutations during policy audits.
+
+### Pattern 2: Defensive State Validation
+- **Description:** Pre-validate all inputs and post-validate all outputs at subsystem boundaries.
+- **Application:** Embedded directly in domain verification gates (`SPEC-P12-ARCH-VRF-001`).
+
+---
+
+## 4. Critical Domain Anti-Patterns & Pitfalls
+
+| Anti-Pattern | Description | Consequence | Corrective Action |
+| :--- | :--- | :--- | :--- |
+| **Bypass Verification Gate** | Skipping quality audit to save execution latency | Defective or non-compliant output reaching production | Mandate immutable kernel-level gate check |
+| **Unbounded Parameter Drift** | Allowing operational variables to drift without recalculating constraints | System instability or regulatory breach | Enforce periodic re-calibration against AIA Document Standards |
+| **Hardcoded Secrets / Constants** | Embedding static keys or hardcoded limits | Security vulnerability & maintenance overhead | Externalize all configuration via YAML schemas |
+
+---
+
+## 5. Key Domain Terminology & Glossary
+- **ARCH-Term 1:** Specific operational primitive in Architectural Design.
+- **ARCH-Term 2:** Standard performance threshold defined under AIA Document Standards.
+- **ARCH-Term 3:** Target quality benchmark required for enterprise deployment.

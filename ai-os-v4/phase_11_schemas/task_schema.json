@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task Schema",
+  "type": "object",
+  "description": "Schema defining a discrete task unit within AI OS execution contexts.",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Unique task identifier."
+    },
+    "parent_task_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Parent task ID if part of a parent DAG."
+    },
+    "workflow_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Associated workflow ID."
+    },
+    "name": {
+      "type": "string",
+      "description": "Short description of task."
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed prompt or work instruction."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "queued",
+        "running",
+        "completed",
+        "failed",
+        "blocked",
+        "cancelled"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "assigned_agent_id": {
+      "type": "string",
+      "description": "Agent handling the task."
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Input data payloads."
+    },
+    "outputs": {
+      "type": "object",
+      "description": "Result artifacts or outputs."
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "retry_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "max_retries": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "execution_time_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "logs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "task_id",
+    "name",
+    "status",
+    "priority",
+    "created_at"
+  ]
+}

@@ -1,0 +1,136 @@
+steps:
+  - id: request_received
+    name: "Request Received"
+    type: trigger
+    outputs: [raw_request]
+
+  - id: intake
+    name: "A01: Intake & Requirements"
+    agent: A01
+    depends_on: [request_received]
+    inputs: [raw_request]
+    outputs: [task_charter, risk_classification]
+    events_emitted: [task.intake.completed]
+
+  - id: context_assembly
+    name: "A02: Context Assembly"
+    agent: A02
+    depends_on: [intake]
+    inputs: [task_charter]
+    outputs: [worker_context, authority_context, verification_context]
+    events_emitted: [context.ready]
+
+  - id: knowledge_retrieval
+    name: "A03: Knowledge & Research"
+    agent: A03
+    depends_on: [intake]
+    parallel_with: [context_assembly]
+    inputs: [task_charter]
+    outputs: [rules, evidence, best_practices, anti_patterns]
+    events_emitted: [knowledge.retrieved]
+
+  - id: planning
+    name: "A04: Planning & DAG Construction"
+    agent: A04
+    depends_on: [context_assembly, knowledge_retrieval]
+    inputs: [worker_context, rules, task_charter]
+    outputs: [execution_dag, resource_allocations]
+    events_emitted: [plan.proposed]
+
+  - id: policy_precheck
+    name: "A08: Policy Pre-Check"
+    agent: A08
+    depends_on: [planning]
+    inputs: [execution_dag, risk_classification]
+    outputs: [precheck_decision]
+    events_emitted: [plan.approved]
+
+  - id: human_approval_gate_1
+    name: "A13: Human Approval Gate 1 (High Risk Only)"
+    agent: A13
+    depends_on: [policy_precheck]
+    condition: "risk_classification IN [high, critical]"
+    inputs: [execution_dag, precheck_decision]
+    outputs: [human_approval_1]
+    events_emitted: [human.decision.received]
+
+  - id: scheduling
+    name: "A04: Scheduling & Resource Allocation"
+    agent: A04
+    depends_on: [policy_precheck]
+    inputs: [execution_dag, resource_allocations]
+    outputs: [scheduled_tasks]
+    events_emitted: [task.scheduled, task.assigned]
+
+  - id: parallel_execution
+    name: "A06: Parallel Worker Execution"
+    agent: A06
+    depends_on: [scheduling]
+    parallel: true
+    worker_types: [code, test, documentation, analysis, infrastructure]
+    inputs: [scheduled_tasks, worker_context]
+    outputs: [artifacts, self_validation_reports]
+    events_emitted: [execution.started, artifact.generated, self_validation.completed]
+
+  - id: verification
+    name: "A07: Verification Engine"
+    agent: A07
+    depends_on: [parallel_execution]
+    inputs: [artifacts, verification_context, acceptance_criteria]
+    outputs: [verification_report, quality_score, risk_score, required_fixes]
+    events_emitted: [verification.completed]
+
+  - id: policy_decision
+    name: "A08: Policy Engine & Decision Intelligence"
+    agent: A08
+    depends_on: [verification]
+    inputs: [verification_report, quality_score, risk_score]
+    outputs: [final_decision, approval_status]
+    events_emitted: [decision.generated]
+    branches:
+      approved:
+        condition: "approval_status == approved"
+        next: release
+      conditionally_approved:
+        condition: "approval_status == conditionally_approved"
+        next: parallel_execution
+      rejected:
+        condition: "approval_status == rejected"
+        next: failure_report
+      escalated:
+        condition: "approval_status == escalated"
+        next: human_approval_gate_2
+
+  - id: human_approval_gate_2
+    name: "A13: Human Approval Gate 2 (Escalated)"
+    agent: A13
+    depends_on: [policy_decision]
+    condition: "approval_status == escalated"
+    inputs: [final_decision, verification_report]
+    outputs: [human_approval_2]
+    events_emitted: [human.decision.received]
+
+  - id: release
+    name: "A10: Release & Publication"
+    agent: A10
+    depends_on: [policy_decision]
+    condition: "approval_status == approved"
+    inputs: [approved_artifacts, rollback_plan]
+    outputs: [release_package, deployment_status]
+    events_emitted: [release.started, release.completed]
+
+  - id: observability
+    name: "A11: Observability & Monitoring"
+    agent: A11
+    depends_on: [release]
+    inputs: [deployment_status, sla_definitions]
+    outputs: [dashboards, alerts]
+    events_emitted: [metrics.alert, sla.breach]
+
+  - id: learning
+    name: "A12: Learning & Knowledge Publication"
+    agent: A12
+    depends_on: [observability]
+    inputs: [task_record, verification_report, human_feedback]
+    outputs: [lessons_learned, knowledge_candidates]
+    events_emitted: [learning.candidate.generated, knowledge.published]

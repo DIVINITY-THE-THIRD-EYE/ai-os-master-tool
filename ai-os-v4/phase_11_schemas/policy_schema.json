@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Policy Specification Schema",
+  "type": "object",
+  "description": "Schema defining runtime policies for execution, security, memory, and governance.",
+  "properties": {
+    "policy_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "policy_type": {
+      "type": "string",
+      "enum": [
+        "execution",
+        "security",
+        "memory",
+        "verification",
+        "approval",
+        "retry",
+        "escalation",
+        "learning",
+        "logging",
+        "governance"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "global",
+        "domain",
+        "agent",
+        "workflow",
+        "session"
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "rule_id",
+          "condition",
+          "action"
+        ]
+      }
+    },
+    "enforcer": {
+      "type": "string"
+    },
+    "enforcement_action": {
+      "type": "string",
+      "enum": [
+        "deny",
+        "warn",
+        "log",
+        "escalate",
+        "quarantine"
+      ]
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "version": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "policy_id",
+    "name",
+    "policy_type",
+    "scope",
+    "rules",
+    "enabled",
+    "version"
+  ]
+}

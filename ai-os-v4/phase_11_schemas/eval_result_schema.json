@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Eval Result Schema",
+  "type": "object",
+  "description": "Schema for benchmark and evaluation test suite results.",
+  "properties": {
+    "eval_id": {
+      "type": "string"
+    },
+    "test_suite_id": {
+      "type": "string"
+    },
+    "target_agent_id": {
+      "type": "string"
+    },
+    "overall_score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 100.0
+    },
+    "metrics": {
+      "type": "object"
+    },
+    "test_cases_passed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "test_cases_failed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "execution_time_ms": {
+      "type": "integer"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "eval_id",
+    "test_suite_id",
+    "target_agent_id",
+    "overall_score",
+    "test_cases_passed",
+    "test_cases_failed",
+    "timestamp"
+  ]
+}

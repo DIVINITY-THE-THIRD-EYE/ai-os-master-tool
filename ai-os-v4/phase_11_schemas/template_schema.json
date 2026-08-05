@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Template Schema",
+  "type": "object",
+  "description": "Schema for document and specification templates in Phase 10 Template Library.",
+  "properties": {
+    "template_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "markdown",
+        "html",
+        "yaml",
+        "json",
+        "docx"
+      ]
+    },
+    "required_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "optional_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "var_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "version": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "template_id",
+    "title",
+    "category",
+    "format",
+    "required_sections",
+    "version",
+    "created_at"
+  ]
+}

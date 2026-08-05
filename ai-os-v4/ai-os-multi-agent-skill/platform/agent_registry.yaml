@@ -1,0 +1,48 @@
+agent_registry:
+  version: "1.0.0"
+  description: "Central registry of all agents in the AI OS. All agents must be registered here before receiving work assignments."
+
+  schema:
+    agent_id: "Unique identifier (e.g. A00, A01)"
+    name: "Human-readable agent name"
+    version: "Semantic version (major.minor.patch)"
+    status: "created | registered | configured | ready | disabled | retired"
+    capabilities:
+      type: array
+      description: "List of capability IDs this agent provides"
+    skills:
+      type: array
+      description: "Specific skill competencies"
+    tools:
+      type: array
+      description: "Tool IDs from tool_registry.yaml that this agent is permitted to use"
+    dependencies:
+      type: array
+      description: "Other agent IDs this agent depends on"
+    permissions:
+      type: array
+      description: "RBAC permissions from security.yaml"
+    health_status: "healthy | degraded | unhealthy | unknown"
+    performance_score: "float 0.0-1.0 from recent task history"
+    availability: "float 0.0-1.0"
+    last_heartbeat: "ISO-8601 timestamp"
+    metadata:
+      owner: "Team or system responsible"
+      created_at: "ISO-8601 timestamp"
+      updated_at: "ISO-8601 timestamp"
+
+  rules:
+    - "All agents must be registered before receiving any task assignment"
+    - "Health check must pass before agent transitions to READY state"
+    - "Disabled agents may not receive assignments"
+    - "Retired agents are permanently removed from all routing tables"
+    - "Performance score is updated after each completed task"
+    - "Agent availability is derived from heartbeat signals"
+    - "RBAC permissions are enforced at registration time and cannot be escalated by the agent itself"
+
+  routing_strategy:
+    primary: capability_match
+    secondary: health_status
+    tertiary: load_balance
+    fallback: performance_score
+    emergency: escalate_to_orchestrator

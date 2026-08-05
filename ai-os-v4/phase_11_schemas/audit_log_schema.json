@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Audit Log Schema",
+  "type": "object",
+  "description": "Schema for secure audit trails of agent and user actions.",
+  "properties": {
+    "audit_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor_id": {
+      "type": "string"
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "agent",
+        "user",
+        "system",
+        "plugin"
+      ]
+    },
+    "action": {
+      "type": "string"
+    },
+    "target_resource": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failure",
+        "denied",
+        "error"
+      ]
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "request_payload": {
+      "type": "object"
+    },
+    "details": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "audit_id",
+    "timestamp",
+    "actor_id",
+    "actor_type",
+    "action",
+    "target_resource",
+    "outcome"
+  ]
+}

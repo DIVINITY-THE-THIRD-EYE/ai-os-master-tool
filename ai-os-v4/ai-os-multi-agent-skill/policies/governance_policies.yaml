@@ -1,0 +1,41 @@
+governance_policies:
+  policy_id: GOV-POLICY-001
+  version: "1.0.0"
+  scope: all_agents_all_tasks
+  enforcement_level: blocking
+  description: "Governance and business rules enforced across all AI OS operations"
+
+  rules:
+    GOV-001:
+      rule: "All agents must operate within declared and approved capabilities"
+      enforcement: Block any capability use not in Agent Registry
+      escalation_on_violation: Sev-1 to A09 and A00
+    GOV-002:
+      rule: "All task executions must have an approved execution plan before work begins"
+      enforcement: Block task start without approved plan
+      escalation_on_violation: Sev-2 to A00
+    GOV-003:
+      rule: "All decisions must be recorded with rationale, evidence, and version reference"
+      enforcement: Reject decision records missing required fields
+      escalation_on_violation: Sev-3 to A08
+    GOV-004:
+      rule: "All policy exceptions must be explicitly approved by Governance Authority (A05-GOV)"
+      enforcement: Block exception without documented approval
+      escalation_on_violation: Sev-2 to A05-GOV
+    GOV-005:
+      rule: "All irreversible operations require human approval before execution"
+      enforcement: Block irreversible operation without human approval record
+      escalation_on_violation: Sev-1 to A13 and A00
+    GOV-006:
+      rule: "All approved artifacts must be versioned and immutably stored"
+      enforcement: Reject artifact submissions without version ID
+      escalation_on_violation: Sev-3 to A10
+
+  BUS-001:
+    rule: "All tasks must align with an approved business objective"
+    enforcement: Reject tasks without business objective reference
+    escalation_on_violation: Sev-3 to A05-P
+  BUS-002:
+    rule: "Task scope must not exceed defined boundaries without explicit approval"
+    enforcement: Block scope expansion without approval
+    escalation_on_violation: Sev-2 to A05-P and A00

@@ -1,0 +1,221 @@
+event_topics:
+  version: "1.0.0"
+  description: "All event topics published to the AI OS Event Bus"
+
+  topics:
+    task.created:
+      producer: A00
+      subscribers: [A01, A04, A11]
+      purpose: "New task registered in the orchestrator"
+      persistence_required: true
+      severity: info
+
+    task.intake.completed:
+      producer: A01
+      subscribers: [A00, A02, A03]
+      purpose: "Requirements structured and task charter produced"
+      persistence_required: true
+      severity: info
+
+    context.ready:
+      producer: A02
+      subscribers: [A00, A04, A06, A07]
+      purpose: "Context assembled, permission-checked, and published"
+      persistence_required: false
+      severity: info
+
+    plan.proposed:
+      producer: A00
+      subscribers: [A04, A08]
+      purpose: "Execution plan (DAG) proposed for policy pre-check"
+      persistence_required: true
+      severity: info
+
+    plan.approved:
+      producer: A08
+      subscribers: [A00, A04]
+      purpose: "Execution plan approved by Policy Engine"
+      persistence_required: true
+      severity: info
+
+    task.scheduled:
+      producer: A04
+      subscribers: [A00, A06, A11]
+      purpose: "Task placed in execution queue with priority"
+      persistence_required: true
+      severity: info
+
+    task.assigned:
+      producer: A04
+      subscribers: [A06, A11]
+      purpose: "Task assigned to a specific Worker Agent"
+      persistence_required: true
+      severity: info
+
+    execution.started:
+      producer: A06
+      subscribers: [A00, A04, A11]
+      purpose: "Worker has begun executing the assigned task"
+      persistence_required: true
+      severity: info
+
+    artifact.generated:
+      producer: A06
+      subscribers: [A00, A07, A11]
+      purpose: "Worker has produced an artifact and stored it"
+      persistence_required: true
+      severity: info
+
+    self_validation.completed:
+      producer: A06
+      subscribers: [A00, A07]
+      purpose: "Worker has completed self-validation check"
+      persistence_required: true
+      severity: info
+
+    verification.requested:
+      producer: A00
+      subscribers: [A07]
+      purpose: "Orchestrator requesting independent verification of artifacts"
+      persistence_required: true
+      severity: info
+
+    verification.completed:
+      producer: A07
+      subscribers: [A00, A08]
+      purpose: "Verification process finished; report and scores available"
+      persistence_required: true
+      severity: info
+
+    policy.violation.detected:
+      producer: A08
+      subscribers: [A00, A09, A13]
+      purpose: "Policy violation found during governance evaluation"
+      persistence_required: true
+      severity: warning
+
+    security.violation.detected:
+      producer: A09
+      subscribers: [A00, A08, A13]
+      purpose: "Security issue detected — requires immediate halt"
+      persistence_required: true
+      severity: critical
+
+    budget.exceeded:
+      producer: A04
+      subscribers: [A00, A11, A13]
+      purpose: "Task has exceeded one or more resource budgets"
+      persistence_required: true
+      severity: warning
+
+    dependency.blocked:
+      producer: A04
+      subscribers: [A00, A11]
+      purpose: "Task dependency is unavailable — execution blocked"
+      persistence_required: true
+      severity: warning
+
+    retry.requested:
+      producer: A04
+      subscribers: [A06, A11]
+      purpose: "Retry triggered with exponential backoff"
+      persistence_required: true
+      severity: info
+
+    escalation.raised:
+      producer: any
+      subscribers: [A00, A13]
+      purpose: "Any agent raising an issue requiring higher authority"
+      persistence_required: true
+      severity: warning
+
+    human.approval.requested:
+      producer: A13
+      subscribers: [human_approver]
+      purpose: "Human approval required before execution can continue"
+      persistence_required: true
+      severity: warning
+
+    human.decision.received:
+      producer: A13
+      subscribers: [A00, A08]
+      purpose: "Human decision recorded and returned to workflow"
+      persistence_required: true
+      severity: info
+
+    decision.generated:
+      producer: A08
+      subscribers: [A00, A10, A12]
+      purpose: "Final governance-aware decision produced"
+      persistence_required: true
+      severity: info
+
+    release.started:
+      producer: A10
+      subscribers: [A00, A11]
+      purpose: "Release packaging and deployment has begun"
+      persistence_required: true
+      severity: info
+
+    release.completed:
+      producer: A10
+      subscribers: [A00, A11, A12]
+      purpose: "Release successfully deployed and validated"
+      persistence_required: true
+      severity: info
+
+    release.failed:
+      producer: A10
+      subscribers: [A00, A11, A13]
+      purpose: "Release failed — rollback triggered"
+      persistence_required: true
+      severity: error
+
+    learning.candidate.generated:
+      producer: A12
+      subscribers: [A03, A07]
+      purpose: "New candidate knowledge entry ready for validation"
+      persistence_required: true
+      severity: info
+
+    knowledge.published:
+      producer: A12
+      subscribers: [A00, A03]
+      purpose: "Approved knowledge published to knowledge graph"
+      persistence_required: true
+      severity: info
+
+    metrics.alert:
+      producer: A11
+      subscribers: [A00, A13]
+      purpose: "Metric threshold crossed — action may be required"
+      persistence_required: true
+      severity: warning
+
+    sla.breach:
+      producer: A11
+      subscribers: [A00, A13]
+      purpose: "SLA breach imminent or confirmed"
+      persistence_required: true
+      severity: error
+
+    bottleneck.detected:
+      producer: A11
+      subscribers: [A00, A04]
+      purpose: "Queue saturation or execution bottleneck detected"
+      persistence_required: true
+      severity: warning
+
+    authority.review.completed:
+      producer: A05
+      subscribers: [A00, A07]
+      purpose: "Domain authority has completed artifact review"
+      persistence_required: true
+      severity: info
+
+    knowledge.retrieved:
+      producer: A03
+      subscribers: [A02, A07]
+      purpose: "Knowledge retrieval query completed"
+      persistence_required: false
+      severity: info
