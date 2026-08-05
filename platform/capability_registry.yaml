@@ -1,0 +1,89 @@
+capability_registry:
+  version: "1.0.0"
+  description: "Registry of all capabilities available in the AI OS, used by the Capability Router to match tasks to agents"
+
+  capabilities:
+    - id: task_intake
+      name: "Task Intake & Requirements Analysis"
+      provided_by: [A01]
+      input_types: [raw_request, api_payload]
+      output_types: [task_charter, risk_classification]
+
+    - id: context_assembly
+      name: "Context Assembly & Memory Management"
+      provided_by: [A02]
+      input_types: [task_charter]
+      output_types: [worker_context, authority_context, verification_context]
+
+    - id: knowledge_retrieval
+      name: "Knowledge Graph Query & Research"
+      provided_by: [A03]
+      input_types: [query, task_context]
+      output_types: [rules, evidence, best_practices]
+
+    - id: scheduling
+      name: "Task Scheduling & Resource Allocation"
+      provided_by: [A04]
+      input_types: [execution_plan, resource_budgets]
+      output_types: [scheduled_tasks, resource_allocations]
+
+    - id: domain_authority_review
+      name: "Domain Authority Review & Approval"
+      provided_by: [A05-P, A05-FE, A05-BE, A05-AI, A05-QA, A05-SEC, A05-DATA, A05-OPS, A05-GOV]
+      input_types: [artifact, domain_context]
+      output_types: [domain_review_report, approval_status]
+
+    - id: code_execution
+      name: "Code Generation & Implementation"
+      provided_by: [A06]
+      input_types: [task_assignment, worker_context]
+      output_types: [code_artifact, test_artifact]
+
+    - id: verification
+      name: "Independent Verification & Quality Scoring"
+      provided_by: [A07]
+      input_types: [artifact, acceptance_criteria]
+      output_types: [verification_report, quality_score, risk_score]
+
+    - id: policy_decision
+      name: "Policy Evaluation & Governance Decision"
+      provided_by: [A08]
+      input_types: [verification_report, risk_score]
+      output_types: [final_decision, approval_status]
+
+    - id: security_validation
+      name: "Security Scanning & Compliance Validation"
+      provided_by: [A09]
+      input_types: [artifact_content, security_policies]
+      output_types: [security_report, compliance_report]
+
+    - id: release_deployment
+      name: "Release Packaging & Deployment"
+      provided_by: [A10]
+      input_types: [approved_artifacts, rollback_plan]
+      output_types: [release_package, deployment_status]
+
+    - id: observability
+      name: "Monitoring, Metrics & Operations"
+      provided_by: [A11]
+      input_types: [execution_events, sla_definitions]
+      output_types: [dashboards, alerts, reports]
+
+    - id: learning
+      name: "Knowledge Extraction & Publication"
+      provided_by: [A12]
+      input_types: [task_record, metrics, feedback]
+      output_types: [lessons_learned, knowledge_candidates]
+
+    - id: human_collaboration
+      name: "Human Approval & Feedback Coordination"
+      provided_by: [A13]
+      input_types: [escalation_request, approval_request]
+      output_types: [human_decision, structured_feedback]
+
+  routing_rules:
+    - "Match task capability requirement to registered capability"
+    - "Select agent with READY status and highest performance_score"
+    - "Apply load balancing across agents providing same capability"
+    - "Fall back to next available agent if primary is unhealthy"
+    - "Escalate to A00 if no agent is available for a required capability"

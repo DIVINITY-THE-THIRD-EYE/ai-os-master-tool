@@ -1,0 +1,44 @@
+approval_policies:
+  policy_id: APR-POLICY-001
+  version: "1.0.0"
+  scope: all_approval_and_escalation_decisions
+  enforcement_level: blocking
+  description: "Approval requirements for all governed actions in the AI OS"
+
+  auto_approve_conditions:
+    - Risk level: low
+    - All quality gates passed
+    - No policy violations
+    - No security findings
+    - Budget within limits
+
+  human_approval_required_conditions:
+    - Risk level: high or critical
+    - Budget overrun exceeding 20%
+    - Production deployment
+    - Irreversible operation
+    - Security or compliance violation (mandatory review)
+    - Policy exception request
+    - Human override of automated decision
+
+  rules:
+    APR-001:
+      rule: "All approvals must be logged with: approver identity, timestamp, artifact version, decision, rationale"
+      enforcement: Reject approval records missing required fields
+      escalation_on_violation: Sev-3 to A08
+    APR-002:
+      rule: "Approvals must reference the specific artifact version being approved"
+      enforcement: Reject approvals without artifact version reference
+      escalation_on_violation: Sev-3 to A08
+    APR-003:
+      rule: "Human override of automated decision must include explicit rationale"
+      enforcement: Reject override records with blank rationale
+      escalation_on_violation: Sev-3 to A05-GOV
+    APR-004:
+      rule: "Human response SLA of 30 minutes must be monitored; escalate to alternate on breach"
+      enforcement: Automated escalation to alternate approver at SLA breach
+      escalation_on_violation: Sev-2 automatic alternate routing
+    APR-005:
+      rule: "Policy exceptions approved outside normal governance process must be flagged for Governance Authority review"
+      enforcement: Flag and route to A05-GOV
+      escalation_on_violation: Sev-2 to A05-GOV

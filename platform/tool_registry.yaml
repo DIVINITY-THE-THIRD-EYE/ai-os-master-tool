@@ -1,0 +1,249 @@
+# Production-Grade Tool Registry Specification
+# Version: 1.0.0
+# Engine: AI OS v4 Multi-Agent Skill Infrastructure
+
+metadata:
+  package: ai-os-multi-agent-skill
+  subsystem: platform
+  registry_type: tool_registry
+  total_tools: 10
+  schema_version: 1.0.0
+
+global_sandbox_policy:
+  default_isolation_level: CONTAINER_SANDBOX
+  network_access_default: DENY_ALL
+  max_memory_mb: 2048
+  max_cpu_cores: 2.0
+  max_execution_time_seconds: 300
+  allowed_filesystem_roots:
+    - /workspace
+    - /tmp/sandbox
+  audit_logging: ALWAYS_ENABLED
+
+tools:
+  TOOL-001-CODE-EDITOR:
+    tool_id: code_editor
+    name: Code Editor & Workspace Manager
+    category: File Management
+    executable_path: /usr/local/bin/ai-os-editor
+    description: Precision file creation, chunk replacement, and workspace directory management tool.
+    security:
+      isolation_level: LOCAL_FILESYSTEM_RESTRICTED
+      allowed_roles: ["A01", "A02", "A06", "A11"]
+      network_access: RESTRICTED
+      file_extension_whitelist: [".py", ".ts", ".js", ".go", ".rs", ".json", ".yaml", ".yml", ".md", ".txt"]
+    parameters:
+      action:
+        type: string
+        enum: ["create", "replace_chunk", "multi_replace", "view"]
+        required: true
+      target_file:
+        type: string
+        pattern: "^/workspace/[a-zA-Z0-9_-]+.*$"
+        required: true
+      content:
+        type: string
+        required: false
+    cli_command_template: "ai-os-editor --action={action} --path={target_file}"
+    timeout_ms: 30000
+
+  TOOL-002-GIT-CLIENT:
+    tool_id: git_client
+    name: Git Version Control Adapter
+    category: Version Control
+    executable_path: /usr/bin/git
+    description: Interacting with local and remote git repositories for version tracking and commits.
+    security:
+      isolation_level: CONTAINER_SANDBOX
+      allowed_roles: ["A06", "A09"]
+      network_access: ALLOW_WHITELISTED
+      whitelisted_hosts: ["github.com", "gitlab.internal.net"]
+    parameters:
+      subcommand:
+        type: string
+        enum: ["status", "add", "commit", "checkout", "push", "pull", "diff"]
+        required: true
+      args:
+        type: array
+        items: { type: string }
+        required: false
+    cli_command_template: "git {subcommand} {args}"
+    timeout_ms: 60000
+
+  TOOL-003-PYTEST-RUNNER:
+    tool_id: pytest_runner
+    name: Pytest Automated Test Runner
+    category: Testing
+    executable_path: /usr/local/bin/pytest
+    description: Executing Python unit, integration, and performance test suites with coverage report generation.
+    security:
+      isolation_level: ISOLATED_DOCKER_SANDBOX
+      allowed_roles: ["A06", "A07"]
+      network_access: DENY_ALL
+    parameters:
+      test_path:
+        type: string
+        required: true
+      coverage_target:
+        type: string
+        required: false
+      max_fail:
+        type: integer
+        default: 5
+    cli_command_template: "pytest {test_path} --cov={coverage_target} --maxfail={max_fail} --json-report"
+    timeout_ms: 180000
+
+  TOOL-004-SEMGREP-SCANNER:
+    tool_id: semgrep_scanner
+    name: Semgrep Static Code Security Analyzer
+    category: Security Analysis
+    executable_path: /usr/local/bin/semgrep
+    description: Automated static security rule evaluation for OWASP Top 10 and secret leakage.
+    security:
+      isolation_level: CONTAINER_SANDBOX
+      allowed_roles: ["A08", "A12"]
+      network_access: DENY_ALL
+    parameters:
+      config_rules:
+        type: string
+        default: "p/owasp-top-10"
+        required: true
+      target_dir:
+        type: string
+        required: true
+    cli_command_template: "semgrep scan --config={config_rules} --json {target_dir}"
+    timeout_ms: 120000
+
+  TOOL-005-DOCKER-CLIENT:
+    tool_id: docker_client
+    name: Docker Container Builder & Sandbox Engine
+    category: Containerization
+    executable_path: /usr/bin/docker
+    description: Building OCI compliant container images and running ephemeral test environments.
+    security:
+      isolation_level: ROOTLESS_DOCKER_DAEMON
+      allowed_roles: ["A09"]
+      network_access: RESTRICTED
+    parameters:
+      dockerfile_path:
+        type: string
+        required: true
+      tag:
+        type: string
+        required: true
+      context_path:
+        type: string
+        required: true
+    cli_command_template: "docker build -f {dockerfile_path} -t {tag} {context_path}"
+    timeout_ms: 300000
+
+  TOOL-006-KUBECTL-CLIENT:
+    tool_id: kubectl_client
+    name: Kubernetes Cluster Controller
+    category: Orchestration Deployment
+    executable_path: /usr/local/bin/kubectl
+    description: Deploying manifests, monitoring rollout status, and rolling back deployments on Kubernetes.
+    security:
+      isolation_level: STRICT_RBAC_KUBECONFIG
+      allowed_roles: ["A09", "A10"]
+      network_access: ALLOW_WHITELISTED
+      whitelisted_hosts: ["k8s-apiserver.internal:6443"]
+    parameters:
+      command:
+        type: string
+        enum: ["apply", "rollout", "get", "delete"]
+        required: true
+      manifest_path:
+        type: string
+        required: true
+      namespace:
+        type: string
+        default: "default"
+    cli_command_template: "kubectl {command} -f {manifest_path} -n {namespace}"
+    timeout_ms: 120000
+
+  TOOL-007-MERMAID-GENERATOR:
+    tool_id: mermaid_diagram_generator
+    name: Mermaid Architecture Renderer
+    category: Documentation
+    executable_path: /usr/local/bin/mmdc
+    description: Converting Mermaid syntax markdown codeblocks into SVG/PNG architectural diagrams.
+    security:
+      isolation_level: LOCAL_FILESYSTEM_RESTRICTED
+      allowed_roles: ["A01", "A02"]
+      network_access: DENY_ALL
+    parameters:
+      input_file:
+        type: string
+        required: true
+      output_format:
+        type: string
+        enum: ["svg", "png"]
+        default: "svg"
+    cli_command_template: "mmdc -i {input_file} -e {output_format}"
+    timeout_ms: 30000
+
+  TOOL-008-POLICY-EVALUATOR:
+    tool_id: policy_evaluator
+    name: OPA Policy Evaluation Engine
+    category: Governance
+    executable_path: /usr/local/bin/opa
+    description: Evaluating Open Policy Agent (OPA) Rego policies against system state and request context.
+    security:
+      isolation_level: CONTAINER_SANDBOX
+      allowed_roles: ["A12", "master_orchestrator"]
+      network_access: DENY_ALL
+    parameters:
+      policy_file:
+        type: string
+        required: true
+      input_data_json:
+        type: string
+        required: true
+    cli_command_template: "opa eval --data {policy_file} --input {input_data_json} 'data.system.allow'"
+    timeout_ms: 15000
+
+  TOOL-009-STATE-SNAPSHOT-RESTORER:
+    tool_id: state_snapshot_restorer
+    name: Persistent State Snapshot Restorer
+    category: Disaster Recovery
+    executable_path: /usr/local/bin/ai-os-dr-restore
+    description: Restoring vector embeddings, memory state, and session contexts from remote S3 backups.
+    security:
+      isolation_level: ENCRYPTED_VAULT_ACCESS
+      allowed_roles: ["A10"]
+      network_access: ALLOW_WHITELISTED
+      whitelisted_hosts: ["s3.us-east-1.amazonaws.com"]
+    parameters:
+      snapshot_id:
+        type: string
+        required: true
+      target_session_id:
+        type: string
+        required: true
+    cli_command_template: "ai-os-dr-restore --snapshot={snapshot_id} --session={target_session_id}"
+    timeout_ms: 180000
+
+  TOOL-010-SLACK-NOTIFIER:
+    tool_id: slack_notifier
+    name: Human Interaction Slack & Webhook Gateway
+    category: Collaboration
+    executable_path: /usr/local/bin/ai-os-notifier
+    description: Sending approval cards, clarification requests, and emergency notifications to human operators.
+    security:
+      isolation_level: OUTBOUND_WEBHOOK_ONLY
+      allowed_roles: ["A13", "master_orchestrator"]
+      network_access: ALLOW_WHITELISTED
+      whitelisted_hosts: ["hooks.slack.com", "api.telegram.org"]
+    parameters:
+      channel:
+        type: string
+        required: true
+      message_body:
+        type: string
+        required: true
+      interactive_buttons:
+        type: array
+        required: false
+    cli_command_template: "ai-os-notifier --channel={channel} --payload='{message_body}'"
+    timeout_ms: 30000

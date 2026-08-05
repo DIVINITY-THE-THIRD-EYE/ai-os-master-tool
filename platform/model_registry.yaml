@@ -1,0 +1,217 @@
+# Production-Grade LLM Model Registry Specification
+# Version: 1.0.0
+# Engine: AI OS v4 Multi-Agent Skill Infrastructure
+
+metadata:
+  package: ai-os-multi-agent-skill
+  subsystem: platform
+  registry_type: model_registry
+  total_models: 7
+  schema_version: 1.0.0
+
+providers:
+  anthropic:
+    name: Anthropic Claude API
+    base_url: https://api.anthropic.com/v1
+    auth_header: x-api-key
+    rate_limit_rpm: 500
+    rate_limit_tpm: 400000
+
+  openai:
+    name: OpenAI API Gateway
+    base_url: https://api.openai.com/v1
+    auth_header: Authorization
+    rate_limit_rpm: 1000
+    rate_limit_tpm: 800000
+
+  google:
+    name: Google Vertex AI / Gemini API
+    base_url: https://generativelanguage.googleapis.com/v1beta
+    auth_header: x-goog-api-key
+    rate_limit_rpm: 600
+    rate_limit_tpm: 500000
+
+  local_ollama:
+    name: Self-Hosted Local Ollama Cluster
+    base_url: http://ollama-cluster.internal:11434/v1
+    auth_header: None
+    rate_limit_rpm: 10000
+    rate_limit_tpm: 2000000
+
+global_fallback_chains:
+  tier_1_reasoning:
+    primary: claude-3-5-sonnet
+    secondary: gpt-4o
+    tertiary: gemini-1.5-pro
+    fallback_on: [RATE_LIMIT_EXCEEDED, TIMEOUT, PROVIDER_5XX, CONTEXT_EXCEEDED]
+  tier_2_coding:
+    primary: claude-3-5-sonnet
+    secondary: deepseek-coder
+    tertiary: gpt-4o
+    fallback_on: [RATE_LIMIT_EXCEEDED, TIMEOUT, PROVIDER_5XX]
+  tier_3_fast_utility:
+    primary: gpt-4o-mini
+    secondary: llama-3-70b
+    tertiary: gpt-4o
+    fallback_on: [RATE_LIMIT_EXCEEDED, TIMEOUT]
+
+models:
+  claude-3-5-sonnet:
+    model_id: claude-3-5-sonnet
+    provider: anthropic
+    family: claude-3.5
+    api_model_string: claude-3-5-sonnet-20241022
+    max_context_tokens: 200000
+    max_output_tokens: 8192
+    latency_p95_ms: 1800
+    pricing:
+      input_cost_per_1m_tokens_usd: 3.00
+      output_cost_per_1m_tokens_usd: 15.00
+      cached_input_cost_per_1m_tokens_usd: 0.30
+    capabilities:
+      tool_calling: native
+      structured_json: native
+      vision: true
+      system_prompt: supported
+      streaming: true
+    assigned_agents:
+      - A01
+      - A02
+      - A05
+      - A06
+      - A08
+      - A11
+      - A13
+
+  claude-3-opus:
+    model_id: claude-3-opus
+    provider: anthropic
+    family: claude-3
+    api_model_string: claude-3-opus-20240229
+    max_context_tokens: 200000
+    max_output_tokens: 4096
+    latency_p95_ms: 3500
+    pricing:
+      input_cost_per_1m_tokens_usd: 15.00
+      output_cost_per_1m_tokens_usd: 75.00
+      cached_input_cost_per_1m_tokens_usd: 1.50
+    capabilities:
+      tool_calling: native
+      structured_json: native
+      vision: true
+      system_prompt: supported
+      streaming: true
+    assigned_agents:
+      - A02
+      - A11
+
+  gpt-4o:
+    model_id: gpt-4o
+    provider: openai
+    family: gpt-4
+    api_model_string: gpt-4o-2024-08-06
+    max_context_tokens: 128000
+    max_output_tokens: 16384
+    latency_p95_ms: 1200
+    pricing:
+      input_cost_per_1m_tokens_usd: 2.50
+      output_cost_per_1m_tokens_usd: 10.00
+      cached_input_cost_per_1m_tokens_usd: 1.25
+    capabilities:
+      tool_calling: native
+      structured_json: native
+      vision: true
+      system_prompt: supported
+      streaming: true
+    assigned_agents:
+      - A03
+      - A07
+      - A10
+      - A12
+
+  gpt-4o-mini:
+    model_id: gpt-4o-mini
+    provider: openai
+    family: gpt-4
+    api_model_string: gpt-4o-mini-2024-07-18
+    max_context_tokens: 128000
+    max_output_tokens: 16384
+    latency_p95_ms: 450
+    pricing:
+      input_cost_per_1m_tokens_usd: 0.15
+      output_cost_per_1m_tokens_usd: 0.60
+      cached_input_cost_per_1m_tokens_usd: 0.075
+    capabilities:
+      tool_calling: native
+      structured_json: native
+      vision: true
+      system_prompt: supported
+      streaming: true
+    assigned_agents:
+      - A04
+      - A09
+
+  gemini-1.5-pro:
+    model_id: gemini-1.5-pro
+    provider: google
+    family: gemini-1.5
+    api_model_string: gemini-1.5-pro-002
+    max_context_tokens: 2000000
+    max_output_tokens: 8192
+    latency_p95_ms: 2200
+    pricing:
+      input_cost_per_1m_tokens_usd: 1.25
+      output_cost_per_1m_tokens_usd: 5.00
+      cached_input_cost_per_1m_tokens_usd: 0.30
+    capabilities:
+      tool_calling: native
+      structured_json: native
+      vision: true
+      system_prompt: supported
+      streaming: true
+    assigned_agents:
+      - A01
+      - A11
+
+  deepseek-coder:
+    model_id: deepseek-coder
+    provider: local_ollama
+    family: deepseek
+    api_model_string: deepseek-coder-v2:33b
+    max_context_tokens: 128000
+    max_output_tokens: 8192
+    latency_p95_ms: 1600
+    pricing:
+      input_cost_per_1m_tokens_usd: 0.00  # Self-hosted infrastructure cost excluded
+      output_cost_per_1m_tokens_usd: 0.00
+      cached_input_cost_per_1m_tokens_usd: 0.00
+    capabilities:
+      tool_calling: json_emulated
+      structured_json: native
+      vision: false
+      system_prompt: supported
+      streaming: true
+    assigned_agents:
+      - A06
+
+  llama-3-70b:
+    model_id: llama-3-70b
+    provider: local_ollama
+    family: llama-3
+    api_model_string: llama3.1:70b-instruct-q8_0
+    max_context_tokens: 128000
+    max_output_tokens: 4096
+    latency_p95_ms: 1400
+    pricing:
+      input_cost_per_1m_tokens_usd: 0.00
+      output_cost_per_1m_tokens_usd: 0.00
+      cached_input_cost_per_1m_tokens_usd: 0.00
+    capabilities:
+      tool_calling: json_emulated
+      structured_json: native
+      vision: false
+      system_prompt: supported
+      streaming: true
+    assigned_agents:
+      - A04
+      - A07

@@ -1,0 +1,58 @@
+disaster_recovery:
+  version: "1.0.0"
+  description: "Disaster recovery configuration for the AI OS platform"
+
+  rpo_target_minutes: 15
+  rto_target_minutes: 60
+
+  backup:
+    frequency: continuous
+    types:
+      - knowledge_graph
+      - artifact_store
+      - agent_registry
+      - audit_logs
+      - configuration
+    retention_days: 90
+    encryption: AES_256
+    offsite_replication: enabled
+    verification: automated_restore_test_weekly
+
+  snapshots:
+    workflow_state: checkpoint_per_task
+    frequency_minutes: 5
+    retention: last_10_per_task
+
+  restore:
+    procedure: automated_with_human_confirmation
+    validation: required_before_resuming_production
+    rollback_to_last_known_good: enabled
+
+  failover:
+    strategy: active_passive
+    detection: automated
+    switchover: automated_with_human_notification
+    dns_ttl_seconds: 60
+
+  recovery_testing:
+    schedule: quarterly
+    type: full_DR_exercise
+    documentation_required: true
+    sign_off_required: true
+
+  data_integrity:
+    checksums: enabled
+    corruption_detection: automated
+    quarantine_on_corruption: enabled
+
+  business_continuity:
+    critical_workflows: identified_and_documented
+    degraded_mode: defined
+    communication_plan: documented
+
+  rules:
+    - "No production system may operate without a tested DR plan"
+    - "All backups must be tested for restorability monthly"
+    - "RTO/RPO targets must be validated in each quarterly DR test"
+    - "All DR activations must be logged and reported to human stakeholders"
+    - "Data integrity checks must run after every restore operation"

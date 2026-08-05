@@ -1,0 +1,85 @@
+verification_modules:
+  version: "1.0.0"
+  description: "All 10 verification modules executed by the Verification Agent (A07)"
+
+  modules:
+
+    accuracy_verifier:
+      name: "Accuracy Verifier"
+      description: "Validates factual correctness of all claims and data against the knowledge base"
+      inputs: [artifact_content, knowledge_base_access, evidence_links]
+      outputs: [accuracy_report, failed_claims]
+      pass_criteria: "No factual errors detected against verified sources"
+      failure_action: "Return to Worker Agent with list of incorrect claims and source references"
+
+    standards_verifier:
+      name: "Standards Verifier"
+      description: "Validates compliance with all applicable coding, architecture, and documentation standards"
+      inputs: [artifact_content, knowledge_best_practices, coding_standards_rules]
+      outputs: [standards_report, violations_list]
+      pass_criteria: "All applicable standards satisfied"
+      failure_action: "Return to Worker Agent with specific violations and required fixes"
+
+    dependency_verifier:
+      name: "Dependency Verifier"
+      description: "Validates all declared dependencies exist, are compatible, and are version-pinned"
+      inputs: [artifact_metadata, dependency_declarations, artifact_store_index]
+      outputs: [dependency_report, unresolved_dependencies]
+      pass_criteria: "Zero unresolved or version-conflicting dependencies"
+      failure_action: "Block artifact until all dependencies resolved"
+
+    completeness_verifier:
+      name: "Completeness Verifier"
+      description: "Validates all acceptance criteria are addressed in the artifact"
+      inputs: [artifact_content, acceptance_criteria_list]
+      outputs: [completeness_report, unmet_criteria]
+      pass_criteria: "100% of acceptance criteria verifiably met"
+      failure_action: "Return to Worker Agent with list of unmet criteria"
+
+    risk_verifier:
+      name: "Risk Verifier"
+      description: "Validates that all identified risks have documented mitigations"
+      inputs: [artifact_content, risk_registry, task_risk_classification]
+      outputs: [risk_report, undocumented_risks]
+      pass_criteria: "No undocumented HIGH or CRITICAL risks"
+      failure_action: "Return to Worker Agent to document risk mitigations"
+
+    consistency_verifier:
+      name: "Consistency Verifier"
+      description: "Validates internal consistency and consistency with all related approved artifacts"
+      inputs: [artifact_content, related_artifacts_from_store]
+      outputs: [consistency_report, contradictions]
+      pass_criteria: "Zero logical contradictions detected"
+      failure_action: "Return to Worker Agent with specific contradictions identified"
+
+    conflict_detector:
+      name: "Conflict Detector"
+      description: "Detects conflicts between this artifact and existing approved artifacts, rules, or decisions"
+      inputs: [artifact_content, approved_artifact_index, rule_registry, decision_history]
+      outputs: [conflict_report, conflicts_list]
+      pass_criteria: "Zero unresolved conflicts with existing approved work"
+      failure_action: "Escalate conflict to Domain Authority (A05) for resolution"
+
+    security_verifier:
+      name: "Security Verifier"
+      description: "Scans for secrets, credentials, vulnerabilities, and unauthorized access patterns"
+      inputs: [artifact_content, security_policies, vulnerability_database]
+      outputs: [security_report, findings_list]
+      pass_criteria: "Zero secrets, zero critical findings, zero high findings"
+      failure_action: "Halt artifact; escalate immediately to A09 (Security Agent)"
+
+    performance_verifier:
+      name: "Performance Verifier"
+      description: "Validates that performance expectations are defined and addressed in the artifact"
+      inputs: [artifact_content, performance_requirements, baseline_metrics]
+      outputs: [performance_report, performance_gaps]
+      pass_criteria: "Performance benchmarks defined; no regressions vs baseline"
+      failure_action: "Return to Worker Agent to address performance requirements"
+
+    compliance_verifier:
+      name: "Compliance Verifier"
+      description: "Validates that all regulatory and policy compliance requirements are satisfied"
+      inputs: [artifact_content, compliance_rules, regulatory_frameworks]
+      outputs: [compliance_report, violations_list]
+      pass_criteria: "All compliance rules pass"
+      failure_action: "Immediately escalate to A05-DATA and A05-GOV"

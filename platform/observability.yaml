@@ -1,0 +1,92 @@
+observability:
+  version: "1.0.0"
+  description: "Observability configuration for all AI OS agents and workflows"
+
+  components:
+    structured_logging:
+      enabled: true
+      format: JSON
+      fields_required: [timestamp, trace_id, task_id, agent_id, event_type, level, message]
+      level: INFO
+      retention_days: 90
+
+    distributed_tracing:
+      enabled: true
+      correlation_field: trace_id
+      sampling_rate: 1.0
+      retention_days: 30
+
+    metrics:
+      collection: real_time
+      aggregation_interval_seconds: 30
+      retention_days: 90
+
+    dashboards:
+      operational: enabled
+      financial: enabled
+      quality: enabled
+      agent_health: enabled
+
+    alerting:
+      channels: [email, slack, dashboard]
+      on_critical: immediate_all_channels
+      on_warning: dashboard_and_slack
+      on_info: dashboard_only
+
+    audit_trail:
+      immutable: true
+      retention_days: 365
+
+    error_analytics:
+      enabled: true
+      pattern_detection: enabled
+      failure_classification: automatic
+
+    sla_monitoring:
+      predictive: true
+      warn_at_pct_budget_consumed: 0.80
+      breach_escalation: immediate_to_A13
+
+    cost_tracking:
+      per_task: true
+      per_workflow: true
+      per_agent: true
+      alert_at_pct: 0.90
+
+    quality_tracking:
+      verification_pass_rate: monitored
+      retry_rate: monitored
+      escalation_rate: monitored
+      learning_velocity: monitored
+
+  minimum_production_metrics:
+    - metric: task_success_rate
+      purpose: "Overall reliability measure"
+      alert_threshold: "< 0.95"
+    - metric: avg_task_duration_minutes
+      purpose: "Execution speed measure"
+      alert_threshold: "> 2x baseline"
+    - metric: token_usage_per_task
+      purpose: "Efficiency measure"
+      alert_threshold: "> 80% of budget"
+    - metric: cost_per_task_usd
+      purpose: "Budget control measure"
+      alert_threshold: "> 90% of budget"
+    - metric: verification_pass_rate
+      purpose: "Output quality measure"
+      alert_threshold: "< 0.85"
+    - metric: retry_rate
+      purpose: "System stability measure"
+      alert_threshold: "> 0.10"
+    - metric: escalation_rate
+      purpose: "Autonomy health measure"
+      alert_threshold: "> 0.05"
+    - metric: security_findings_per_week
+      purpose: "Risk posture measure"
+      alert_threshold: "Any critical"
+    - metric: sla_compliance_rate
+      purpose: "Service health measure"
+      alert_threshold: "< 0.99"
+    - metric: agent_availability
+      purpose: "Capacity measure"
+      alert_threshold: "< 0.90"

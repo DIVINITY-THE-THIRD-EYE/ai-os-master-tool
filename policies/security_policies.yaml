@@ -1,0 +1,40 @@
+security_policies:
+  policy_id: SEC-POLICY-001
+  version: "1.0.0"
+  scope: all_agents_all_artifacts_all_tools
+  enforcement_level: blocking
+  description: "Security policies enforced across all AI OS operations"
+
+  rules:
+    SEC-001:
+      rule: "No secrets, credentials, tokens, or API keys may appear in code, configs, logs, artifacts, prompts, or reports"
+      enforcement: Block artifact submission containing secrets
+      escalation_on_violation: Sev-1 immediate halt
+    SEC-002:
+      rule: "All agents must operate under least-privilege — minimum permissions required for their task"
+      enforcement: Block permission escalation beyond declared role
+      escalation_on_violation: Sev-1 to A09
+    SEC-003:
+      rule: "All tool calls must be explicitly permissioned in the Tool Registry"
+      enforcement: Block unauthorized tool calls
+      escalation_on_violation: Sev-1 to A09
+    SEC-004:
+      rule: "High-risk tool execution must be sandboxed"
+      enforcement: Block non-sandboxed high-risk tool execution
+      escalation_on_violation: Sev-1 to A09
+    SEC-005:
+      rule: "All sensitive operations must be logged immutably in Audit Log"
+      enforcement: Block operation if audit logging fails
+      escalation_on_violation: Sev-2 to A09
+    SEC-006:
+      rule: "All data must be classified and handled per its classification level"
+      enforcement: Block unclassified data processing
+      escalation_on_violation: Sev-2 to A09 and A05-DATA
+    SEC-007:
+      rule: "Authentication required for all API and agent-to-agent calls"
+      enforcement: Block unauthenticated calls
+      escalation_on_violation: Sev-1 to A09
+    SEC-008:
+      rule: "No direct production database access without explicit DBA approval"
+      enforcement: Block direct DB access
+      escalation_on_violation: Sev-1 to A09 and A05-OPS

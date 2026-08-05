@@ -1,0 +1,40 @@
+coding_policies:
+  policy_id: COD-POLICY-001
+  version: "1.0.0"
+  scope: all_code_artifacts
+  enforcement_level: blocking
+  description: "Coding standards enforced as policies for all code produced by AI OS agents"
+
+  rules:
+    COD-001:
+      rule: "All functions must have single responsibility — do one thing well"
+      enforcement: Lint check; flag multi-responsibility functions
+      escalation_on_violation: Sev-4 return for refactor
+    COD-002:
+      rule: "All functions must be documented with purpose, parameters, and return values"
+      enforcement: Documentation coverage check
+      escalation_on_violation: Sev-4 return for documentation
+    COD-003:
+      rule: "No hardcoded secrets, credentials, URLs, or environment-specific config values"
+      enforcement: Secret scan blocks submission
+      escalation_on_violation: Sev-1 immediate halt
+    COD-004:
+      rule: "All external calls must have error handling"
+      enforcement: Static analysis flag; block on missing error handling
+      escalation_on_violation: Sev-3 return for fixes
+    COD-005:
+      rule: "Test coverage must be >= 80% of business logic"
+      enforcement: Coverage report check at Gate 3 and Gate 4
+      escalation_on_violation: Sev-3 return for additional tests
+    COD-006:
+      rule: "Linting must pass with zero errors"
+      enforcement: Block submission on lint errors
+      escalation_on_violation: Sev-3 return for lint fixes
+    COD-007:
+      rule: "All dependencies must be declared and version-pinned"
+      enforcement: Dependency declaration check
+      escalation_on_violation: Sev-3 return for version pinning
+    COD-008:
+      rule: "All APIs must follow approved API design standards"
+      enforcement: API specification check
+      escalation_on_violation: Sev-3 to A05-BE or A05-FE

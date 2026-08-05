@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AI OS Event Payload Schema",
+  "description": "Standard payload schema for all events published to the AI OS Event Bus",
+  "type": "object",
+  "required": ["event_id", "trace_id", "task_id", "agent_id", "event_type", "timestamp", "severity"],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for this specific event instance"
+    },
+    "trace_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Correlation ID linking all events within a single task execution chain"
+    },
+    "task_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the task this event relates to"
+    },
+    "workflow_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the workflow instance this event belongs to"
+    },
+    "agent_id": {
+      "type": "string",
+      "description": "ID of the agent that produced this event (e.g. A01, A06, A07)"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "task.created", "task.intake.completed", "context.ready",
+        "plan.proposed", "plan.approved", "task.scheduled", "task.assigned",
+        "execution.started", "artifact.generated", "self_validation.completed",
+        "verification.requested", "verification.completed",
+        "policy.violation.detected", "security.violation.detected",
+        "budget.exceeded", "dependency.blocked", "retry.requested",
+        "escalation.raised", "human.approval.requested", "human.decision.received",
+        "decision.generated", "release.started", "release.completed", "release.failed",
+        "learning.candidate.generated", "knowledge.published",
+        "metrics.alert", "sla.breach", "bottleneck.detected",
+        "authority.review.completed", "knowledge.retrieved"
+      ],
+      "description": "The type of event being published"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp when the event was created"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["info", "warning", "error", "critical"],
+      "description": "Severity level of the event"
+    },
+    "state": {
+      "type": "string",
+      "description": "Current state of the agent or task in the state machine"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Event-specific data — structure varies by event_type"
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "References to artifacts produced or consumed by this event",
+      "items": {
+        "type": "object",
+        "properties": {
+          "artifact_id": { "type": "string", "format": "uuid" },
+          "artifact_type": { "type": "string" },
+          "artifact_version": { "type": "string" },
+          "store_ref": { "type": "string" }
+        }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "description": "Budget consumption at the time of this event",
+      "properties": {
+        "tokens_used": { "type": "integer", "minimum": 0 },
+        "cost_usd_used": { "type": "number", "minimum": 0 },
+        "time_minutes_used": { "type": "number", "minimum": 0 },
+        "api_calls_used": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "description": "Quality indicators at the time of this event",
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "risk": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "description": "Recommended next actions for the receiving agent or orchestrator",
+      "items": { "type": "string" }
+    }
+  }
+}

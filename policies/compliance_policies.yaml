@@ -1,0 +1,33 @@
+compliance_policies:
+  policy_id: CMP-POLICY-001
+  version: "1.0.0"
+  scope: all_data_handling_operations
+  enforcement_level: blocking
+  description: "Regulatory and compliance policies enforced for all data and artifact handling"
+
+  frameworks:
+    - GDPR
+    - SOC2_Type2
+    - ISO_27001
+
+  rules:
+    CMP-001:
+      rule: "All PII must be identified, classified, and handled per GDPR and privacy policy"
+      enforcement: Block PII processing without classification and consent records
+      escalation_on_violation: Sev-1 to A05-DATA and A09
+    CMP-002:
+      rule: "Data retention limits must be enforced — no data retained beyond approved retention period"
+      enforcement: Automated deletion at retention limit
+      escalation_on_violation: Sev-2 to A05-DATA
+    CMP-003:
+      rule: "Data lineage must be documented for all data transformations"
+      enforcement: Block data transformation without lineage record
+      escalation_on_violation: Sev-3 to A05-DATA
+    CMP-004:
+      rule: "All compliance violations must be reported within 72 hours per regulatory requirements"
+      enforcement: Automated incident report generation
+      escalation_on_violation: Sev-1 immediate to A05-GOV and human
+    CMP-005:
+      rule: "Third-party data must not be shared without explicit data processing agreements"
+      enforcement: Block third-party data egress without DPA record
+      escalation_on_violation: Sev-1 to A09 and A05-DATA
