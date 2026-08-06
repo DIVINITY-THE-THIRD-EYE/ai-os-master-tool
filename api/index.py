@@ -22,7 +22,11 @@ event_bus = EventBus()
 llm_router = LLMRouter()
 
 # Persistence Subsystem Wiring
-db_path = os.getenv("DB_PATH", os.path.join(os.path.dirname(__file__), "..", "local_os_state.db"))
+if os.getenv("VERCEL") == "1":
+    default_db = "/tmp/local_os_state.db"
+else:
+    default_db = os.path.join(os.path.dirname(__file__), "..", "local_os_state.db")
+db_path = os.getenv("DB_PATH", default_db)
 is_supabase = bool(os.getenv("SUPABASE_DATABASE_URL") or os.getenv("DATABASE_URL"))
 enable_vram_image = True
 
