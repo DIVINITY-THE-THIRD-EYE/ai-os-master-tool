@@ -1,4 +1,5 @@
 {
+  "name": "ai-os-master-tool",
   "version": 2,
   "builds": [
     {
