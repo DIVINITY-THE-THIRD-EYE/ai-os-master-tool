@@ -1,0 +1,49 @@
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+exclude = [
+    ".git",
+    ".pytest_cache",
+    ".venv",
+    "venv",
+    "env",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C90",# mccabe complexity
+]
+ignore = [
+    "E501", # line too long (handled by formatter)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = [
+    "^\\.venv/",
+    "^venv/",
+    "^_",
+    "test_"
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "tools/test_runtime.py"]
+tests = ["B201", "B301"]
+
+[tool.vulture]
+exclude = ["*test*.py", ".venv", "venv"]
+paths = ["ai-os-v4", "api"]
+min_confidence = 80
+sort_by_size = true

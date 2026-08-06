@@ -1,0 +1,12 @@
+{
+  "dead_python_code": [],
+  "orphaned_docs": [],
+  "unregistered_agents": [],
+  "unreachable_workflows": [],
+  "stale_config": [
+    "all_files.json"
+  ],
+  "broken_links": [],
+  "duplicate_schemas": [],
+  "duplicate_prompts": []
+}

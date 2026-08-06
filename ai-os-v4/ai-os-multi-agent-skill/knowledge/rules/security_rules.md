@@ -29,12 +29,12 @@ AI OS v4 operates under a strict **Zero-Trust Security Architecture**. No agent,
           r"ignore previous instructions",
           r"system prompt override",
           r"you are now DAN",
-          r"reveal your system prompt"
+          r"reveal your system prompt",
       ]
       for pattern in injection_patterns:
           if re.search(pattern, raw_prompt, re.IGNORECASE):
               raise PromptInjectionException(f"Prompt injection pattern detected: {pattern}")
-      
+
       # Step 2: Escape delimiter tokens
       sanitized = raw_prompt.replace("<|im_start|>", "").replace("<|im_end|>", "")
       return sanitized

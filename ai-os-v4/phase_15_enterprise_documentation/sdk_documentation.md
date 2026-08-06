@@ -72,20 +72,22 @@ from aios_sdk import AIOSClient, TaskPriority
 client = AIOSClient(
     endpoint="https://api.aios.enterprise.internal/v4",
     api_key=os.getenv("AIOS_API_KEY"),
-    tenant_id="tenant_enterprise_alpha"
+    tenant_id="tenant_enterprise_alpha",
 )
+
 
 def run():
     task = client.tasks.create(
         workflow_id="wf.research.literature_review",
         goal_description="Extract state-of-the-art LLM alignment papers",
         priority=TaskPriority.NORMAL,
-        input_parameters={"query": "Direct Preference Optimization 2025"}
+        input_parameters={"query": "Direct Preference Optimization 2025"},
     )
     print(f"Task created: {task.task_id}")
-    
+
     result = task.wait_for_completion(timeout_seconds=300)
     print(f"Task completed with artifacts: {result.artifacts}")
+
 
 if __name__ == "__main__":
     run()

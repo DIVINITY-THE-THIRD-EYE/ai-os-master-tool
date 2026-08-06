@@ -104,7 +104,7 @@ def detect_cycle_tarjan(graph_nodes):
         if node not in indices:
             strongconnect(node)
 
-    return sccs # Returns non-empty list if cycles exist
+    return sccs  # Returns non-empty list if cycles exist
 ```
 
 ---

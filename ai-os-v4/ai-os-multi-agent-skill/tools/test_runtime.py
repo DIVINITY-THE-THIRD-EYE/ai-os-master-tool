@@ -5,27 +5,27 @@ agent_registry, event_bus, plugin_registry.
 Run: pytest tools/test_runtime.py -v --cov=runtime
 """
 
-import threading
-import pytest
-from unittest.mock import MagicMock, patch
-
-import sys
 import os
+import sys
+import threading
+
+import pytest
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from runtime.workflow_executor import (
-    WorkflowExecutor, WorkflowStep, WorkflowResult,
-    ConditionEvaluator, StepStatus
-)
-from runtime.agent_registry import AgentRegistry, AgentRecord
+from runtime.agent_registry import AgentRecord, AgentRegistry
+from runtime.api_server import create_app
 from runtime.capability_router import CapabilityRouter
-from runtime.event_bus import EventBus, Event, get_event_bus
-from runtime.plugin_registry import PluginRegistry, PluginRecord
-
+from runtime.event_bus import Event, EventBus
+from runtime.llm_router import LLMRouter
+from runtime.memory_manager import MemoryManager
+from runtime.plugin_registry import PluginRecord, PluginRegistry
+from runtime.workflow_executor import ConditionEvaluator, WorkflowExecutor, WorkflowStep
 
 # ---------------------------------------------------------------------------
 # ConditionEvaluator Tests
 # ---------------------------------------------------------------------------
+
 
 class TestConditionEvaluator:
     def test_in_operator_match(self):
@@ -71,12 +71,14 @@ class TestConditionEvaluator:
 # WorkflowExecutor Tests
 # ---------------------------------------------------------------------------
 
-class TestWorkflowExecutor:
 
+class TestWorkflowExecutor:
     def _make_executor(self, outputs=None):
         """Create executor with a mock step_executor."""
+
         def mock_step(step: WorkflowStep) -> dict:
             return outputs.get(step.step_id, {"done": True}) if outputs else {"done": True}
+
         return WorkflowExecutor(step_executor=mock_step)
 
     def test_simple_linear_workflow(self):
@@ -120,6 +122,7 @@ class TestWorkflowExecutor:
         B's condition is injected via dependency outputs into its inputs,
         then evaluated. Since 'approved' != 'escalated', B is skipped.
         """
+
         def output_executor(step: WorkflowStep) -> dict:
             if step.step_id == "A":
                 return {"approval_status": "approved"}
@@ -128,8 +131,9 @@ class TestWorkflowExecutor:
         executor = WorkflowExecutor(step_executor=output_executor)
         steps = [
             WorkflowStep("A", "Step A", "A01", depends_on=[]),
-            WorkflowStep("B", "Step B", "A13", depends_on=["A"],
-                         condition="approval_status == escalated"),  # Should be skipped
+            WorkflowStep(
+                "B", "Step B", "A13", depends_on=["A"], condition="approval_status == escalated"
+            ),  # Should be skipped
         ]
         result = executor.execute("wf-3", "task-3", "trace-3", steps)
         assert result.status == "completed"
@@ -154,10 +158,7 @@ class TestWorkflowExecutor:
                 raise RuntimeError("Transient error")
             return {"done": True}
 
-        executor = WorkflowExecutor(
-            step_executor=failing_then_succeeding,
-            max_workers=1
-        )
+        executor = WorkflowExecutor(step_executor=failing_then_succeeding, max_workers=1)
         # Use 0 backoff for testing speed
         executor.RETRY_BACKOFF_SECONDS = [0, 0, 0]
 
@@ -183,8 +184,8 @@ class TestWorkflowExecutor:
 # AgentRegistry Tests
 # ---------------------------------------------------------------------------
 
-class TestAgentRegistry:
 
+class TestAgentRegistry:
     def _make_registry(self):
         registry = AgentRegistry()
         agent = AgentRecord(
@@ -246,14 +247,14 @@ class TestAgentRegistry:
 # CapabilityRouter Tests
 # ---------------------------------------------------------------------------
 
-class TestCapabilityRouter:
 
+class TestCapabilityRouter:
     def _make_router(self):
         registry = AgentRegistry()
         for i, cap in enumerate(["task_intake", "verification", "scheduling"]):
             agent = AgentRecord(
-                agent_id=f"A0{i+1}",
-                name=f"Agent {i+1}",
+                agent_id=f"A0{i + 1}",
+                name=f"Agent {i + 1}",
                 version="1.0.0",
                 capabilities=[cap],
                 skills=[],
@@ -261,8 +262,8 @@ class TestCapabilityRouter:
                 permissions=[],
             )
             registry.register(agent)
-            registry.configure(f"A0{i+1}")
-            registry.mark_ready(f"A0{i+1}")
+            registry.configure(f"A0{i + 1}")
+            registry.mark_ready(f"A0{i + 1}")
         return CapabilityRouter(registry), registry
 
     def test_routes_to_correct_agent(self):
@@ -301,18 +302,13 @@ class TestCapabilityRouter:
 # EventBus Tests
 # ---------------------------------------------------------------------------
 
-class TestEventBus:
 
+class TestEventBus:
     def test_publish_and_subscribe(self):
         bus = EventBus()
         received = []
         bus.subscribe("task.created", lambda e: received.append(e))
-        event = Event(
-            event_type="task.created",
-            agent_id="A00",
-            task_id="task-1",
-            payload={"objective": "test"}
-        )
+        event = Event(event_type="task.created", agent_id="A00", task_id="task-1", payload={"objective": "test"})
         count = bus.publish(event)
         assert count == 1
         assert len(received) == 1
@@ -342,10 +338,7 @@ class TestEventBus:
         bus = EventBus()
         bus.configure_persistence(["task.created"])
         for i in range(3):
-            event = Event(
-                event_type="task.created", agent_id="A00",
-                task_id=f"task-{i}", payload={}
-            )
+            event = Event(event_type="task.created", agent_id="A00", task_id=f"task-{i}", payload={})
             bus.publish(event)
         result = bus.get_history(task_id="task-1")
         assert len(result) == 1
@@ -356,8 +349,8 @@ class TestEventBus:
 # PluginRegistry Tests
 # ---------------------------------------------------------------------------
 
-class TestPluginRegistry:
 
+class TestPluginRegistry:
     def _make_plugin(self, plugin_id="tool_search"):
         return PluginRecord(
             plugin_id=plugin_id,
@@ -389,18 +382,14 @@ class TestPluginRegistry:
         reg = PluginRegistry()
         reg.register(self._make_plugin())
         reg.activate("tool_search")
-        allowed, reason = reg.validate_invocation(
-            "tool_search", "A06", "search", {"query": "test"}
-        )
+        allowed, reason = reg.validate_invocation("tool_search", "A06", "search", {"query": "test"})
         assert allowed is True
 
     def test_invocation_denied_wrong_operation(self):
         reg = PluginRegistry()
         reg.register(self._make_plugin())
         reg.activate("tool_search")
-        allowed, reason = reg.validate_invocation(
-            "tool_search", "A06", "delete_files", {"path": "/"}
-        )
+        allowed, reason = reg.validate_invocation("tool_search", "A06", "delete_files", {"path": "/"})
         assert allowed is False
         assert "whitelist" in reason
 
@@ -419,6 +408,95 @@ class TestPluginRegistry:
         assert len(log) == 2
         assert log[1]["success"] is False
         assert log[1]["error"] == "timeout"
+
+
+# ---------------------------------------------------------------------------
+# LLMRouter Tests
+# ---------------------------------------------------------------------------
+
+
+class TestLLMRouter:
+    def test_mock_fallback_dispatch(self):
+        router = LLMRouter(api_keys={})
+        resp = router.dispatch("A01", "system prompt", "user prompt")
+        assert resp.provider == "mock"
+        assert resp.mocked is True
+        assert resp.parsed_json is not None
+        assert resp.parsed_json["status"] == "completed"
+
+    def test_token_and_cost_tracking(self):
+        router = LLMRouter(api_keys={})
+        router.dispatch("A01", "sys", "user")
+        usage = router.get_total_usage()
+        assert usage["total_calls"] == 1
+        assert usage["total_tokens"] > 0
+
+
+# ---------------------------------------------------------------------------
+# MemoryManager Tests
+# ---------------------------------------------------------------------------
+
+
+class TestMemoryManager:
+    def test_working_memory_lifecycle(self):
+        mem = MemoryManager()
+        mem.set_working_memory("task-1", "key1", "value1")
+        assert mem.get_working_memory("task-1", "key1") == "value1"
+        mem.clear_working_memory("task-1")
+        assert mem.get_working_memory("task-1", "key1") is None
+
+    def test_persistent_and_knowledge_graph(self):
+        mem = MemoryManager()
+        mem.save_persistent("rules", "governance", tags=["gov"])
+        assert mem.get_persistent("rules") == "governance"
+        assert "rules" in mem.search_persistent_by_tag("gov")
+
+        mem.add_node("node1", "Agent A01", "Agent")
+        mem.add_node("node2", "Agent A02", "Agent")
+        mem.add_edge("node1", "node2", "HANDOFF")
+        related = mem.get_related_nodes("node1", "HANDOFF")
+        assert len(related) == 1
+        assert related[0].node_id == "node2"
+
+
+# ---------------------------------------------------------------------------
+# StateManager Tests
+# ---------------------------------------------------------------------------
+
+
+class TestStateManager:
+    def test_sqlite_persistence_and_snapshot(self):
+        from runtime.bootstrap import bootstrap_persistence
+        from runtime.event_bus import EventBus
+
+        event_bus = EventBus()
+        sm = bootstrap_persistence(db_path=":memory:", is_supabase=False, enable_vram_image=True, event_bus=event_bus)
+        sm.save_agent("A01", "Intake Agent", "1.0.0", "ready", ["intake"], {"agent_id": "A01"})
+        agent = sm.get_agent("A01")
+        assert agent is not None
+        assert agent["agent_id"] == "A01"
+
+        sm.save_checkpoint("wf-1", "step-1", {"status": "ok"})
+        cps = sm.get_checkpoints("wf-1")
+        assert "step-1" in cps
+
+        snapshot = sm.snapshot()
+        assert len(snapshot["agents"]) == 1
+        assert len(snapshot["checkpoints"]) == 1
+
+
+# ---------------------------------------------------------------------------
+# APIServer Tests
+# ---------------------------------------------------------------------------
+
+
+class TestAPIServer:
+    def test_app_creation_and_health(self):
+        reg = AgentRegistry()
+        app = create_app(agent_registry=reg)
+        if hasattr(app, "health_check"):
+            health = app.health_check()
+            assert health["status"] == "healthy"
 
 
 if __name__ == "__main__":

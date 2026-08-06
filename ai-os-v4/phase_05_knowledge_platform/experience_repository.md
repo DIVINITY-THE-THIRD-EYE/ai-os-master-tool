@@ -88,7 +88,7 @@ class ExperienceRepositoryManager:
     def commit_trajectory(self, raw_trace: TaskExecutionTrace) -> str:
         sanitized_trace = self.dlp_sanitizer.scrub(raw_trace)
         quality_score = self.evaluation_engine.evaluate(sanitized_trace)
-        
+
         record = EpisodicExperienceRecord(
             experience_id=f"exp_{uuid4().hex[:12]}",
             task_id=raw_trace.task_id,
@@ -97,9 +97,9 @@ class ExperienceRepositoryManager:
             initial_goal=raw_trace.goal,
             outcome_status=raw_trace.status,
             quality_score=quality_score,
-            action_trajectory=sanitized_trace.steps
+            action_trajectory=sanitized_trace.steps,
         )
-        
+
         self.vector_store.insert(record.to_vector_point())
         self.doc_store.save(record)
         return record.experience_id

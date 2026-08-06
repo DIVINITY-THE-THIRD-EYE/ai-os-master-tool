@@ -1,6 +1,5 @@
-import os
 import glob
-import re
+import os
 
 SPECS_DIR = r"c:\Users\PC\OneDrive\Documents\Master tool\ai-os-v4\phase_02_agent_framework\specs"
 PROMPTS_DIR = r"c:\Users\PC\OneDrive\Documents\Master tool\ai-os-v4\phase_02_agent_framework\prompts"
@@ -16,7 +15,7 @@ REQUIRED_SECTIONS = [
     "## 8. Escalation Rules",
     "## 9. Quality Metrics",
     "## 10. Prompt",
-    "## 11. Examples"
+    "## 11. Examples",
 ]
 
 spec_files = glob.glob(os.path.join(SPECS_DIR, "*.md"))
@@ -35,12 +34,12 @@ for spec in sorted(spec_files):
     filename = os.path.basename(spec)
     with open(spec, "r", encoding="utf-8") as f:
         content = f.read()
-    
+
     missing = []
     for section in REQUIRED_SECTIONS:
         if section not in content:
             missing.append(section)
-    
+
     if missing:
         print(f"FAIL: {filename} missing sections: {missing}")
         spec_errors += 1
@@ -51,7 +50,7 @@ for prompt in sorted(prompt_files):
     filename = os.path.basename(prompt)
     with open(prompt, "r", encoding="utf-8") as f:
         content = f.read()
-    
+
     words = len(content.split())
     if words < 200:
         print(f"FAIL: {filename} word count is {words} (< 200 words)")

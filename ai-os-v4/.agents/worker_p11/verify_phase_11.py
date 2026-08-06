@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import sys
 
 schema_dir = r"c:\Users\PC\OneDrive\Documents\Master tool\ai-os-v4\phase_11_schemas"
@@ -44,7 +44,7 @@ required_files = [
     "escalation_schema.json",
     "reflection_schema.json",
     "tradeoff_schema.json",
-    "cost_report_schema.json"
+    "cost_report_schema.json",
 ]
 
 if not os.path.exists(schema_dir):
@@ -76,7 +76,7 @@ for file_name in json_files:
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        
+
         missing_keys = [k for k in required_keys if k not in data]
         if missing_keys:
             print(f"ERROR: File {file_name} missing required schema fields: {missing_keys}")

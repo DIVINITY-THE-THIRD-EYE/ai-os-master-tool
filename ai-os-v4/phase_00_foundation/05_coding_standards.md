@@ -64,10 +64,12 @@ export async function processTask(request: AgentTaskRequest): Promise<TaskResult
 from typing import Dict, Any
 import dataclasses
 
+
 @dataclasses.dataclass(frozen=True)
 class EventPayload:
     event_type: string
     data: Dict[str, Any]
+
 
 async def dispatch_event(payload: EventPayload) -> bool:
     """Dispatches event payload to the async event broker.

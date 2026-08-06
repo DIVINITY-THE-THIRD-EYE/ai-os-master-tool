@@ -11,10 +11,10 @@ Implements:
 """
 
 import logging
-import time
 import threading
+import time
 from collections import defaultdict, deque
-from concurrent.futures import ThreadPoolExecutor, as_completed, Future
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Set, Tuple
@@ -37,6 +37,7 @@ class StepStatus(Enum):
 @dataclass
 class WorkflowStep:
     """A single step in the workflow DAG."""
+
     step_id: str
     name: str
     agent_id: str
@@ -46,7 +47,7 @@ class WorkflowStep:
     condition: Optional[str] = None
     parallel: bool = False
     max_retries: int = 3
-    timeout_seconds: int = 1800       # 30 minutes per skill.yaml budget
+    timeout_seconds: int = 1800  # 30 minutes per skill.yaml budget
     status: StepStatus = StepStatus.PENDING
     retry_count: int = 0
     error: Optional[str] = None
@@ -56,10 +57,11 @@ class WorkflowStep:
 @dataclass
 class WorkflowResult:
     """Result of a complete workflow execution."""
+
     workflow_id: str
     task_id: str
     trace_id: str
-    status: str                         # completed|failed|partially_completed
+    status: str  # completed|failed|partially_completed
     steps_completed: int = 0
     steps_failed: int = 0
     artifacts: List[dict] = field(default_factory=list)
@@ -94,7 +96,9 @@ class ConditionEvaluator:
 
         try:
             # Helper to get value and check existence
-            val, exists = ConditionEvaluator._get_key_and_exists(condition.split(" IN ")[0] if " IN " in condition else condition.split(" ")[0], context)
+            val, exists = ConditionEvaluator._get_key_and_exists(
+                condition.split(" IN ")[0] if " IN " in condition else condition.split(" ")[0], context
+            )
 
             # IN operator: "key IN [val1, val2, ...]"
             if " IN " in condition:
@@ -198,21 +202,27 @@ class WorkflowExecutor:
     - Budget tracking across all steps
     """
 
-    RETRY_BACKOFF_SECONDS = [60, 300, 900]   # 1min → 5min → 15min per recovery_workflow.md
+    RETRY_BACKOFF_SECONDS = [60, 300, 900]  # 1min → 5min → 15min per recovery_workflow.md
 
     def __init__(
         self,
         step_executor: Callable[[WorkflowStep], dict],
         max_workers: int = MAX_PARALLEL_WORKERS,
+        state_manager: Optional[Any] = None,
+        llm_router: Optional[Any] = None,
     ):
         """
         Args:
             step_executor: Callable that executes a step and returns output dict.
                            In production, this dispatches to the appropriate agent via LLM API.
             max_workers: Maximum parallel workers (default: 5 per skill.yaml)
+            state_manager: Optional StateManager for DB persistence.
+            llm_router: Optional LLMRouter for AI gateway dispatch.
         """
         self._execute_step = step_executor
         self._max_workers = max_workers
+        self.state_manager = state_manager
+        self.llm_router = llm_router
         self._checkpoints: Dict[str, dict] = {}
         self._checkpoint_lock = threading.Lock()
         self._condition_evaluator = ConditionEvaluator()
@@ -236,69 +246,64 @@ class WorkflowExecutor:
             f"max_parallel={self._max_workers})"
         )
 
-        result = WorkflowResult(
-            workflow_id=workflow_id,
-            task_id=task_id,
-            trace_id=trace_id,
-            status="running"
-        )
+        result = WorkflowResult(workflow_id=workflow_id, task_id=task_id, trace_id=trace_id, status="running")
 
-        step_map = {s.step_id: s for s in steps}
-        self._validate_dag(step_map)
+        try:
+            step_map = {s.step_id: s for s in steps}
+            self._validate_dag(step_map)
 
-        # Build parallel-aware execution levels
-        levels = self._build_execution_levels(step_map)
-        completed_outputs: Dict[str, dict] = {}
-        results_lock = threading.Lock()
+            # Build parallel-aware execution levels
+            levels = self._build_execution_levels(step_map)
+            completed_outputs: Dict[str, dict] = {}
+            results_lock = threading.Lock()
 
-        for level in levels:
-            # Steps in the same level have no dependencies on each other → run in parallel
-            if len(level) == 1:
-                step_id = level[0]
-                success = self._run_step(
-                    step_map[step_id], completed_outputs, results_lock,
-                    result, workflow_id
-                )
-                if not success and step_map[step_id].status == StepStatus.FAILED:
-                    result.status = "failed"
-                    return result
-            else:
-                # Multiple independent steps — execute in parallel
-                logger.info(
-                    f"Parallel execution: {len(level)} steps → {level}"
-                )
-                with ThreadPoolExecutor(max_workers=min(len(level), self._max_workers)) as pool:
-                    futures: Dict[Future, str] = {
-                        pool.submit(
-                            self._run_step,
-                            step_map[sid], completed_outputs, results_lock,
-                            result, workflow_id
-                        ): sid
-                        for sid in level
-                    }
-                    for future in as_completed(futures):
-                        step_id = futures[future]
-                        try:
-                            success = future.result()
-                            if not success and step_map[step_id].status == StepStatus.FAILED:
+            for level in levels:
+                # Steps in the same level have no dependencies on each other → run in parallel
+                if len(level) == 1:
+                    step_id = level[0]
+                    success = self._run_step(step_map[step_id], completed_outputs, results_lock, result, workflow_id)
+                    if not success and step_map[step_id].status == StepStatus.FAILED:
+                        result.status = "failed"
+                        return result
+                else:
+                    # Multiple independent steps — execute in parallel
+                    logger.info(f"Parallel execution: {len(level)} steps → {level}")
+                    with ThreadPoolExecutor(max_workers=min(len(level), self._max_workers)) as pool:
+                        futures: Dict[Future, str] = {
+                            pool.submit(
+                                self._run_step, step_map[sid], completed_outputs, results_lock, result, workflow_id
+                            ): sid
+                            for sid in level
+                        }
+                        for future in as_completed(futures):
+                            step_id = futures[future]
+                            try:
+                                success = future.result()
+                                if not success and step_map[step_id].status == StepStatus.FAILED:
+                                    result.status = "failed"
+                                    # Cancel remaining futures
+                                    for f in futures:
+                                        f.cancel()
+                                    return result
+                            except Exception as e:
+                                logger.error(f"Parallel step '{step_id}' raised exception: {e}")
                                 result.status = "failed"
-                                # Cancel remaining futures
-                                for f in futures:
-                                    f.cancel()
+                                result.error = str(e)
                                 return result
-                        except Exception as e:
-                            logger.error(f"Parallel step '{step_id}' raised exception: {e}")
-                            result.status = "failed"
-                            result.error = str(e)
-                            return result
 
-        result.status = "completed"
-        logger.info(
-            f"Workflow {workflow_id} completed. "
-            f"Steps: {result.steps_completed} completed, "
-            f"{result.steps_failed} failed."
-        )
-        return result
+            result.status = "completed"
+            logger.info(
+                f"Workflow {workflow_id} completed. "
+                f"Steps: {result.steps_completed} completed, "
+                f"{result.steps_failed} failed."
+            )
+            return result
+        finally:
+            if self.state_manager and hasattr(self.state_manager, "flush_image_to_disk"):
+                try:
+                    self.state_manager.flush_image_to_disk(workflow_id=workflow_id)
+                except Exception as e:
+                    logger.error(f"Failed to flush VRAM image to disk: {e}")
 
     def _run_step(
         self,
@@ -317,9 +322,7 @@ class WorkflowExecutor:
             context_snapshot = dict(completed_outputs)
 
         # Evaluate condition
-        if step.condition and not self._condition_evaluator.evaluate(
-            step.condition, context_snapshot
-        ):
+        if step.condition and not self._condition_evaluator.evaluate(step.condition, context_snapshot):
             step.status = StepStatus.SKIPPED
             logger.info(f"Step '{step.step_id}' skipped (condition: '{step.condition}')")
             return True  # Skipped = not a failure
@@ -336,9 +339,7 @@ class WorkflowExecutor:
             else:
                 result.steps_failed += 1
                 result.error = step.error
-                logger.error(
-                    f"Step '{step.step_id}' permanently failed: {step.error}"
-                )
+                logger.error(f"Step '{step.step_id}' permanently failed: {step.error}")
         return success
 
     def _execute_with_retry(self, step: WorkflowStep) -> bool:
@@ -356,16 +357,11 @@ class WorkflowExecutor:
             except Exception as e:
                 step.retry_count = attempt
                 step.error = str(e)
-                logger.warning(
-                    f"Step '{step.step_id}' failed (attempt {attempt + 1}/{step.max_retries + 1}): {e}"
-                )
+                logger.warning(f"Step '{step.step_id}' failed (attempt {attempt + 1}/{step.max_retries + 1}): {e}")
                 if attempt < step.max_retries:
-                    backoff = self.RETRY_BACKOFF_SECONDS[
-                        min(attempt, len(self.RETRY_BACKOFF_SECONDS) - 1)
-                    ]
+                    backoff = self.RETRY_BACKOFF_SECONDS[min(attempt, len(self.RETRY_BACKOFF_SECONDS) - 1)]
                     logger.info(
-                        f"Retrying '{step.step_id}' in {backoff}s "
-                        f"(attempt {attempt + 2}/{step.max_retries + 1})..."
+                        f"Retrying '{step.step_id}' in {backoff}s (attempt {attempt + 2}/{step.max_retries + 1})..."
                     )
                     # Non-blocking sleep inside dedicated thread
                     time.sleep(backoff)
@@ -373,9 +369,7 @@ class WorkflowExecutor:
         step.status = StepStatus.FAILED
         return False
 
-    def _build_execution_levels(
-        self, step_map: Dict[str, WorkflowStep]
-    ) -> List[List[str]]:
+    def _build_execution_levels(self, step_map: Dict[str, WorkflowStep]) -> List[List[str]]:
         """
         Build execution levels for parallel execution.
 
@@ -419,9 +413,7 @@ class WorkflowExecutor:
             in_progress.add(step_id)
             for dep in step_map[step_id].depends_on:
                 if dep in in_progress:
-                    raise ValueError(
-                        f"Circular dependency detected: {step_id} -> {dep}"
-                    )
+                    raise ValueError(f"Circular dependency detected: {step_id} -> {dep}")
                 if dep not in visited:
                     dfs(dep)
             in_progress.remove(step_id)
@@ -431,14 +423,17 @@ class WorkflowExecutor:
             if step_id not in visited:
                 dfs(step_id)
 
-    def _save_checkpoint(
-        self, workflow_id: str, step_id: str, outputs: dict
-    ) -> None:
+    def _save_checkpoint(self, workflow_id: str, step_id: str, outputs: dict) -> None:
         """Thread-safe checkpoint save after each completed step."""
         with self._checkpoint_lock:
             if workflow_id not in self._checkpoints:
                 self._checkpoints[workflow_id] = {}
             self._checkpoints[workflow_id][step_id] = outputs
+            if self.state_manager:
+                try:
+                    self.state_manager.save_checkpoint(workflow_id, step_id, outputs)
+                except Exception as e:
+                    logger.warning(f"Failed to persist checkpoint to StateManager: {e}")
         logger.debug(f"Checkpoint saved: workflow={workflow_id}, step={step_id}")
 
     def get_checkpoint(self, workflow_id: str, step_id: str) -> Optional[dict]:
@@ -469,8 +464,5 @@ class WorkflowExecutor:
                 if checkpoint_data:
                     step.outputs = checkpoint_data
 
-        logger.info(
-            f"Resuming workflow {workflow_id} from checkpoint. "
-            f"Already completed: {completed}"
-        )
+        logger.info(f"Resuming workflow {workflow_id} from checkpoint. Already completed: {completed}")
         return self.execute(workflow_id, task_id, trace_id, steps)

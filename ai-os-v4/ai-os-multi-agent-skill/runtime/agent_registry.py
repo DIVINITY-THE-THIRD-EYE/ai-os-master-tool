@@ -16,6 +16,7 @@ logger = logging.getLogger("ai_os.agent_registry")
 @dataclass
 class AgentRecord:
     """A registered agent in the AI OS Agent Registry."""
+
     agent_id: str
     name: str
     version: str
@@ -24,10 +25,10 @@ class AgentRecord:
     tools: List[str]
     permissions: List[str]
     dependencies: List[str] = field(default_factory=list)
-    status: str = "registered"           # created|registered|configured|ready|disabled|retired
-    health_status: str = "unknown"       # healthy|degraded|unhealthy|unknown
-    performance_score: float = 1.0       # 0.0-1.0
-    availability: float = 1.0            # 0.0-1.0
+    status: str = "registered"  # created|registered|configured|ready|disabled|retired
+    health_status: str = "unknown"  # healthy|degraded|unhealthy|unknown
+    performance_score: float = 1.0  # 0.0-1.0
+    availability: float = 1.0  # 0.0-1.0
     last_heartbeat: Optional[str] = None
     metadata: dict = field(default_factory=dict)
 
@@ -55,8 +56,7 @@ class AgentRegistry:
         """Register a new agent. Raises if agent_id already registered."""
         if agent.agent_id in self._agents:
             raise ValueError(
-                f"Agent '{agent.agent_id}' is already registered. "
-                "Use update_status to modify an existing agent."
+                f"Agent '{agent.agent_id}' is already registered. Use update_status to modify an existing agent."
             )
         agent.status = "registered"
         self._agents[agent.agent_id] = agent
@@ -72,10 +72,7 @@ class AgentRegistry:
         """Mark agent as ready to receive work assignments."""
         agent = self._get_or_raise(agent_id)
         if agent.status != "configured":
-            raise ValueError(
-                f"Agent must be 'configured' before marking ready. "
-                f"Current status: {agent.status}"
-            )
+            raise ValueError(f"Agent must be 'configured' before marking ready. Current status: {agent.status}")
         agent.status = "ready"
         agent.health_status = "healthy"
         agent.last_heartbeat = datetime.now(timezone.utc).isoformat()
@@ -110,10 +107,7 @@ class AgentRegistry:
 
     def find_by_capability(self, capability: str) -> List[AgentRecord]:
         """Return all ready, healthy agents providing the specified capability."""
-        matches = [
-            a for a in self._agents.values()
-            if capability in a.capabilities and a.is_available()
-        ]
+        matches = [a for a in self._agents.values() if capability in a.capabilities and a.is_available()]
         # Sort by performance score descending
         return sorted(matches, key=lambda a: a.performance_score, reverse=True)
 

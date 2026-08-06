@@ -34,7 +34,7 @@ class CapabilityRouter:
     def __init__(self, registry: AgentRegistry):
         self._registry = registry
         self._round_robin_counters: Dict[str, int] = {}
-        self._counter_lock = threading.Lock()   # FIX: thread-safe counters
+        self._counter_lock = threading.Lock()  # FIX: thread-safe counters
         logger.info("CapabilityRouter initialized")
 
     def route(
@@ -60,14 +60,10 @@ class CapabilityRouter:
 
         # If preferred agent is available, use it
         if preferred_agent_id:
-            preferred = next(
-                (a for a in candidates if a.agent_id == preferred_agent_id),
-                None
-            )
+            preferred = next((a for a in candidates if a.agent_id == preferred_agent_id), None)
             if preferred:
                 logger.info(
-                    f"Routing capability '{capability}' to preferred agent "
-                    f"'{preferred_agent_id}' (task={task_id})"
+                    f"Routing capability '{capability}' to preferred agent '{preferred_agent_id}' (task={task_id})"
                 )
                 return preferred
 
@@ -87,9 +83,7 @@ class CapabilityRouter:
         """Check if any healthy agent is available for the given capability."""
         return len(self._registry.find_by_capability(capability)) > 0
 
-    def get_routing_plan(
-        self, required_capabilities: List[str]
-    ) -> Tuple[Dict[str, Optional[str]], List[str]]:
+    def get_routing_plan(self, required_capabilities: List[str]) -> Tuple[Dict[str, Optional[str]], List[str]]:
         """
         Plan routing for a set of required capabilities.
 
@@ -109,8 +103,6 @@ class CapabilityRouter:
                 missing.append(cap)
 
         if missing:
-            logger.warning(
-                f"Routing plan incomplete. No agents for: {missing}"
-            )
+            logger.warning(f"Routing plan incomplete. No agents for: {missing}")
 
         return routing_plan, missing

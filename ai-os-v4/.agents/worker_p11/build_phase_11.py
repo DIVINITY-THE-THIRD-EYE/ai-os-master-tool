@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 output_dir = r"c:\Users\PC\OneDrive\Documents\Master tool\ai-os-v4\phase_11_schemas"
 os.makedirs(output_dir, exist_ok=True)
@@ -13,115 +13,102 @@ schemas = {
         "properties": {
             "agent_id": {
                 "type": "string",
-                "description": "Unique identifier for the agent (e.g. agent_mgmt_01_orchestrator)."
+                "description": "Unique identifier for the agent (e.g. agent_mgmt_01_orchestrator).",
             },
-            "name": {
-                "type": "string",
-                "description": "Human-readable name of the agent."
-            },
-            "role": {
-                "type": "string",
-                "description": "Role designation within the AI OS agent taxonomy."
-            },
+            "name": {"type": "string", "description": "Human-readable name of the agent."},
+            "role": {"type": "string", "description": "Role designation within the AI OS agent taxonomy."},
             "archetype": {
                 "type": "string",
-                "enum": ["manager", "planner", "architect", "engineer", "qa", "security", "doc", "research", "optimizer", "governance"],
-                "description": "Functional archetype categorization."
+                "enum": [
+                    "manager",
+                    "planner",
+                    "architect",
+                    "engineer",
+                    "qa",
+                    "security",
+                    "doc",
+                    "research",
+                    "optimizer",
+                    "governance",
+                ],
+                "description": "Functional archetype categorization.",
             },
-            "domain": {
-                "type": "string",
-                "description": "Primary domain of expertise."
-            },
+            "domain": {"type": "string", "description": "Primary domain of expertise."},
             "version": {
                 "type": "string",
                 "pattern": "^\\d+\\.\\d+\\.\\d+$",
-                "description": "Semantic version of the agent spec."
+                "description": "Semantic version of the agent spec.",
             },
-            "system_prompt": {
-                "type": "string",
-                "description": "Complete system prompt instruction set."
-            },
+            "system_prompt": {"type": "string", "description": "Complete system prompt instruction set."},
             "capabilities": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "List of capability identifiers granted to this agent."
+                "description": "List of capability identifiers granted to this agent.",
             },
             "authority_level": {
                 "type": "string",
                 "enum": ["autonomous", "supervised", "approval_required", "read_only"],
-                "description": "Execution authority level."
+                "description": "Execution authority level.",
             },
             "responsibilities": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "Core responsibilities of the agent."
+                "description": "Core responsibilities of the agent.",
             },
             "decision_rules": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "Rules governing autonomous decision making."
+                "description": "Rules governing autonomous decision making.",
             },
             "escalation_rules": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "Conditions requiring escalation to parent or human operator."
+                "description": "Conditions requiring escalation to parent or human operator.",
             },
-            "quality_metrics": {
-                "type": "object",
-                "description": "Quality thresholds and KPI metrics."
-            },
+            "quality_metrics": {"type": "object", "description": "Quality thresholds and KPI metrics."},
             "resource_limits": {
                 "type": "object",
                 "properties": {
                     "max_tokens_per_turn": {"type": "integer"},
                     "max_memory_mb": {"type": "integer"},
-                    "max_execution_time_sec": {"type": "integer"}
-                }
+                    "max_execution_time_sec": {"type": "integer"},
+                },
             },
             "status": {
                 "type": "string",
                 "enum": ["active", "deprecated", "draft", "disabled"],
-                "description": "Lifecycle status of the agent definition."
+                "description": "Lifecycle status of the agent definition.",
             },
             "metadata": {
                 "type": "object",
                 "additionalProperties": True,
-                "description": "Arbitrary metadata attributes."
-            }
+                "description": "Arbitrary metadata attributes.",
+            },
         },
-        "required": ["agent_id", "name", "role", "archetype", "domain", "version", "system_prompt", "capabilities", "status"]
+        "required": [
+            "agent_id",
+            "name",
+            "role",
+            "archetype",
+            "domain",
+            "version",
+            "system_prompt",
+            "capabilities",
+            "status",
+        ],
     },
-
     "workflow_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Workflow Schema",
         "type": "object",
         "description": "Schema defining multi-step workflow graphs in AI OS v4.",
         "properties": {
-            "workflow_id": {
-                "type": "string",
-                "description": "Unique workflow identifier."
-            },
-            "name": {
-                "type": "string",
-                "description": "Workflow name."
-            },
-            "version": {
-                "type": "string",
-                "description": "Workflow version string."
-            },
-            "description": {
-                "type": "string",
-                "description": "Detailed explanation of workflow goals and outputs."
-            },
-            "domain": {
-                "type": "string",
-                "description": "Associated domain skill pack."
-            },
-            "parameters": {
-                "type": "object",
-                "description": "Input parameters accepted by the workflow."
-            },
+            "workflow_id": {"type": "string", "description": "Unique workflow identifier."},
+            "name": {"type": "string", "description": "Workflow name."},
+            "version": {"type": "string", "description": "Workflow version string."},
+            "description": {"type": "string", "description": "Detailed explanation of workflow goals and outputs."},
+            "domain": {"type": "string", "description": "Associated domain skill pack."},
+            "parameters": {"type": "object", "description": "Input parameters accepted by the workflow."},
             "steps": {
                 "type": "array",
                 "items": {
@@ -131,157 +118,73 @@ schemas = {
                         "name": {"type": "string"},
                         "assigned_agent": {"type": "string"},
                         "action": {"type": "string"},
-                        "depends_on": {
-                            "type": "array",
-                            "items": {"type": "string"}
-                        },
+                        "depends_on": {"type": "array", "items": {"type": "string"}},
                         "inputs": {"type": "object"},
                         "outputs": {"type": "object"},
-                        "timeout_sec": {"type": "integer"}
+                        "timeout_sec": {"type": "integer"},
                     },
-                    "required": ["step_id", "name", "action"]
+                    "required": ["step_id", "name", "action"],
                 },
-                "description": "Sequential or DAG execution steps."
+                "description": "Sequential or DAG execution steps.",
             },
-            "dependency_graph": {
-                "type": "object",
-                "description": "Adjacency matrix or map of step dependencies."
-            },
+            "dependency_graph": {"type": "object", "description": "Adjacency matrix or map of step dependencies."},
             "failure_policy": {
                 "type": "string",
                 "enum": ["stop_on_first_error", "continue_on_error", "rollback", "escalate"],
-                "description": "Policy when a step fails."
+                "description": "Policy when a step fails.",
             },
-            "timeout_seconds": {
-                "type": "integer",
-                "minimum": 1
-            },
+            "timeout_seconds": {"type": "integer", "minimum": 1},
             "retry_policy": {
                 "type": "object",
-                "properties": {
-                    "max_attempts": {"type": "integer"},
-                    "backoff_factor": {"type": "number"}
-                }
+                "properties": {"max_attempts": {"type": "integer"}, "backoff_factor": {"type": "number"}},
             },
-            "quality_gates": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "status": {
-                "type": "string",
-                "enum": ["draft", "active", "archived", "deprecated"]
-            },
-            "metadata": {
-                "type": "object",
-                "additionalProperties": True
-            }
+            "quality_gates": {"type": "array", "items": {"type": "string"}},
+            "status": {"type": "string", "enum": ["draft", "active", "archived", "deprecated"]},
+            "metadata": {"type": "object", "additionalProperties": True},
         },
-        "required": ["workflow_id", "name", "version", "domain", "steps", "status"]
+        "required": ["workflow_id", "name", "version", "domain", "steps", "status"],
     },
-
     "task_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Task Schema",
         "type": "object",
         "description": "Schema defining a discrete task unit within AI OS execution contexts.",
         "properties": {
-            "task_id": {
-                "type": "string",
-                "description": "Unique task identifier."
-            },
-            "parent_task_id": {
-                "type": ["string", "null"],
-                "description": "Parent task ID if part of a parent DAG."
-            },
-            "workflow_id": {
-                "type": ["string", "null"],
-                "description": "Associated workflow ID."
-            },
-            "name": {
-                "type": "string",
-                "description": "Short description of task."
-            },
-            "description": {
-                "type": "string",
-                "description": "Detailed prompt or work instruction."
-            },
+            "task_id": {"type": "string", "description": "Unique task identifier."},
+            "parent_task_id": {"type": ["string", "null"], "description": "Parent task ID if part of a parent DAG."},
+            "workflow_id": {"type": ["string", "null"], "description": "Associated workflow ID."},
+            "name": {"type": "string", "description": "Short description of task."},
+            "description": {"type": "string", "description": "Detailed prompt or work instruction."},
             "status": {
                 "type": "string",
-                "enum": ["pending", "queued", "running", "completed", "failed", "blocked", "cancelled"]
+                "enum": ["pending", "queued", "running", "completed", "failed", "blocked", "cancelled"],
             },
-            "priority": {
-                "type": "string",
-                "enum": ["critical", "high", "medium", "low"]
-            },
-            "assigned_agent_id": {
-                "type": "string",
-                "description": "Agent handling the task."
-            },
-            "inputs": {
-                "type": "object",
-                "description": "Input data payloads."
-            },
-            "outputs": {
-                "type": "object",
-                "description": "Result artifacts or outputs."
-            },
-            "prerequisites": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "dependencies": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "retry_count": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "max_retries": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "execution_time_ms": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "logs": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "updated_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "priority": {"type": "string", "enum": ["critical", "high", "medium", "low"]},
+            "assigned_agent_id": {"type": "string", "description": "Agent handling the task."},
+            "inputs": {"type": "object", "description": "Input data payloads."},
+            "outputs": {"type": "object", "description": "Result artifacts or outputs."},
+            "prerequisites": {"type": "array", "items": {"type": "string"}},
+            "dependencies": {"type": "array", "items": {"type": "string"}},
+            "retry_count": {"type": "integer", "minimum": 0},
+            "max_retries": {"type": "integer", "minimum": 0},
+            "execution_time_ms": {"type": "integer", "minimum": 0},
+            "logs": {"type": "array", "items": {"type": "string"}},
+            "created_at": {"type": "string", "format": "date-time"},
+            "updated_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["task_id", "name", "status", "priority", "created_at"]
+        "required": ["task_id", "name", "status", "priority", "created_at"],
     },
-
     "decision_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Decision Record Schema",
         "type": "object",
         "description": "Schema for structured decision records generated by the AI OS Decision Engine.",
         "properties": {
-            "decision_id": {
-                "type": "string"
-            },
-            "agent_id": {
-                "type": "string"
-            },
-            "context_id": {
-                "type": "string"
-            },
-            "topic": {
-                "type": "string"
-            },
-            "description": {
-                "type": "string"
-            },
+            "decision_id": {"type": "string"},
+            "agent_id": {"type": "string"},
+            "context_id": {"type": "string"},
+            "topic": {"type": "string"},
+            "description": {"type": "string"},
             "alternatives_considered": {
                 "type": "array",
                 "items": {
@@ -291,127 +194,68 @@ schemas = {
                         "description": {"type": "string"},
                         "pros": {"type": "array", "items": {"type": "string"}},
                         "cons": {"type": "array", "items": {"type": "string"}},
-                        "score": {"type": "number"}
+                        "score": {"type": "number"},
                     },
-                    "required": ["option_id", "description"]
-                }
+                    "required": ["option_id", "description"],
+                },
             },
-            "rationale": {
-                "type": "string"
-            },
-            "chosen_option": {
-                "type": "string"
-            },
+            "rationale": {"type": "string"},
+            "chosen_option": {"type": "string"},
             "risk_assessment": {
                 "type": "object",
                 "properties": {
                     "risk_level": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
-                    "mitigation": {"type": "string"}
-                }
+                    "mitigation": {"type": "string"},
+                },
             },
-            "confidence_score": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 1.0
-            },
-            "status": {
-                "type": "string",
-                "enum": ["proposed", "approved", "rejected", "superseded"]
-            },
-            "require_approval": {
-                "type": "boolean"
-            },
-            "approved_by": {
-                "type": ["string", "null"]
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "confidence_score": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "status": {"type": "string", "enum": ["proposed", "approved", "rejected", "superseded"]},
+            "require_approval": {"type": "boolean"},
+            "approved_by": {"type": ["string", "null"]},
+            "timestamp": {"type": "string", "format": "date-time"},
         },
-        "required": ["decision_id", "agent_id", "topic", "chosen_option", "rationale", "timestamp"]
+        "required": ["decision_id", "agent_id", "topic", "chosen_option", "rationale", "timestamp"],
     },
-
     "artifact_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Artifact Schema",
         "type": "object",
         "description": "Schema defining generated project artifacts, code files, documents, or data deliverables.",
         "properties": {
-            "artifact_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "path": {
-                "type": "string"
-            },
+            "artifact_id": {"type": "string"},
+            "name": {"type": "string"},
+            "path": {"type": "string"},
             "artifact_type": {
                 "type": "string",
-                "enum": ["code", "document", "schema", "config", "data", "report", "binary"]
+                "enum": ["code", "document", "schema", "config", "data", "report", "binary"],
             },
-            "format": {
-                "type": "string",
-                "description": "MIME type or file extension format."
-            },
-            "version": {
-                "type": "string"
-            },
-            "size_bytes": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "checksum": {
-                "type": "string",
-                "description": "SHA-256 hash of content."
-            },
-            "creator_agent_id": {
-                "type": "string"
-            },
-            "task_id": {
-                "type": "string"
-            },
-            "tags": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "metadata": {
-                "type": "object"
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "format": {"type": "string", "description": "MIME type or file extension format."},
+            "version": {"type": "string"},
+            "size_bytes": {"type": "integer", "minimum": 0},
+            "checksum": {"type": "string", "description": "SHA-256 hash of content."},
+            "creator_agent_id": {"type": "string"},
+            "task_id": {"type": "string"},
+            "tags": {"type": "array", "items": {"type": "string"}},
+            "metadata": {"type": "object"},
+            "created_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["artifact_id", "name", "path", "artifact_type", "format", "created_at"]
+        "required": ["artifact_id", "name", "path", "artifact_type", "format", "created_at"],
     },
-
     "prompt_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Prompt Template Schema",
         "type": "object",
         "description": "Schema for structured prompt templates in Phase 3 Prompt Library.",
         "properties": {
-            "prompt_id": {
-                "type": "string"
-            },
-            "title": {
-                "type": "string"
-            },
-            "category": {
-                "type": "string"
-            },
+            "prompt_id": {"type": "string"},
+            "title": {"type": "string"},
+            "category": {"type": "string"},
             "prompt_type": {
                 "type": "string",
-                "enum": ["system", "planning", "review", "verification", "optimization", "user", "few_shot"]
+                "enum": ["system", "planning", "review", "verification", "optimization", "user", "few_shot"],
             },
-            "version": {
-                "type": "string"
-            },
-            "template_content": {
-                "type": "string"
-            },
+            "version": {"type": "string"},
+            "template_content": {"type": "string"},
             "input_variables": {
                 "type": "array",
                 "items": {
@@ -420,265 +264,140 @@ schemas = {
                         "name": {"type": "string"},
                         "type": {"type": "string"},
                         "description": {"type": "string"},
-                        "required": {"type": "boolean"}
+                        "required": {"type": "boolean"},
                     },
-                    "required": ["name", "type"]
-                }
+                    "required": ["name", "type"],
+                },
             },
-            "system_context": {
-                "type": "string"
-            },
-            "output_format": {
-                "type": "string"
-            },
-            "temperature": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 2.0
-            },
-            "top_p": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 1.0
-            },
-            "max_tokens": {
-                "type": "integer"
-            },
-            "metadata": {
-                "type": "object"
-            }
+            "system_context": {"type": "string"},
+            "output_format": {"type": "string"},
+            "temperature": {"type": "number", "minimum": 0.0, "maximum": 2.0},
+            "top_p": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "max_tokens": {"type": "integer"},
+            "metadata": {"type": "object"},
         },
-        "required": ["prompt_id", "title", "category", "prompt_type", "version", "template_content"]
+        "required": ["prompt_id", "title", "category", "prompt_type", "version", "template_content"],
     },
-
     "memory_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Memory Entry Schema",
         "type": "object",
         "description": "Schema for memory records stored in working, persistent, or vector memory.",
         "properties": {
-            "memory_id": {
-                "type": "string"
-            },
-            "agent_id": {
-                "type": "string"
-            },
+            "memory_id": {"type": "string"},
+            "agent_id": {"type": "string"},
             "memory_type": {
                 "type": "string",
-                "enum": ["working", "session", "persistent", "project", "agent", "reflection", "learning"]
+                "enum": ["working", "session", "persistent", "project", "agent", "reflection", "learning"],
             },
-            "content": {
-                "type": "string"
-            },
+            "content": {"type": "string"},
             "vector_embedding": {
                 "type": "array",
                 "items": {"type": "number"},
-                "description": "Dense embedding vector."
+                "description": "Dense embedding vector.",
             },
-            "importance_score": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 1.0
-            },
-            "access_count": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "last_accessed_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "ttl_seconds": {
-                "type": ["integer", "null"]
-            },
-            "tags": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "metadata": {
-                "type": "object"
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "importance_score": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "access_count": {"type": "integer", "minimum": 0},
+            "last_accessed_at": {"type": "string", "format": "date-time"},
+            "ttl_seconds": {"type": ["integer", "null"]},
+            "tags": {"type": "array", "items": {"type": "string"}},
+            "metadata": {"type": "object"},
+            "created_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["memory_id", "agent_id", "memory_type", "content", "importance_score", "created_at"]
+        "required": ["memory_id", "agent_id", "memory_type", "content", "importance_score", "created_at"],
     },
-
     "knowledge_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Knowledge Graph Unit Schema",
         "type": "object",
         "description": "Schema defining knowledge graph entities, rules, and components.",
         "properties": {
-            "knowledge_id": {
-                "type": "string"
-            },
-            "domain": {
-                "type": "string"
-            },
-            "title": {
-                "type": "string"
-            },
-            "content": {
-                "type": "string"
-            },
+            "knowledge_id": {"type": "string"},
+            "domain": {"type": "string"},
+            "title": {"type": "string"},
+            "content": {"type": "string"},
             "entity_type": {
                 "type": "string",
-                "enum": ["concept", "rule", "component", "pattern", "lesson_learned", "best_practice", "ontology_node"]
+                "enum": ["concept", "rule", "component", "pattern", "lesson_learned", "best_practice", "ontology_node"],
             },
             "relationships": {
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {
-                        "target_id": {"type": "string"},
-                        "relation_type": {"type": "string"}
-                    },
-                    "required": ["target_id", "relation_type"]
-                }
+                    "properties": {"target_id": {"type": "string"}, "relation_type": {"type": "string"}},
+                    "required": ["target_id", "relation_type"],
+                },
             },
-            "tags": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "vector_embedding": {
-                "type": "array",
-                "items": {"type": "number"}
-            },
-            "confidence_score": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 1.0
-            },
-            "source": {
-                "type": "string"
-            },
-            "verified": {
-                "type": "boolean"
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "updated_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "tags": {"type": "array", "items": {"type": "string"}},
+            "vector_embedding": {"type": "array", "items": {"type": "number"}},
+            "confidence_score": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+            "source": {"type": "string"},
+            "verified": {"type": "boolean"},
+            "created_at": {"type": "string", "format": "date-time"},
+            "updated_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["knowledge_id", "domain", "title", "content", "confidence_score", "verified", "created_at"]
+        "required": ["knowledge_id", "domain", "title", "content", "confidence_score", "verified", "created_at"],
     },
-
     "event_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Event Bus Schema",
         "type": "object",
         "description": "Schema for events transmitted across the AI OS Event Bus.",
         "properties": {
-            "event_id": {
-                "type": "string"
-            },
-            "event_type": {
-                "type": "string"
-            },
-            "topic": {
-                "type": "string"
-            },
-            "publisher_id": {
-                "type": "string"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "payload": {
-                "type": "object"
-            },
-            "priority": {
-                "type": "string",
-                "enum": ["low", "normal", "high", "critical"]
-            },
-            "correlation_id": {
-                "type": "string"
-            },
-            "schema_version": {
-                "type": "string"
-            },
-            "metadata": {
-                "type": "object"
-            }
+            "event_id": {"type": "string"},
+            "event_type": {"type": "string"},
+            "topic": {"type": "string"},
+            "publisher_id": {"type": "string"},
+            "timestamp": {"type": "string", "format": "date-time"},
+            "payload": {"type": "object"},
+            "priority": {"type": "string", "enum": ["low", "normal", "high", "critical"]},
+            "correlation_id": {"type": "string"},
+            "schema_version": {"type": "string"},
+            "metadata": {"type": "object"},
         },
-        "required": ["event_id", "event_type", "topic", "publisher_id", "timestamp", "payload"]
+        "required": ["event_id", "event_type", "topic", "publisher_id", "timestamp", "payload"],
     },
-
     "message_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Inter-Agent Message Schema",
         "type": "object",
         "description": "Schema for Agent Communication Protocol (ACP) messages.",
         "properties": {
-            "message_id": {
-                "type": "string"
-            },
-            "sender_id": {
-                "type": "string"
-            },
-            "recipient_id": {
-                "type": "string"
-            },
-            "conversation_id": {
-                "type": "string"
-            },
+            "message_id": {"type": "string"},
+            "sender_id": {"type": "string"},
+            "recipient_id": {"type": "string"},
+            "conversation_id": {"type": "string"},
             "message_type": {
                 "type": "string",
-                "enum": ["request", "response", "broadcast", "handshake", "heartbeat", "error"]
+                "enum": ["request", "response", "broadcast", "handshake", "heartbeat", "error"],
             },
-            "content": {
-                "type": "string"
-            },
-            "attachments": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "status": {
-                "type": "string",
-                "enum": ["sent", "delivered", "read", "failed"]
-            },
-            "priority": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 10
-            }
+            "content": {"type": "string"},
+            "attachments": {"type": "array", "items": {"type": "string"}},
+            "timestamp": {"type": "string", "format": "date-time"},
+            "status": {"type": "string", "enum": ["sent", "delivered", "read", "failed"]},
+            "priority": {"type": "integer", "minimum": 0, "maximum": 10},
         },
-        "required": ["message_id", "sender_id", "recipient_id", "conversation_id", "message_type", "content", "timestamp"]
+        "required": [
+            "message_id",
+            "sender_id",
+            "recipient_id",
+            "conversation_id",
+            "message_type",
+            "content",
+            "timestamp",
+        ],
     },
-
     "project_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Project Specification Schema",
         "type": "object",
         "description": "Schema for top-level project metadata and lifecycle state.",
         "properties": {
-            "project_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "description": {
-                "type": "string"
-            },
-            "repository_path": {
-                "type": "string"
-            },
-            "current_phase": {
-                "type": "string"
-            },
+            "project_id": {"type": "string"},
+            "name": {"type": "string"},
+            "description": {"type": "string"},
+            "repository_path": {"type": "string"},
+            "current_phase": {"type": "string"},
             "phases": {
                 "type": "array",
                 "items": {
@@ -686,63 +405,44 @@ schemas = {
                     "properties": {
                         "phase_name": {"type": "string"},
                         "status": {"type": "string"},
-                        "completion_percentage": {"type": "number"}
-                    }
-                }
+                        "completion_percentage": {"type": "number"},
+                    },
+                },
             },
-            "status": {
-                "type": "string",
-                "enum": ["planning", "in_progress", "paused", "completed", "archived"]
-            },
-            "owner_id": {
-                "type": "string"
-            },
-            "team_members": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "settings": {
-                "type": "object"
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "updated_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "status": {"type": "string", "enum": ["planning", "in_progress", "paused", "completed", "archived"]},
+            "owner_id": {"type": "string"},
+            "team_members": {"type": "array", "items": {"type": "string"}},
+            "settings": {"type": "object"},
+            "created_at": {"type": "string", "format": "date-time"},
+            "updated_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["project_id", "name", "repository_path", "status", "owner_id", "created_at"]
+        "required": ["project_id", "name", "repository_path", "status", "owner_id", "created_at"],
     },
-
     "verification_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Verification Result Schema",
         "type": "object",
         "description": "Schema for verification engine reports and checker results.",
         "properties": {
-            "verification_id": {
-                "type": "string"
-            },
-            "target_artifact_id": {
-                "type": "string"
-            },
+            "verification_id": {"type": "string"},
+            "target_artifact_id": {"type": "string"},
             "verification_type": {
                 "type": "string",
-                "enum": ["logic", "consistency", "architecture", "performance", "security", "compliance", "documentation", "accessibility", "regression"]
+                "enum": [
+                    "logic",
+                    "consistency",
+                    "architecture",
+                    "performance",
+                    "security",
+                    "compliance",
+                    "documentation",
+                    "accessibility",
+                    "regression",
+                ],
             },
-            "checker_name": {
-                "type": "string"
-            },
-            "pass_status": {
-                "type": "boolean"
-            },
-            "score": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 100.0
-            },
+            "checker_name": {"type": "string"},
+            "pass_status": {"type": "boolean"},
+            "score": {"type": "number", "minimum": 0.0, "maximum": 100.0},
             "violations": {
                 "type": "array",
                 "items": {
@@ -751,42 +451,47 @@ schemas = {
                         "rule_id": {"type": "string"},
                         "severity": {"type": "string", "enum": ["info", "warning", "error", "critical"]},
                         "location": {"type": "string"},
-                        "message": {"type": "string"}
+                        "message": {"type": "string"},
                     },
-                    "required": ["rule_id", "severity", "message"]
-                }
+                    "required": ["rule_id", "severity", "message"],
+                },
             },
-            "summary": {
-                "type": "string"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "summary": {"type": "string"},
+            "timestamp": {"type": "string", "format": "date-time"},
         },
-        "required": ["verification_id", "target_artifact_id", "verification_type", "checker_name", "pass_status", "timestamp"]
+        "required": [
+            "verification_id",
+            "target_artifact_id",
+            "verification_type",
+            "checker_name",
+            "pass_status",
+            "timestamp",
+        ],
     },
-
     "policy_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Policy Specification Schema",
         "type": "object",
         "description": "Schema defining runtime policies for execution, security, memory, and governance.",
         "properties": {
-            "policy_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
+            "policy_id": {"type": "string"},
+            "name": {"type": "string"},
             "policy_type": {
                 "type": "string",
-                "enum": ["execution", "security", "memory", "verification", "approval", "retry", "escalation", "learning", "logging", "governance"]
+                "enum": [
+                    "execution",
+                    "security",
+                    "memory",
+                    "verification",
+                    "approval",
+                    "retry",
+                    "escalation",
+                    "learning",
+                    "logging",
+                    "governance",
+                ],
             },
-            "scope": {
-                "type": "string",
-                "enum": ["global", "domain", "agent", "workflow", "session"]
-            },
+            "scope": {"type": "string", "enum": ["global", "domain", "agent", "workflow", "session"]},
             "rules": {
                 "type": "array",
                 "items": {
@@ -794,791 +499,378 @@ schemas = {
                     "properties": {
                         "rule_id": {"type": "string"},
                         "condition": {"type": "string"},
-                        "action": {"type": "string"}
+                        "action": {"type": "string"},
                     },
-                    "required": ["rule_id", "condition", "action"]
-                }
+                    "required": ["rule_id", "condition", "action"],
+                },
             },
-            "enforcer": {
-                "type": "string"
-            },
-            "enforcement_action": {
-                "type": "string",
-                "enum": ["deny", "warn", "log", "escalate", "quarantine"]
-            },
-            "priority": {
-                "type": "integer"
-            },
-            "enabled": {
-                "type": "boolean"
-            },
-            "version": {
-                "type": "string"
-            },
-            "updated_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "enforcer": {"type": "string"},
+            "enforcement_action": {"type": "string", "enum": ["deny", "warn", "log", "escalate", "quarantine"]},
+            "priority": {"type": "integer"},
+            "enabled": {"type": "boolean"},
+            "version": {"type": "string"},
+            "updated_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["policy_id", "name", "policy_type", "scope", "rules", "enabled", "version"]
+        "required": ["policy_id", "name", "policy_type", "scope", "rules", "enabled", "version"],
     },
-
     "plugin_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Plugin Manifest Schema",
         "type": "object",
         "description": "Schema for plugin manifests in the AI OS Plugin Framework.",
         "properties": {
-            "plugin_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "version": {
-                "type": "string"
-            },
-            "author": {
-                "type": "string"
-            },
-            "description": {
-                "type": "string"
-            },
-            "capabilities_provided": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "required_permissions": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "entry_point": {
-                "type": "string"
-            },
-            "settings_schema": {
-                "type": "object"
-            },
-            "status": {
-                "type": "string",
-                "enum": ["installed", "active", "disabled", "error"]
-            }
+            "plugin_id": {"type": "string"},
+            "name": {"type": "string"},
+            "version": {"type": "string"},
+            "author": {"type": "string"},
+            "description": {"type": "string"},
+            "capabilities_provided": {"type": "array", "items": {"type": "string"}},
+            "required_permissions": {"type": "array", "items": {"type": "string"}},
+            "entry_point": {"type": "string"},
+            "settings_schema": {"type": "object"},
+            "status": {"type": "string", "enum": ["installed", "active", "disabled", "error"]},
         },
-        "required": ["plugin_id", "name", "version", "capabilities_provided", "entry_point", "status"]
+        "required": ["plugin_id", "name", "version", "capabilities_provided", "entry_point", "status"],
     },
-
     "capability_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Capability Schema",
         "type": "object",
         "description": "Schema defining tool and functional capabilities available to agents.",
         "properties": {
-            "capability_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "description": {
-                "type": "string"
-            },
+            "capability_id": {"type": "string"},
+            "name": {"type": "string"},
+            "description": {"type": "string"},
             "category": {
                 "type": "string",
-                "enum": ["filesystem", "network", "code_execution", "database", "api", "ai_model"]
+                "enum": ["filesystem", "network", "code_execution", "database", "api", "ai_model"],
             },
-            "input_schema": {
-                "type": "object"
-            },
-            "output_schema": {
-                "type": "object"
-            },
-            "permissions_required": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "sandbox_required": {
-                "type": "boolean"
-            },
-            "rate_limit": {
-                "type": "object",
-                "properties": {
-                    "max_calls_per_minute": {"type": "integer"}
-                }
-            }
+            "input_schema": {"type": "object"},
+            "output_schema": {"type": "object"},
+            "permissions_required": {"type": "array", "items": {"type": "string"}},
+            "sandbox_required": {"type": "boolean"},
+            "rate_limit": {"type": "object", "properties": {"max_calls_per_minute": {"type": "integer"}}},
         },
-        "required": ["capability_id", "name", "category", "input_schema", "output_schema"]
+        "required": ["capability_id", "name", "category", "input_schema", "output_schema"],
     },
-
     "session_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Session State Schema",
         "type": "object",
         "description": "Schema for managing runtime user and agent interaction sessions.",
         "properties": {
-            "session_id": {
-                "type": "string"
-            },
-            "user_id": {
-                "type": "string"
-            },
-            "active_agent_ids": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "state": {
-                "type": "string",
-                "enum": ["initializing", "active", "idle", "terminated", "expired"]
-            },
-            "context_window": {
-                "type": "object"
-            },
+            "session_id": {"type": "string"},
+            "user_id": {"type": "string"},
+            "active_agent_ids": {"type": "array", "items": {"type": "string"}},
+            "state": {"type": "string", "enum": ["initializing", "active", "idle", "terminated", "expired"]},
+            "context_window": {"type": "object"},
             "token_usage": {
                 "type": "object",
                 "properties": {
                     "prompt_tokens": {"type": "integer"},
                     "completion_tokens": {"type": "integer"},
-                    "total_tokens": {"type": "integer"}
-                }
+                    "total_tokens": {"type": "integer"},
+                },
             },
-            "started_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "last_active_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "expires_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "metadata": {
-                "type": "object"
-            }
+            "started_at": {"type": "string", "format": "date-time"},
+            "last_active_at": {"type": "string", "format": "date-time"},
+            "expires_at": {"type": "string", "format": "date-time"},
+            "metadata": {"type": "object"},
         },
-        "required": ["session_id", "user_id", "state", "started_at", "expires_at"]
+        "required": ["session_id", "user_id", "state", "started_at", "expires_at"],
     },
-
     "context_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Execution Context Schema",
         "type": "object",
         "description": "Schema defining task execution context state and token boundaries.",
         "properties": {
-            "context_id": {
-                "type": "string"
-            },
-            "session_id": {
-                "type": "string"
-            },
-            "agent_id": {
-                "type": "string"
-            },
-            "task_id": {
-                "type": "string"
-            },
-            "working_memory": {
-                "type": "array",
-                "items": {"type": "object"}
-            },
-            "environment_variables": {
-                "type": "object"
-            },
-            "active_tools": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "token_count": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "max_context_tokens": {
-                "type": "integer",
-                "minimum": 1
-            }
+            "context_id": {"type": "string"},
+            "session_id": {"type": "string"},
+            "agent_id": {"type": "string"},
+            "task_id": {"type": "string"},
+            "working_memory": {"type": "array", "items": {"type": "object"}},
+            "environment_variables": {"type": "object"},
+            "active_tools": {"type": "array", "items": {"type": "string"}},
+            "token_count": {"type": "integer", "minimum": 0},
+            "max_context_tokens": {"type": "integer", "minimum": 1},
         },
-        "required": ["context_id", "session_id", "agent_id", "token_count", "max_context_tokens"]
+        "required": ["context_id", "session_id", "agent_id", "token_count", "max_context_tokens"],
     },
-
     "kernel_config_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Kernel Config Schema",
         "type": "object",
         "description": "Schema for AI OS Core Runtime Kernel configuration.",
         "properties": {
-            "kernel_id": {
-                "type": "string"
-            },
-            "environment": {
-                "type": "string",
-                "enum": ["development", "staging", "production", "test"]
-            },
-            "log_level": {
-                "type": "string",
-                "enum": ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
-            },
-            "max_parallel_agents": {
-                "type": "integer",
-                "minimum": 1
-            },
-            "heartbeat_interval_ms": {
-                "type": "integer",
-                "minimum": 100
-            },
-            "plugin_directory": {
-                "type": "string"
-            },
-            "storage_backend": {
-                "type": "string",
-                "enum": ["memory", "sqlite", "postgresql", "redis", "s3"]
-            },
-            "event_bus_config": {
-                "type": "object"
-            },
-            "status": {
-                "type": "string",
-                "enum": ["starting", "running", "degraded", "stopping", "stopped"]
-            }
+            "kernel_id": {"type": "string"},
+            "environment": {"type": "string", "enum": ["development", "staging", "production", "test"]},
+            "log_level": {"type": "string", "enum": ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]},
+            "max_parallel_agents": {"type": "integer", "minimum": 1},
+            "heartbeat_interval_ms": {"type": "integer", "minimum": 100},
+            "plugin_directory": {"type": "string"},
+            "storage_backend": {"type": "string", "enum": ["memory", "sqlite", "postgresql", "redis", "s3"]},
+            "event_bus_config": {"type": "object"},
+            "status": {"type": "string", "enum": ["starting", "running", "degraded", "stopping", "stopped"]},
         },
-        "required": ["kernel_id", "environment", "log_level", "max_parallel_agents", "storage_backend", "status"]
+        "required": ["kernel_id", "environment", "log_level", "max_parallel_agents", "storage_backend", "status"],
     },
-
     "scheduler_config_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Scheduler Config Schema",
         "type": "object",
         "description": "Schema for DAG and parallel scheduler engine configuration.",
         "properties": {
-            "scheduler_id": {
-                "type": "string"
-            },
-            "algorithm": {
-                "type": "string",
-                "enum": ["fifo", "priority_dag", "round_robin", "resource_aware"]
-            },
-            "max_concurrent_tasks": {
-                "type": "integer",
-                "minimum": 1
-            },
-            "worker_pool_size": {
-                "type": "integer",
-                "minimum": 1
-            },
-            "queue_capacity": {
-                "type": "integer",
-                "minimum": 10
-            },
-            "task_timeout_default_sec": {
-                "type": "integer"
-            },
-            "retry_backoff_strategy": {
-                "type": "string",
-                "enum": ["fixed", "exponential", "jitter"]
-            }
+            "scheduler_id": {"type": "string"},
+            "algorithm": {"type": "string", "enum": ["fifo", "priority_dag", "round_robin", "resource_aware"]},
+            "max_concurrent_tasks": {"type": "integer", "minimum": 1},
+            "worker_pool_size": {"type": "integer", "minimum": 1},
+            "queue_capacity": {"type": "integer", "minimum": 10},
+            "task_timeout_default_sec": {"type": "integer"},
+            "retry_backoff_strategy": {"type": "string", "enum": ["fixed", "exponential", "jitter"]},
         },
-        "required": ["scheduler_id", "algorithm", "max_concurrent_tasks", "worker_pool_size", "queue_capacity"]
+        "required": ["scheduler_id", "algorithm", "max_concurrent_tasks", "worker_pool_size", "queue_capacity"],
     },
-
     "resource_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Resource Allocation Schema",
         "type": "object",
         "description": "Schema for monitoring and allocating system compute, memory, and API resources.",
         "properties": {
-            "resource_id": {
-                "type": "string"
-            },
+            "resource_id": {"type": "string"},
             "resource_type": {
                 "type": "string",
-                "enum": ["cpu", "gpu", "ram", "storage", "api_tokens", "concurrent_slots"]
+                "enum": ["cpu", "gpu", "ram", "storage", "api_tokens", "concurrent_slots"],
             },
-            "allocated_to": {
-                "type": "string"
-            },
-            "max_units": {
-                "type": "number",
-                "minimum": 0
-            },
-            "current_usage": {
-                "type": "number",
-                "minimum": 0
-            },
-            "unit_name": {
-                "type": "string"
-            },
-            "rate_limit_per_min": {
-                "type": "integer"
-            },
-            "status": {
-                "type": "string",
-                "enum": ["available", "warning", "exhausted", "maintenance"]
-            }
+            "allocated_to": {"type": "string"},
+            "max_units": {"type": "number", "minimum": 0},
+            "current_usage": {"type": "number", "minimum": 0},
+            "unit_name": {"type": "string"},
+            "rate_limit_per_min": {"type": "integer"},
+            "status": {"type": "string", "enum": ["available", "warning", "exhausted", "maintenance"]},
         },
-        "required": ["resource_id", "resource_type", "max_units", "current_usage", "unit_name", "status"]
+        "required": ["resource_id", "resource_type", "max_units", "current_usage", "unit_name", "status"],
     },
-
     "audit_log_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Audit Log Schema",
         "type": "object",
         "description": "Schema for secure audit trails of agent and user actions.",
         "properties": {
-            "audit_id": {
-                "type": "string"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "actor_id": {
-                "type": "string"
-            },
-            "actor_type": {
-                "type": "string",
-                "enum": ["agent", "user", "system", "plugin"]
-            },
-            "action": {
-                "type": "string"
-            },
-            "target_resource": {
-                "type": "string"
-            },
-            "outcome": {
-                "type": "string",
-                "enum": ["success", "failure", "denied", "error"]
-            },
-            "ip_address": {
-                "type": "string"
-            },
-            "request_payload": {
-                "type": "object"
-            },
-            "details": {
-                "type": "object"
-            }
+            "audit_id": {"type": "string"},
+            "timestamp": {"type": "string", "format": "date-time"},
+            "actor_id": {"type": "string"},
+            "actor_type": {"type": "string", "enum": ["agent", "user", "system", "plugin"]},
+            "action": {"type": "string"},
+            "target_resource": {"type": "string"},
+            "outcome": {"type": "string", "enum": ["success", "failure", "denied", "error"]},
+            "ip_address": {"type": "string"},
+            "request_payload": {"type": "object"},
+            "details": {"type": "object"},
         },
-        "required": ["audit_id", "timestamp", "actor_id", "actor_type", "action", "target_resource", "outcome"]
+        "required": ["audit_id", "timestamp", "actor_id", "actor_type", "action", "target_resource", "outcome"],
     },
-
     "telemetry_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Telemetry Event Schema",
         "type": "object",
         "description": "Schema for system performance metrics, latency, and observability data.",
         "properties": {
-            "telemetry_id": {
-                "type": "string"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "metric_name": {
-                "type": "string"
-            },
-            "value": {
-                "type": "number"
-            },
-            "unit": {
-                "type": "string"
-            },
-            "dimensions": {
-                "type": "object"
-            },
-            "agent_id": {
-                "type": "string"
-            },
-            "host": {
-                "type": "string"
-            },
-            "environment": {
-                "type": "string"
-            }
+            "telemetry_id": {"type": "string"},
+            "timestamp": {"type": "string", "format": "date-time"},
+            "metric_name": {"type": "string"},
+            "value": {"type": "number"},
+            "unit": {"type": "string"},
+            "dimensions": {"type": "object"},
+            "agent_id": {"type": "string"},
+            "host": {"type": "string"},
+            "environment": {"type": "string"},
         },
-        "required": ["telemetry_id", "timestamp", "metric_name", "value", "unit", "environment"]
+        "required": ["telemetry_id", "timestamp", "metric_name", "value", "unit", "environment"],
     },
-
     "error_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "System Error Schema",
         "type": "object",
         "description": "Schema for standard exception reports across AI OS components.",
         "properties": {
-            "error_id": {
-                "type": "string"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "error_code": {
-                "type": "string"
-            },
+            "error_id": {"type": "string"},
+            "timestamp": {"type": "string", "format": "date-time"},
+            "error_code": {"type": "string"},
             "category": {
                 "type": "string",
-                "enum": ["runtime", "validation", "timeout", "permission", "plugin", "model_api", "network"]
+                "enum": ["runtime", "validation", "timeout", "permission", "plugin", "model_api", "network"],
             },
-            "severity": {
-                "type": "string",
-                "enum": ["low", "medium", "high", "critical", "fatal"]
-            },
-            "message": {
-                "type": "string"
-            },
-            "stack_trace": {
-                "type": "string"
-            },
-            "component": {
-                "type": "string"
-            },
-            "context_data": {
-                "type": "object"
-            },
-            "resolved": {
-                "type": "boolean"
-            }
+            "severity": {"type": "string", "enum": ["low", "medium", "high", "critical", "fatal"]},
+            "message": {"type": "string"},
+            "stack_trace": {"type": "string"},
+            "component": {"type": "string"},
+            "context_data": {"type": "object"},
+            "resolved": {"type": "boolean"},
         },
-        "required": ["error_id", "timestamp", "error_code", "category", "severity", "message", "component", "resolved"]
+        "required": ["error_id", "timestamp", "error_code", "category", "severity", "message", "component", "resolved"],
     },
-
     "user_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "User Account Schema",
         "type": "object",
         "description": "Schema for user identity and account settings in AI OS v4.",
         "properties": {
-            "user_id": {
-                "type": "string"
-            },
-            "username": {
-                "type": "string"
-            },
-            "email": {
-                "type": "string",
-                "format": "email"
-            },
-            "full_name": {
-                "type": "string"
-            },
-            "role_ids": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "organization_id": {
-                "type": "string"
-            },
-            "status": {
-                "type": "string",
-                "enum": ["active", "suspended", "invited", "deactivated"]
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "last_login_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "user_id": {"type": "string"},
+            "username": {"type": "string"},
+            "email": {"type": "string", "format": "email"},
+            "full_name": {"type": "string"},
+            "role_ids": {"type": "array", "items": {"type": "string"}},
+            "organization_id": {"type": "string"},
+            "status": {"type": "string", "enum": ["active", "suspended", "invited", "deactivated"]},
+            "created_at": {"type": "string", "format": "date-time"},
+            "last_login_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["user_id", "username", "email", "role_ids", "organization_id", "status", "created_at"]
+        "required": ["user_id", "username", "email", "role_ids", "organization_id", "status", "created_at"],
     },
-
     "organization_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Organization Schema",
         "type": "object",
         "description": "Schema for tenant organization profile, subscription, and limits.",
         "properties": {
-            "organization_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "domain": {
-                "type": "string"
-            },
-            "tier": {
-                "type": "string",
-                "enum": ["community", "pro", "enterprise", "sovereign"]
-            },
-            "max_users": {
-                "type": "integer"
-            },
-            "max_agents": {
-                "type": "integer"
-            },
-            "resource_quota": {
-                "type": "object"
-            },
-            "settings": {
-                "type": "object"
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "organization_id": {"type": "string"},
+            "name": {"type": "string"},
+            "domain": {"type": "string"},
+            "tier": {"type": "string", "enum": ["community", "pro", "enterprise", "sovereign"]},
+            "max_users": {"type": "integer"},
+            "max_agents": {"type": "integer"},
+            "resource_quota": {"type": "object"},
+            "settings": {"type": "object"},
+            "created_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["organization_id", "name", "domain", "tier", "max_users", "max_agents", "created_at"]
+        "required": ["organization_id", "name", "domain", "tier", "max_users", "max_agents", "created_at"],
     },
-
     "role_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Role Specification Schema",
         "type": "object",
         "description": "Schema for RBAC roles assigned to users or agents.",
         "properties": {
-            "role_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "description": {
-                "type": "string"
-            },
-            "permissions": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "scope": {
-                "type": "string",
-                "enum": ["system", "organization", "project"]
-            },
-            "inherited_roles": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "updated_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "role_id": {"type": "string"},
+            "name": {"type": "string"},
+            "description": {"type": "string"},
+            "permissions": {"type": "array", "items": {"type": "string"}},
+            "scope": {"type": "string", "enum": ["system", "organization", "project"]},
+            "inherited_roles": {"type": "array", "items": {"type": "string"}},
+            "created_at": {"type": "string", "format": "date-time"},
+            "updated_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["role_id", "name", "permissions", "scope", "created_at"]
+        "required": ["role_id", "name", "permissions", "scope", "created_at"],
     },
-
     "permission_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Permission Specification Schema",
         "type": "object",
         "description": "Schema defining granular permissions for resource operations.",
         "properties": {
-            "permission_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "resource": {
-                "type": "string"
-            },
-            "action": {
-                "type": "string",
-                "enum": ["create", "read", "update", "delete", "execute", "admin"]
-            },
-            "conditions": {
-                "type": "object"
-            },
-            "description": {
-                "type": "string"
-            },
-            "scope": {
-                "type": "string"
-            }
+            "permission_id": {"type": "string"},
+            "name": {"type": "string"},
+            "resource": {"type": "string"},
+            "action": {"type": "string", "enum": ["create", "read", "update", "delete", "execute", "admin"]},
+            "conditions": {"type": "object"},
+            "description": {"type": "string"},
+            "scope": {"type": "string"},
         },
-        "required": ["permission_id", "name", "resource", "action", "scope"]
+        "required": ["permission_id", "name", "resource", "action", "scope"],
     },
-
     "sandbox_config_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Sandbox Config Schema",
         "type": "object",
         "description": "Schema for configuring isolated execution environments for tool invocation.",
         "properties": {
-            "sandbox_id": {
-                "type": "string"
-            },
-            "mode": {
-                "type": "string",
-                "enum": ["strict", "permissive", "isolated_container", "chroot"]
-            },
-            "network_access": {
-                "type": "boolean"
-            },
-            "memory_limit_mb": {
-                "type": "integer",
-                "minimum": 64
-            },
-            "cpu_share": {
-                "type": "number",
-                "minimum": 0.1
-            },
-            "allowed_filesystem_paths": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "environment_variables": {
-                "type": "object"
-            },
-            "timeout_sec": {
-                "type": "integer",
-                "minimum": 1
-            }
+            "sandbox_id": {"type": "string"},
+            "mode": {"type": "string", "enum": ["strict", "permissive", "isolated_container", "chroot"]},
+            "network_access": {"type": "boolean"},
+            "memory_limit_mb": {"type": "integer", "minimum": 64},
+            "cpu_share": {"type": "number", "minimum": 0.1},
+            "allowed_filesystem_paths": {"type": "array", "items": {"type": "string"}},
+            "environment_variables": {"type": "object"},
+            "timeout_sec": {"type": "integer", "minimum": 1},
         },
-        "required": ["sandbox_id", "mode", "network_access", "memory_limit_mb", "cpu_share", "timeout_sec"]
+        "required": ["sandbox_id", "mode", "network_access", "memory_limit_mb", "cpu_share", "timeout_sec"],
     },
-
     "metric_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Metric Definition Schema",
         "type": "object",
         "description": "Schema defining performance, quality, and operational metrics.",
         "properties": {
-            "metric_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
+            "metric_id": {"type": "string"},
+            "name": {"type": "string"},
             "category": {
                 "type": "string",
-                "enum": ["performance", "quality", "cost", "throughput", "reliability", "security"]
+                "enum": ["performance", "quality", "cost", "throughput", "reliability", "security"],
             },
-            "description": {
-                "type": "string"
-            },
-            "value_type": {
-                "type": "string",
-                "enum": ["float", "integer", "boolean", "counter", "histogram"]
-            },
-            "unit": {
-                "type": "string"
-            },
+            "description": {"type": "string"},
+            "value_type": {"type": "string", "enum": ["float", "integer", "boolean", "counter", "histogram"]},
+            "unit": {"type": "string"},
             "thresholds": {
                 "type": "object",
-                "properties": {
-                    "warning": {"type": "number"},
-                    "critical": {"type": "number"}
-                }
+                "properties": {"warning": {"type": "number"}, "critical": {"type": "number"}},
             },
-            "aggregation_method": {
-                "type": "string",
-                "enum": ["avg", "sum", "min", "max", "p95", "p99"]
-            }
+            "aggregation_method": {"type": "string", "enum": ["avg", "sum", "min", "max", "p95", "p99"]},
         },
-        "required": ["metric_id", "name", "category", "value_type", "unit", "aggregation_method"]
+        "required": ["metric_id", "name", "category", "value_type", "unit", "aggregation_method"],
     },
-
     "template_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Template Schema",
         "type": "object",
         "description": "Schema for document and specification templates in Phase 10 Template Library.",
         "properties": {
-            "template_id": {
-                "type": "string"
-            },
-            "title": {
-                "type": "string"
-            },
-            "category": {
-                "type": "string"
-            },
-            "format": {
-                "type": "string",
-                "enum": ["markdown", "html", "yaml", "json", "docx"]
-            },
-            "required_sections": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "optional_sections": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
+            "template_id": {"type": "string"},
+            "title": {"type": "string"},
+            "category": {"type": "string"},
+            "format": {"type": "string", "enum": ["markdown", "html", "yaml", "json", "docx"]},
+            "required_sections": {"type": "array", "items": {"type": "string"}},
+            "optional_sections": {"type": "array", "items": {"type": "string"}},
             "variables": {
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {
-                        "var_name": {"type": "string"},
-                        "description": {"type": "string"}
-                    }
-                }
+                    "properties": {"var_name": {"type": "string"}, "description": {"type": "string"}},
+                },
             },
-            "version": {
-                "type": "string"
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "version": {"type": "string"},
+            "created_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["template_id", "title", "category", "format", "required_sections", "version", "created_at"]
+        "required": ["template_id", "title", "category", "format", "required_sections", "version", "created_at"],
     },
-
     "skill_manifest_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Skill Manifest Schema",
         "type": "object",
         "description": "Schema for domain skill pack manifests in Phase 12.",
         "properties": {
-            "skill_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "version": {
-                "type": "string"
-            },
-            "description": {
-                "type": "string"
-            },
-            "category": {
-                "type": "string"
-            },
-            "required_tools": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "prompts": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "workflows": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "schemas": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "entry_point": {
-                "type": "string"
-            },
-            "metadata": {
-                "type": "object"
-            }
+            "skill_id": {"type": "string"},
+            "name": {"type": "string"},
+            "version": {"type": "string"},
+            "description": {"type": "string"},
+            "category": {"type": "string"},
+            "required_tools": {"type": "array", "items": {"type": "string"}},
+            "prompts": {"type": "array", "items": {"type": "string"}},
+            "workflows": {"type": "array", "items": {"type": "string"}},
+            "schemas": {"type": "array", "items": {"type": "string"}},
+            "entry_point": {"type": "string"},
+            "metadata": {"type": "object"},
         },
-        "required": ["skill_id", "name", "version", "category", "required_tools", "entry_point"]
+        "required": ["skill_id", "name", "version", "category", "required_tools", "entry_point"],
     },
-
     "execution_trace_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Execution Trace Schema",
         "type": "object",
         "description": "Schema for distributed execution traces of multi-agent tasks.",
         "properties": {
-            "trace_id": {
-                "type": "string"
-            },
-            "root_task_id": {
-                "type": "string"
-            },
+            "trace_id": {"type": "string"},
+            "root_task_id": {"type": "string"},
             "spans": {
                 "type": "array",
                 "items": {
@@ -1590,360 +882,215 @@ schemas = {
                         "operation": {"type": "string"},
                         "start_time_ms": {"type": "integer"},
                         "duration_ms": {"type": "integer"},
-                        "status": {"type": "string"}
+                        "status": {"type": "string"},
                     },
-                    "required": ["span_id", "agent_id", "operation", "start_time_ms", "duration_ms"]
-                }
+                    "required": ["span_id", "agent_id", "operation", "start_time_ms", "duration_ms"],
+                },
             },
-            "total_duration_ms": {
-                "type": "integer"
-            },
-            "token_consumption": {
-                "type": "integer"
-            },
-            "cost_usd": {
-                "type": "number"
-            },
-            "status": {
-                "type": "string",
-                "enum": ["success", "failed", "partially_failed"]
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "total_duration_ms": {"type": "integer"},
+            "token_consumption": {"type": "integer"},
+            "cost_usd": {"type": "number"},
+            "status": {"type": "string", "enum": ["success", "failed", "partially_failed"]},
+            "timestamp": {"type": "string", "format": "date-time"},
         },
-        "required": ["trace_id", "root_task_id", "spans", "total_duration_ms", "token_consumption", "status", "timestamp"]
+        "required": [
+            "trace_id",
+            "root_task_id",
+            "spans",
+            "total_duration_ms",
+            "token_consumption",
+            "status",
+            "timestamp",
+        ],
     },
-
     "model_config_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Model Config Schema",
         "type": "object",
         "description": "Schema for configuring LLM provider settings, parameters, and token costs.",
         "properties": {
-            "config_id": {
-                "type": "string"
-            },
-            "model_name": {
-                "type": "string"
-            },
+            "config_id": {"type": "string"},
+            "model_name": {"type": "string"},
             "provider": {
                 "type": "string",
-                "enum": ["openai", "anthropic", "google", "azure", "local_ollama", "custom"]
+                "enum": ["openai", "anthropic", "google", "azure", "local_ollama", "custom"],
             },
-            "api_base": {
-                "type": "string"
-            },
-            "max_context_window": {
-                "type": "integer"
-            },
-            "default_temperature": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 2.0
-            },
-            "timeout_ms": {
-                "type": "integer"
-            },
-            "cost_per_1k_input_tokens": {
-                "type": "number"
-            },
-            "cost_per_1k_output_tokens": {
-                "type": "number"
-            }
+            "api_base": {"type": "string"},
+            "max_context_window": {"type": "integer"},
+            "default_temperature": {"type": "number", "minimum": 0.0, "maximum": 2.0},
+            "timeout_ms": {"type": "integer"},
+            "cost_per_1k_input_tokens": {"type": "number"},
+            "cost_per_1k_output_tokens": {"type": "number"},
         },
-        "required": ["config_id", "model_name", "provider", "max_context_window", "default_temperature", "timeout_ms"]
+        "required": ["config_id", "model_name", "provider", "max_context_window", "default_temperature", "timeout_ms"],
     },
-
     "eval_result_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Eval Result Schema",
         "type": "object",
         "description": "Schema for benchmark and evaluation test suite results.",
         "properties": {
-            "eval_id": {
-                "type": "string"
-            },
-            "test_suite_id": {
-                "type": "string"
-            },
-            "target_agent_id": {
-                "type": "string"
-            },
-            "overall_score": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 100.0
-            },
-            "metrics": {
-                "type": "object"
-            },
-            "test_cases_passed": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "test_cases_failed": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "execution_time_ms": {
-                "type": "integer"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "eval_id": {"type": "string"},
+            "test_suite_id": {"type": "string"},
+            "target_agent_id": {"type": "string"},
+            "overall_score": {"type": "number", "minimum": 0.0, "maximum": 100.0},
+            "metrics": {"type": "object"},
+            "test_cases_passed": {"type": "integer", "minimum": 0},
+            "test_cases_failed": {"type": "integer", "minimum": 0},
+            "execution_time_ms": {"type": "integer"},
+            "timestamp": {"type": "string", "format": "date-time"},
         },
-        "required": ["eval_id", "test_suite_id", "target_agent_id", "overall_score", "test_cases_passed", "test_cases_failed", "timestamp"]
+        "required": [
+            "eval_id",
+            "test_suite_id",
+            "target_agent_id",
+            "overall_score",
+            "test_cases_passed",
+            "test_cases_failed",
+            "timestamp",
+        ],
     },
-
     "quality_gate_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Quality Gate Schema",
         "type": "object",
         "description": "Schema defining quality gate standards and gating criteria.",
         "properties": {
-            "gate_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "phase": {
-                "type": "string"
-            },
-            "min_score": {
-                "type": "number",
-                "minimum": 0.0,
-                "maximum": 100.0
-            },
-            "mandatory_checkers": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "blocking": {
-                "type": "boolean"
-            },
-            "failure_action": {
-                "type": "string",
-                "enum": ["reject", "warn", "escalate", "override"]
-            },
-            "metadata": {
-                "type": "object"
-            }
+            "gate_id": {"type": "string"},
+            "name": {"type": "string"},
+            "phase": {"type": "string"},
+            "min_score": {"type": "number", "minimum": 0.0, "maximum": 100.0},
+            "mandatory_checkers": {"type": "array", "items": {"type": "string"}},
+            "blocking": {"type": "boolean"},
+            "failure_action": {"type": "string", "enum": ["reject", "warn", "escalate", "override"]},
+            "metadata": {"type": "object"},
         },
-        "required": ["gate_id", "name", "phase", "min_score", "mandatory_checkers", "blocking", "failure_action"]
+        "required": ["gate_id", "name", "phase", "min_score", "mandatory_checkers", "blocking", "failure_action"],
     },
-
     "rate_limit_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Rate Limit Schema",
         "type": "object",
         "description": "Schema for tracking rate limits on capabilities, tools, and model endpoints.",
         "properties": {
-            "rate_limit_id": {
-                "type": "string"
-            },
-            "identifier": {
-                "type": "string"
-            },
-            "limit_type": {
-                "type": "string",
-                "enum": ["token_bucket", "fixed_window", "sliding_window"]
-            },
-            "max_requests": {
-                "type": "integer",
-                "minimum": 1
-            },
-            "window_seconds": {
-                "type": "integer",
-                "minimum": 1
-            },
-            "current_usage": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "reset_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "rate_limit_id": {"type": "string"},
+            "identifier": {"type": "string"},
+            "limit_type": {"type": "string", "enum": ["token_bucket", "fixed_window", "sliding_window"]},
+            "max_requests": {"type": "integer", "minimum": 1},
+            "window_seconds": {"type": "integer", "minimum": 1},
+            "current_usage": {"type": "integer", "minimum": 0},
+            "reset_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["rate_limit_id", "identifier", "limit_type", "max_requests", "window_seconds", "current_usage", "reset_at"]
+        "required": [
+            "rate_limit_id",
+            "identifier",
+            "limit_type",
+            "max_requests",
+            "window_seconds",
+            "current_usage",
+            "reset_at",
+        ],
     },
-
     "escalation_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Escalation Schema",
         "type": "object",
         "description": "Schema for handling escalation events when agent confidence or checks fail.",
         "properties": {
-            "escalation_id": {
-                "type": "string"
-            },
-            "task_id": {
-                "type": "string"
-            },
-            "agent_id": {
-                "type": "string"
-            },
-            "reason": {
-                "type": "string"
-            },
-            "severity": {
-                "type": "string",
-                "enum": ["low", "medium", "high", "critical"]
-            },
-            "target_role": {
-                "type": "string"
-            },
-            "resolution_status": {
-                "type": "string",
-                "enum": ["pending", "in_review", "resolved", "rejected"]
-            },
-            "resolved_by": {
-                "type": ["string", "null"]
-            },
-            "escalated_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "resolved_at": {
-                "type": ["string", "null"],
-                "format": "date-time"
-            }
+            "escalation_id": {"type": "string"},
+            "task_id": {"type": "string"},
+            "agent_id": {"type": "string"},
+            "reason": {"type": "string"},
+            "severity": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
+            "target_role": {"type": "string"},
+            "resolution_status": {"type": "string", "enum": ["pending", "in_review", "resolved", "rejected"]},
+            "resolved_by": {"type": ["string", "null"]},
+            "escalated_at": {"type": "string", "format": "date-time"},
+            "resolved_at": {"type": ["string", "null"], "format": "date-time"},
         },
-        "required": ["escalation_id", "task_id", "agent_id", "reason", "severity", "target_role", "resolution_status", "escalated_at"]
+        "required": [
+            "escalation_id",
+            "task_id",
+            "agent_id",
+            "reason",
+            "severity",
+            "target_role",
+            "resolution_status",
+            "escalated_at",
+        ],
     },
-
     "reflection_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Reflection Schema",
         "type": "object",
         "description": "Schema for post-task reflection entries generated by Phase 8 Reflection Engine.",
         "properties": {
-            "reflection_id": {
-                "type": "string"
-            },
-            "agent_id": {
-                "type": "string"
-            },
-            "task_id": {
-                "type": "string"
-            },
-            "outcome_type": {
-                "type": "string",
-                "enum": ["success", "partial_success", "failure", "aborted"]
-            },
-            "what_went_well": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "what_went_wrong": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "root_causes": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "key_learnings": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "action_items": {
-                "type": "array",
-                "items": {"type": "string"}
-            },
-            "created_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "reflection_id": {"type": "string"},
+            "agent_id": {"type": "string"},
+            "task_id": {"type": "string"},
+            "outcome_type": {"type": "string", "enum": ["success", "partial_success", "failure", "aborted"]},
+            "what_went_well": {"type": "array", "items": {"type": "string"}},
+            "what_went_wrong": {"type": "array", "items": {"type": "string"}},
+            "root_causes": {"type": "array", "items": {"type": "string"}},
+            "key_learnings": {"type": "array", "items": {"type": "string"}},
+            "action_items": {"type": "array", "items": {"type": "string"}},
+            "created_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["reflection_id", "agent_id", "task_id", "outcome_type", "what_went_well", "key_learnings", "created_at"]
+        "required": [
+            "reflection_id",
+            "agent_id",
+            "task_id",
+            "outcome_type",
+            "what_went_well",
+            "key_learnings",
+            "created_at",
+        ],
     },
-
     "tradeoff_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Tradeoff Schema",
         "type": "object",
         "description": "Schema for multi-variable trade-off analysis generated by Phase 7 Decision Engine.",
         "properties": {
-            "tradeoff_id": {
-                "type": "string"
-            },
-            "decision_id": {
-                "type": "string"
-            },
-            "dimension_a": {
-                "type": "string"
-            },
-            "dimension_b": {
-                "type": "string"
-            },
-            "score_a": {
-                "type": "number"
-            },
-            "score_b": {
-                "type": "number"
-            },
-            "impact_summary": {
-                "type": "string"
-            },
-            "recommendation": {
-                "type": "string"
-            },
-            "rationale": {
-                "type": "string"
-            }
+            "tradeoff_id": {"type": "string"},
+            "decision_id": {"type": "string"},
+            "dimension_a": {"type": "string"},
+            "dimension_b": {"type": "string"},
+            "score_a": {"type": "number"},
+            "score_b": {"type": "number"},
+            "impact_summary": {"type": "string"},
+            "recommendation": {"type": "string"},
+            "rationale": {"type": "string"},
         },
-        "required": ["tradeoff_id", "decision_id", "dimension_a", "dimension_b", "score_a", "score_b", "recommendation", "rationale"]
+        "required": [
+            "tradeoff_id",
+            "decision_id",
+            "dimension_a",
+            "dimension_b",
+            "score_a",
+            "score_b",
+            "recommendation",
+            "rationale",
+        ],
     },
-
     "cost_report_schema.json": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Cost Report Schema",
         "type": "object",
         "description": "Schema for financial cost reports, token usage breakdowns, and cloud resource tracking.",
         "properties": {
-            "cost_report_id": {
-                "type": "string"
-            },
-            "start_time": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "end_time": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "total_cost_usd": {
-                "type": "number",
-                "minimum": 0.0
-            },
-            "breakdown_by_agent": {
-                "type": "object",
-                "additionalProperties": {"type": "number"}
-            },
-            "breakdown_by_model": {
-                "type": "object",
-                "additionalProperties": {"type": "number"}
-            },
-            "breakdown_by_project": {
-                "type": "object",
-                "additionalProperties": {"type": "number"}
-            },
-            "total_tokens_used": {
-                "type": "integer",
-                "minimum": 0
-            },
-            "generated_at": {
-                "type": "string",
-                "format": "date-time"
-            }
+            "cost_report_id": {"type": "string"},
+            "start_time": {"type": "string", "format": "date-time"},
+            "end_time": {"type": "string", "format": "date-time"},
+            "total_cost_usd": {"type": "number", "minimum": 0.0},
+            "breakdown_by_agent": {"type": "object", "additionalProperties": {"type": "number"}},
+            "breakdown_by_model": {"type": "object", "additionalProperties": {"type": "number"}},
+            "breakdown_by_project": {"type": "object", "additionalProperties": {"type": "number"}},
+            "total_tokens_used": {"type": "integer", "minimum": 0},
+            "generated_at": {"type": "string", "format": "date-time"},
         },
-        "required": ["cost_report_id", "start_time", "end_time", "total_cost_usd", "total_tokens_used", "generated_at"]
-    }
+        "required": ["cost_report_id", "start_time", "end_time", "total_cost_usd", "total_tokens_used", "generated_at"],
+    },
 }
 
 count = 0

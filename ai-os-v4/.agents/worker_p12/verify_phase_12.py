@@ -4,19 +4,32 @@ import re
 BASE_DIR = r"c:\Users\PC\OneDrive\Documents\Master tool\ai-os-v4\phase_12_domain_skill_packs"
 
 REQUIRED_DOMAINS = [
-    "software", "ai", "manufacturing", "mechanical", "electrical", "civil",
-    "architecture", "finance", "legal", "marketing", "healthcare", "education",
-    "agriculture", "construction", "supply_chain", "cloud", "cybersecurity", "data_engineering"
+    "software",
+    "ai",
+    "manufacturing",
+    "mechanical",
+    "electrical",
+    "civil",
+    "architecture",
+    "finance",
+    "legal",
+    "marketing",
+    "healthcare",
+    "education",
+    "agriculture",
+    "construction",
+    "supply_chain",
+    "cloud",
+    "cybersecurity",
+    "data_engineering",
 ]
 
-REQUIRED_SUBDIRS = [
-    "agents", "prompts", "templates", "policies",
-    "workflows", "knowledge", "verification", "examples"
-]
+REQUIRED_SUBDIRS = ["agents", "prompts", "templates", "policies", "workflows", "knowledge", "verification", "examples"]
+
 
 def verify():
     print("=== STARTING PHASE 12 VERIFICATION ===")
-    
+
     # 1. Check root directory
     if not os.path.exists(BASE_DIR):
         print(f"FAIL: Base directory {BASE_DIR} does not exist!")
@@ -40,7 +53,7 @@ def verify():
 
     for domain in REQUIRED_DOMAINS:
         domain_dir = os.path.join(BASE_DIR, domain)
-        
+
         # Check README.md
         readme_path = os.path.join(domain_dir, "README.md")
         if not os.path.isfile(readme_path):
@@ -54,7 +67,7 @@ def verify():
             if not os.path.isdir(sub_dir):
                 errors.append(f"Missing subdirectory '{sub}' in domain '{domain}'")
                 continue
-            
+
             md_files = [f for f in os.listdir(sub_dir) if f.endswith(".md")]
             if not md_files:
                 errors.append(f"No .md files in '{domain}/{sub}'")
@@ -65,18 +78,20 @@ def verify():
                 total_files += 1
                 with open(filepath, "r", encoding="utf-8") as f:
                     content = f.read()
-                
+
                 # Check YAML frontmatter
                 if not content.startswith("---"):
                     errors.append(f"File '{domain}/{sub}/{mf}' missing frontmatter start '---'")
-                
-                word_count = len(re.findall(r'\w+', content))
+
+                word_count = len(re.findall(r"\w+", content))
                 total_words += word_count
                 if word_count < 200:
                     errors.append(f"File '{domain}/{sub}/{mf}' is too short ({word_count} words)")
 
     print(f"Total Markdown files verified: {total_files}")
-    print(f"Total Word count across Phase 12: {total_words} words (avg {total_words//total_files if total_files else 0} words/file)")
+    print(
+        f"Total Word count across Phase 12: {total_words} words (avg {total_words // total_files if total_files else 0} words/file)"
+    )
 
     if errors:
         print("Verification FAILURES:")
@@ -84,8 +99,11 @@ def verify():
             print(f"  - {err}")
         return False
     else:
-        print("PASS: All 18 domains and all 8 subdirectories per domain verified cleanly with high substantive quality!")
+        print(
+            "PASS: All 18 domains and all 8 subdirectories per domain verified cleanly with high substantive quality!"
+        )
         return True
+
 
 if __name__ == "__main__":
     verify()
