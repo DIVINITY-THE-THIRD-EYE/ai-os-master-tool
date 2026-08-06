@@ -1,15 +1,22 @@
 """AI OS Multi-Agent Skill — runtime package init."""
 
-from .event_bus import EventBus, Event, get_event_bus
-from .agent_registry import AgentRegistry, AgentRecord
+from .agent_registry import AgentRecord, AgentRegistry
 from .capability_router import CapabilityRouter
-from .workflow_executor import WorkflowExecutor, WorkflowStep, WorkflowResult, ConditionEvaluator
-from .plugin_registry import PluginRegistry, PluginRecord
+from .event_bus import Event, EventBus, get_event_bus
+from .plugin_registry import PluginRecord, PluginRegistry
+from .workflow_executor import ConditionEvaluator, WorkflowExecutor, WorkflowResult, WorkflowStep
 
 __all__ = [
-    "EventBus", "Event", "get_event_bus",
-    "AgentRegistry", "AgentRecord",
+    "EventBus",
+    "Event",
+    "get_event_bus",
+    "AgentRegistry",
+    "AgentRecord",
     "CapabilityRouter",
-    "WorkflowExecutor", "WorkflowStep", "WorkflowResult", "ConditionEvaluator",
-    "PluginRegistry", "PluginRecord",
+    "WorkflowExecutor",
+    "WorkflowStep",
+    "WorkflowResult",
+    "ConditionEvaluator",
+    "PluginRegistry",
+    "PluginRecord",
 ]

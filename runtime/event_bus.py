@@ -10,12 +10,13 @@ Architecture:
 """
 
 import json
-import uuid
 import logging
+import uuid
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-from typing import Callable, Dict, List, Optional
-from dataclasses import dataclass, field, asdict
+from typing import Any, Callable, Dict, List, Optional
 
+from .events import SystemEvent
 
 logger = logging.getLogger("ai_os.event_bus")
 
@@ -23,6 +24,7 @@ logger = logging.getLogger("ai_os.event_bus")
 @dataclass
 class Event:
     """Standard AI OS event payload per event_payload_schema.json"""
+
     event_type: str
     agent_id: str
     task_id: str
@@ -36,9 +38,7 @@ class Event:
     budget: Optional[dict] = None
     quality: Optional[dict] = None
     next_actions: List[str] = field(default_factory=list)
-    timestamp: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -71,7 +71,7 @@ class EventBus:
         self._persistence_topics.update(persistent_topics)
         logger.info(f"Persistence configured for {len(persistent_topics)} topics")
 
-    def subscribe(self, topic: str, handler: Callable[[Event], None]) -> None:
+    def subscribe(self, topic: str, handler: Callable[[Any], None]) -> None:
         """Register a handler for events on the specified topic."""
         if topic not in self._subscribers:
             self._subscribers[topic] = []
@@ -81,49 +81,44 @@ class EventBus:
     def unsubscribe(self, topic: str, handler: Callable) -> None:
         """Remove a handler from a topic."""
         if topic in self._subscribers:
-            self._subscribers[topic] = [
-                h for h in self._subscribers[topic] if h != handler
-            ]
+            self._subscribers[topic] = [h for h in self._subscribers[topic] if h != handler]
 
-    def publish(self, event: Event) -> int:
+    def publish(self, event: Any) -> int:
         """
         Publish an event to all registered subscribers.
 
         Returns the number of subscribers notified.
         Persists event if topic is marked as persistence_required.
         """
-        if not isinstance(event, Event):
-            raise ValueError("Published object must be an Event instance")
-
-        # Validate required fields
-        if not event.event_type or not event.agent_id or not event.task_id:
-            raise ValueError(
-                "Event must have event_type, agent_id, and task_id"
+        if isinstance(event, Event):
+            if not event.event_type or not event.agent_id or not event.task_id:
+                raise ValueError("Event must have event_type, agent_id, and task_id")
+            event_type = event.event_type
+            event_dict = event.to_dict()
+            logger.info(
+                f"[{event_type}] agent={event.agent_id} task={event.task_id} trace={event.trace_id} severity={event.severity}"
             )
+        elif isinstance(event, SystemEvent):
+            event_type = event.__class__.__name__
+            event_dict = asdict(event)
+            event_dict["event_type"] = event_type
+            logger.info(f"[{event_type}] System Event published")
+        else:
+            raise ValueError("Published object must be an Event or SystemEvent instance")
 
         # Persist if required
-        if event.event_type in self._persistence_topics:
-            self._event_history.append(event.to_dict())
-
-        # Log all events
-        logger.info(
-            f"[{event.event_type}] agent={event.agent_id} "
-            f"task={event.task_id} trace={event.trace_id} "
-            f"severity={event.severity}"
-        )
+        if event_type in self._persistence_topics:
+            self._event_history.append(event_dict)
 
         # Dispatch to subscribers
-        handlers = self._subscribers.get(event.event_type, [])
+        handlers = self._subscribers.get(event_type, [])
         notified = 0
         for handler in handlers:
             try:
                 handler(event)
                 notified += 1
             except Exception as e:
-                logger.error(
-                    f"Handler error for topic {event.event_type}: {e}",
-                    exc_info=True
-                )
+                logger.error(f"Handler error for topic {event_type}: {e}", exc_info=True)
 
         return notified
 

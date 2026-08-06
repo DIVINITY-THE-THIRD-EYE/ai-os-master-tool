@@ -17,17 +17,18 @@ logger = logging.getLogger("ai_os.plugin_registry")
 @dataclass
 class PluginRecord:
     """A registered plugin or tool in the AI OS Plugin Registry."""
+
     plugin_id: str
     name: str
     version: str
-    type: str                           # tool | model | api | binary
+    type: str  # tool | model | api | binary
     description: str
-    interface_schema: dict              # JSON Schema for inputs/outputs
-    permissions: List[str]             # Whitelisted operations
+    interface_schema: dict  # JSON Schema for inputs/outputs
+    permissions: List[str]  # Whitelisted operations
     sandbox_required: bool = True
     rate_limit_per_minute: int = 60
     timeout_seconds: int = 30
-    status: str = "registered"          # registered | active | disabled | retired
+    status: str = "registered"  # registered | active | disabled | retired
     health_status: str = "unknown"
     invocation_count: int = 0
     error_count: int = 0
@@ -69,15 +70,9 @@ class PluginRegistry:
         """Register a new plugin. Raises if plugin_id already exists."""
         with self._lock:
             if plugin.plugin_id in self._plugins:
-                raise ValueError(
-                    f"Plugin '{plugin.plugin_id}' already registered. "
-                    "Use update_status to modify."
-                )
+                raise ValueError(f"Plugin '{plugin.plugin_id}' already registered. Use update_status to modify.")
             self._plugins[plugin.plugin_id] = plugin
-            logger.info(
-                f"Plugin registered: {plugin.plugin_id} "
-                f"({plugin.name} v{plugin.version}, type={plugin.type})"
-            )
+            logger.info(f"Plugin registered: {plugin.plugin_id} ({plugin.name} v{plugin.version}, type={plugin.type})")
 
     def activate(self, plugin_id: str) -> None:
         """Activate a registered plugin — makes it available for invocation."""
@@ -130,8 +125,7 @@ class PluginRegistry:
 
         if operation not in plugin.permissions:
             return False, (
-                f"Operation '{operation}' not in whitelist for plugin '{plugin_id}'. "
-                f"Allowed: {plugin.permissions}"
+                f"Operation '{operation}' not in whitelist for plugin '{plugin_id}'. Allowed: {plugin.permissions}"
             )
 
         if not isinstance(arguments, dict):
@@ -167,8 +161,7 @@ class PluginRegistry:
         logger.log(
             level,
             f"Plugin invocation: plugin={plugin_id} agent={agent_id} "
-            f"op={operation} success={success}"
-            + (f" error={error}" if error else "")
+            f"op={operation} success={success}" + (f" error={error}" if error else ""),
         )
 
     def get(self, plugin_id: str) -> Optional[PluginRecord]:
@@ -181,10 +174,7 @@ class PluginRegistry:
 
     def list_by_type(self, plugin_type: str) -> List[PluginRecord]:
         with self._lock:
-            return [
-                p for p in self._plugins.values()
-                if p.type == plugin_type and p.is_available()
-            ]
+            return [p for p in self._plugins.values() if p.type == plugin_type and p.is_available()]
 
     def get_audit_log(
         self,

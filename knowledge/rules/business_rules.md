@@ -30,7 +30,9 @@ Business rules encapsulate domain logic, service level agreements (SLAs), operat
   ```python
   def is_feature_enabled(feature_key: str, tenant_context: dict) -> bool:
       if not feature_flags.get(feature_key, False):
-          raise FeatureGatedException(f"Feature '{feature_key}' is disabled for tenant '{tenant_context.get('tenant_id')}'")
+          raise FeatureGatedException(
+              f"Feature '{feature_key}' is disabled for tenant '{tenant_context.get('tenant_id')}'"
+          )
       return True
   ```
 

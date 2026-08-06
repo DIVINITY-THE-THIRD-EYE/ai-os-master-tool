@@ -1,0 +1,6 @@
+from typing import Protocol
+
+
+class IBackupManager(Protocol):
+    def create_backup(self) -> str: ...
+    def prune_old_backups(self) -> None: ...

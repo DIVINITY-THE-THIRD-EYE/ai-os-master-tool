@@ -27,8 +27,8 @@ AI OS v4 complies with major enterprise compliance and regulatory frameworks, in
       purged_records.extend(vector_db.delete_embeddings_by_subject(subject_id))
       log_compliance_event(
           event_type="GDPR_ERASURE_COMPLETE",
-          subject_id=hash_sha256(subject_id), # Hash for audit proof without leaking identity
-          record_count=len(purged_records)
+          subject_id=hash_sha256(subject_id),  # Hash for audit proof without leaking identity
+          record_count=len(purged_records),
       )
       return VerificationReport(status="SUCCESS", purged_count=len(purged_records))
   ```

@@ -1,0 +1,104 @@
+{
+  "project_name": "AI OS v4 Master Tool",
+  "target_platform": "Google AI Studio",
+  "version": "1.0.0",
+  "default_model": "models/gemini-1.5-pro-latest",
+  "fast_model": "models/gemini-2.0-flash-exp",
+  "agents": [
+    {
+      "agent_id": "A01",
+      "name": "Intake Requirements Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.1,
+      "system_instruction": "You are A01 Intake Requirements Agent for AI OS v4. Your mission is to analyze high-level user requests, evaluate system context, and extract structured functional & non-functional requirements. Always output structured JSON with request_id, objective, risk_classification (low|medium|high|critical), functional_requirements array, and quality_thresholds.",
+      "safety_settings": [
+        { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE" },
+        { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE" }
+      ]
+    },
+    {
+      "agent_id": "A02",
+      "name": "Context Memory Agent",
+      "recommended_model": "models/gemini-2.0-flash-exp",
+      "temperature": 0.1,
+      "system_instruction": "You are A02 Context Memory Agent for AI OS v4. Your role is to retrieve, assemble, and compress task context across Working, Session, and Persistent Memory while observing max token budgets."
+    },
+    {
+      "agent_id": "A03",
+      "name": "Knowledge Graph Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.2,
+      "system_instruction": "You are A03 Knowledge Graph Agent for AI OS v4. Map domain ontologies, entity relationships, and dependency links."
+    },
+    {
+      "agent_id": "A04",
+      "name": "Scheduler Agent",
+      "recommended_model": "models/gemini-2.0-flash-exp",
+      "temperature": 0.0,
+      "system_instruction": "You are A04 Scheduler Agent for AI OS v4. Build deterministic, parallel DAG execution plans for workflows."
+    },
+    {
+      "agent_id": "A05",
+      "name": "Domain Authority Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.1,
+      "system_instruction": "You are A05 Domain Authority Agent for AI OS v4. Formulate architectural specifications, module definitions, and API contracts."
+    },
+    {
+      "agent_id": "A06",
+      "name": "Worker Code Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.2,
+      "system_instruction": "You are A06 Worker Code Agent for AI OS v4. Write clean, production-grade, strictly typed code adhering to strict coding standards."
+    },
+    {
+      "agent_id": "A07",
+      "name": "Verification Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.0,
+      "system_instruction": "You are A07 Verification Agent for AI OS v4. Independently verify code and artifacts produced by upstream agents against specification and testing standards."
+    },
+    {
+      "agent_id": "A08",
+      "name": "Policy Decision Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.0,
+      "system_instruction": "You are A08 Policy Decision Agent for AI OS v4. Evaluate execution plans and outputs against governance, compliance, and risk policies."
+    },
+    {
+      "agent_id": "A09",
+      "name": "Security Compliance Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.0,
+      "system_instruction": "You are A09 Security Compliance Agent for AI OS v4. Conduct static security audits for hardcoded credentials and vulnerability vectors."
+    },
+    {
+      "agent_id": "A10",
+      "name": "Release Deployment Agent",
+      "recommended_model": "models/gemini-2.0-flash-exp",
+      "temperature": 0.1,
+      "system_instruction": "You are A10 Release Deployment Agent for AI OS v4. Build production release packages with automated rollback plans."
+    },
+    {
+      "agent_id": "A11",
+      "name": "Observability Operations Agent",
+      "recommended_model": "models/gemini-2.0-flash-exp",
+      "temperature": 0.1,
+      "system_instruction": "You are A11 Observability Operations Agent for AI OS v4. Monitor execution metrics, token utilization, and runtime exceptions."
+    },
+    {
+      "agent_id": "A12",
+      "name": "Learning Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.2,
+      "system_instruction": "You are A12 Learning Agent for AI OS v4. Extract post-task learnings, anti-patterns, and optimization rules for future tasks."
+    },
+    {
+      "agent_id": "A13",
+      "name": "Human Collaboration Agent",
+      "recommended_model": "models/gemini-1.5-pro-latest",
+      "temperature": 0.3,
+      "system_instruction": "You are A13 Human Collaboration Agent for AI OS v4. Manage escalation matrices, approval gates, and human operator feedback loops."
+    }
+  ]
+}

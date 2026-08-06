@@ -15,9 +15,9 @@ Checks:
 
 import json
 import sys
-import yaml
 from pathlib import Path
 
+import yaml
 
 BASE = Path(__file__).parent.parent
 
@@ -49,19 +49,19 @@ EXPECTED_FILES = [
     "orchestrator/master_orchestrator.md",
     "orchestrator/state_machine.yaml",
     "orchestrator/escalation_matrix.yaml",
-    "agents/A01_intake_requirements_agent.md",
-    "agents/A02_context_memory_agent.md",
-    "agents/A03_knowledge_graph_agent.md",
-    "agents/A04_scheduler_agent.md",
-    "agents/A05_domain_authority_agent.md",
-    "agents/A06_worker_agent.md",
-    "agents/A07_verification_agent.md",
-    "agents/A08_policy_decision_agent.md",
-    "agents/A09_security_compliance_agent.md",
-    "agents/A10_release_deployment_agent.md",
-    "agents/A11_observability_operations_agent.md",
-    "agents/A12_learning_agent.md",
-    "agents/A13_human_collaboration_agent.md",
+    "agents/active/A01_intake_requirements_agent.md",
+    "agents/active/A02_context_memory_agent.md",
+    "agents/active/A03_knowledge_graph_agent.md",
+    "agents/active/A04_scheduler_agent.md",
+    "agents/active/A05_domain_authority_agent.md",
+    "agents/active/A06_worker_agent.md",
+    "agents/active/A07_verification_agent.md",
+    "agents/active/A08_policy_decision_agent.md",
+    "agents/active/A09_security_compliance_agent.md",
+    "agents/active/A10_release_deployment_agent.md",
+    "agents/active/A11_observability_operations_agent.md",
+    "agents/active/A12_learning_agent.md",
+    "agents/active/A13_human_collaboration_agent.md",
     "workflows/canonical_workflow.yaml",
     "workflows/execution_workflow.md",
     "workflows/verification_workflow.md",
@@ -112,6 +112,11 @@ EXPECTED_FILES = [
     "runtime/workflow_executor.py",
     "runtime/capability_router.py",
     "runtime/agent_registry.py",
+    "runtime/llm_router.py",
+    "runtime/memory_manager.py",
+    "runtime/state_manager.py",
+    "runtime/api_server.py",
+    "tools/ai_studio_exporter.py",
 ]
 
 REQUIRED_JSON_FIELDS = ["$schema", "title", "type", "properties"]
@@ -162,11 +167,7 @@ class Validator:
             try:
                 data = json.loads(json_file.read_text(encoding="utf-8"))
                 for field in REQUIRED_JSON_FIELDS:
-                    self.check(
-                        f"{json_file.name}: has '{field}'",
-                        field in data,
-                        f"Missing field '{field}'"
-                    )
+                    self.check(f"{json_file.name}: has '{field}'", field in data, f"Missing field '{field}'")
             except json.JSONDecodeError as e:
                 self.check(f"{json_file.name}: valid JSON", False, str(e))
 
@@ -177,11 +178,7 @@ class Validator:
                     yaml.safe_load(f)
                 self.check(f"{yaml_file.relative_to(BASE)}: valid YAML", True)
             except yaml.YAMLError as e:
-                self.check(
-                    f"{yaml_file.relative_to(BASE)}: valid YAML",
-                    False,
-                    str(e)
-                )
+                self.check(f"{yaml_file.relative_to(BASE)}: valid YAML", False, str(e))
 
         print("\n[5] Quality Gates (Gates 0-7)")
         gate_file = BASE / "quality" / "quality_gates.yaml"
@@ -189,11 +186,7 @@ class Validator:
             data = yaml.safe_load(gate_file.read_text(encoding="utf-8"))
             gates = data.get("quality_gates", {}).get("gates", {})
             for gate_id in REQUIRED_GATES:
-                self.check(
-                    f"quality_gates.yaml: {gate_id}",
-                    gate_id in gates,
-                    f"Gate '{gate_id}' not defined"
-                )
+                self.check(f"quality_gates.yaml: {gate_id}", gate_id in gates, f"Gate '{gate_id}' not defined")
 
         print("\n[6] Skill Manifest Thresholds")
         skill_file = BASE / "skill.yaml"
@@ -202,11 +195,7 @@ class Validator:
             gates = data.get("skill", {}).get("quality_gates", {})
             for key, expected in REQUIRED_SKILL_THRESHOLDS.items():
                 actual = gates.get(key)
-                self.check(
-                    f"skill.yaml: {key} = {expected}",
-                    actual == expected,
-                    f"Expected {expected}, got {actual}"
-                )
+                self.check(f"skill.yaml: {key} = {expected}", actual == expected, f"Expected {expected}, got {actual}")
 
         print("\n[7] Escalation Matrix Severity Levels")
         esc_file = BASE / "orchestrator" / "escalation_matrix.yaml"
@@ -214,11 +203,7 @@ class Validator:
             data = yaml.safe_load(esc_file.read_text(encoding="utf-8"))
             levels = data.get("escalation_matrix", {}).get("levels", {})
             for sev in ["sev1", "sev2", "sev3", "sev4", "sev5"]:
-                self.check(
-                    f"escalation_matrix.yaml: {sev}",
-                    sev in levels,
-                    f"Severity level '{sev}' not defined"
-                )
+                self.check(f"escalation_matrix.yaml: {sev}", sev in levels, f"Severity level '{sev}' not defined")
 
         print("\n" + "=" * 60)
         total = self.passed + len(self.errors)
