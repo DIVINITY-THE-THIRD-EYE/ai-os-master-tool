@@ -1,231 +1,181 @@
-<a id="1-header--hero"></a>
-# AI OS — Master Tool
+# AI Operating System Multi-Agent Skill
 
-[![Python Version](https://img.shields.io/badge/python-%3E%3D3.10-blue.svg)](https://www.python.org/)
-[![Runtime Tests](https://img.shields.io/badge/tests-58%20passed-success.svg)](ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py)
-[![Repository Validation](https://img.shields.io/badge/repository%20validation-0%20critical%20errors-success.svg)](validate_repository.py)
-[![Deployment](https://img.shields.io/badge/deployment-Vercel%20Serverless-black.svg)](vercel.json)
-[![Architecture Baseline](https://img.shields.io/badge/architecture-AI%20OS%20v4%20Baseline-purple.svg)](docs/capability-matrix.yaml)
-
-> A production-grade multi-agent AI Operating System (AI OS) v4 skill repository built in Python with a FastAPI backend, 13 specialized agents, DAG + Bounded Loop workflow engine, multi-tier memory management, governance control plane, and zero-data-loss transactional persistence.
+**Skill ID:** `ai-os-multi-agent-skill`
+**Version:** `1.0.0`
+**Mode:** Production
 
 ---
 
-## AI OS v4 — Master Roadmap Execution Summary (Phases 0–14)
+## 1. Purpose
 
-The project has achieved its primary engineering goal: **Transitioning from a documentation-heavy architecture into a validated, failure-tested, self-orchestrating multi-agent system skill.**
+This skill enables an enterprise-grade AI operating system to plan, execute, verify, govern, release, and learn from work performed by multiple autonomous agents.
 
-```text
-               AI OS v4 Proven Execution Roadmap
-                               │
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 0. Architecture Baseline Freeze (13 + A00)   │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 1. Evidence Hardening (capability-matrix)    │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 2. Repository Integrity 2.0 (Structural Auth)│
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 3. Persistence Durability & Chaos Testing    │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 4. Quality Gate & Budget Limit Enforcement   │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 5. Agent Complexity Benchmark (1/3/5/13)     │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 6. Hybrid Graph (DAG + Bounded Loops)        │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 7. Specification ↔ Runtime Registry          │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 8. Dynamic Discovery & Capability Matching   │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 9. Task-Specific Prompt Compiler             │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 10. Execution Observability Telemetry        │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 11. Security & Governance Control Plane      │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 12. Distributed Runtime Benchmark            │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 13. Competitive Benchmark v2 (98/100 Score)  │
-        └──────────────────────┬───────────────────────┘
-                               ▼
-        ┌──────────────────────────────────────────────┐
-        │ 14. Final Progressive Skill Release          │
-        └──────────────────────────────────────────────┘
+Optimized for:
+- Parallel execution
+- Autonomous collaboration
+- Minimal token usage
+- High code quality
+- Maintainability
+- Scalability
+- Security
+- Governance
+- Production deployment
+- Auditability
+- Continuous learning
+
+---
+
+## 2. Source Analysis
+
+This skill implements 10 major architectural domains and 31 critical subsystems:
+
+### Major Domains
+1. Core Runtime Architecture
+2. Orchestration Architecture
+3. Agent Architecture
+4. Execution Platform
+5. Knowledge Platform
+6. Intelligence Platform
+7. Governance Platform
+8. Infrastructure Platform
+9. Operations Platform
+10. Enterprise Platform
+
+### Critical Subsystems
+Universal Agent State Machine, Verification Engine, Policy Engine, Production Scheduler, Enterprise Knowledge Graph, Context Manager, Event-Driven Worker Architecture, Master Orchestrator, Execution Hierarchy, Memory Hierarchy, Platform Services, Agent Lifecycle Manager, Workflow Engine, Artifact Store, Metrics & Observability, Security Manager, Configuration Manager, Capability Router, Agent Registry, Learning Engine, Tool Manager, Plugin System, Model Manager, Governance Layer, Event Bus, Report Generator, Version Manager, Human Collaboration Layer, Platform APIs, Disaster Recovery, Deployment Manager.
+
+---
+
+## 3. Multi-Agent Architecture
+
+```
+                     Human Collaboration Layer
+                               |
+                               v
+                     Master Orchestrator Agent (A00)
+                               |
+    +----------+----------+----+----+----------+----------+
+    |          |          |         |          |          |
+Intake(A01) Context(A02) Sched(A04) Know(A03) Gov(A08)  Sec(A09)
+    |          |          |         |          |          |
+    +----------+----------+----+----+----------+----------+
+                               |
+                          Event Bus
+                               |
+    +----------+----------+----+----+----------+----------+
+    |          |          |         |          |          |
+Auth(A05)  Worker(A06)  QA(A07)  Rel(A10)  Ops(A11)  Learn(A12)
+                               |
+                     Verification Engine
+                               |
+                      Policy Engine (A08)
+                               |
+                   Decision Intelligence
+                               |
+             Approval / Rejection / Escalation
+                               |
+                   Artifact Store + Knowledge Graph
+                               |
+                      Learning Engine (A12)
 ```
 
 ---
 
-<a id="2-table-of-contents"></a>
-## 2. Table of Contents
+## 4. Agent Catalog
 
-1. [Header / Hero](#1-header--hero)
-2. [Roadmap Summary (Phases 0–14)](#ai-os-v4--master-roadmap-execution-summary-phases-014)
-3. [Overview](#3-overview)
-4. [Key Features](#4-key-features)
-5. [Master Phase Execution & Capability Matrix](#5-master-phase-execution--capability-matrix)
-6. [Architecture](#6-architecture)
-7. [Execution Flow](#7-execution-flow)
-8. [Technology Stack](#8-technology-stack)
-9. [Requirements](#9-requirements)
-10. [Installation](#10-installation)
-11. [Configuration](#11-configuration)
-12. [Quick Start](#12-quick-start)
-13. [Usage](#13-usage)
-14. [Agent System](#14-agent-system)
-15. [Workflow System](#15-workflow-system)
-16. [Project Structure](#16-project-structure)
-17. [Testing](#17-testing)
-18. [Validation](#18-validation)
-19. [Deployment](#19-deployment)
-20. [Security](#20-security)
-21. [Persistence / Data](#21-persistence--data)
-22. [Troubleshooting](#22-troubleshooting)
-23. [Development Guide](#23-development-guide)
-24. [Extensibility](#24-extensibility)
-25. [Known Limitations](#25-known-limitations)
-26. [Licence](#26-licence)
-27. [Contributing](#27-contributing)
+| Agent | ID | Role |
+|---|---|---|
+| Master Orchestrator | A00 | Central coordinator |
+| Intake & Requirements | A01 | Converts requests to structured tasks |
+| Context & Memory | A02 | Builds and optimizes context |
+| Knowledge Graph & Research | A03 | Queries enterprise knowledge |
+| Scheduler, Dependency & Resource | A04 | Plans execution and allocates resources |
+| Domain Authority Family | A05 | Domain standards and review |
+| Execution Worker | A06 | Performs actual work |
+| Verification & Quality | A07 | Independently verifies outputs |
+| Policy & Decision Intelligence | A08 | Governance-aware decisions |
+| Security & Compliance | A09 | Security and regulatory compliance |
+| Release & Deployment | A10 | Manages releases and rollbacks |
+| Observability & Operations | A11 | Monitoring and operational health |
+| Learning & Knowledge Publication | A12 | Transforms experience into knowledge |
+| Human Collaboration | A13 | Coordinates human approvals and feedback |
 
 ---
 
-<a id="3-overview"></a>
-## 3. Overview
+## 5. Non-Negotiable Operating Principles
 
-### What It Is
-**AI OS Master Tool** is an enterprise-grade multi-agent AI Operating System (AI OS v4) skill architecture written in Python 3.10+. It orchestrates autonomous AI workflows using 13 specialized canonical agents (A01–A13) plus the A00 Master Orchestrator, a Hybrid Graph (DAG + Bounded Loops) execution engine, multi-provider LLM routing, policy-driven quality gates, runtime governance control plane, and zero-data-loss transactional persistence.
+### Conflict Resolution Order
+1. Human safety, ethics, and harm prevention
+2. Legal, regulatory, and compliance requirements
+3. Security and data protection
+4. Data integrity and privacy
+5. Production stability and reliability
+6. Approved business requirements
+7. Architecture and code quality
+8. Cost, token usage, and speed
 
-### Problem Solved
-Traditional single-prompt LLM wrappers and basic chain frameworks lack enterprise resilience, security controls, and deterministic state management. AI OS Master Tool solves these challenges by providing:
-- **Hybrid Graph Execution (DAG + Bounded Loops)**: Combines deterministic DAG scheduling with bounded iterative loops (`loop_until`, max iterations, safe rollback) to solve the rigid DAG limitations identified in competitive research.
-- **Runtime Governance Control Plane**: Turns governance from static markdown into an enforceable control plane evaluating risk levels, policy compliance, security whitelists, and human approval gates (`A13`).
-- **Failure-Tested Durability**: Experimentally proven zero data loss under abrupt process crashes (SIGKILL) and file corruption via SQLite VRAM atomic flushes and WAL journaling.
-- **Dynamic Registry & Prompt Compiler**: Dynamically discovers capabilities from `registry/*.yaml` and compiles task-specific execution contexts on the fly.
-
----
-
-<a id="5-master-phase-execution--capability-matrix"></a>
-## 5. Master Phase Execution & Capability Matrix
-
-The matrix below maps every phase of the Master Plan to its implementation modules, test evidence, and status:
-
-| Phase | Milestone Name | Implementation | Verification Evidence / Test Suite | Status |
-|---|---|---|---|---|
-| **Phase 0** | Architecture Freeze | `A00` + `A01-A13` Specs | `ai-os-v4/ai-os-multi-agent-skill/agents/active/` | ✅ PROVEN |
-| **Phase 1** | Evidence Hardening | Capability Matrix YAML | `docs/capability-matrix.yaml` | ✅ PROVEN |
-| **Phase 2** | Repository Integrity 2.0 | Structural Authority | `validate_repository.py` (0 Critical Errors) | ✅ PROVEN |
-| **Phase 3** | Persistence & Durability | StateManager & Coordinator | `tests/chaos/` (SIGKILL & corruption recovery) | ✅ PROVEN |
-| **Phase 4** | Quality Gates & Budgets | LLMRouter & PluginRegistry | `tests/enforcement/` (Token overflow & security gates) | ✅ PROVEN |
-| **Phase 5** | Agent Complexity Benchmark | Multi-Agent Orchestration | `tests/benchmark/` (1 vs 3 vs 5 vs 13 modes) | ✅ PROVEN |
-| **Phase 6** | Hybrid Workflow Engine | WorkflowExecutor Loops | `tests/hybrid/` (DAG + Bounded `loop_until`) | ✅ PROVEN |
-| **Phase 7** | Spec ↔ Runtime Registry | Registry YAML Files | `registry/*.yaml` & `runtime/master_registry.py` | ✅ PROVEN |
-| **Phase 8** | Dynamic Discovery | CapabilityRouter | `tests/discovery/` (Dynamic registry matching) | ✅ PROVEN |
-| **Phase 9** | Prompt Compiler | PromptCompiler | `tests/compiler/` (Dynamic context compilation) | ✅ PROVEN |
-| **Phase 10**| Execution Observability | ObservabilityReporter | `tests/observability/` (Trace IDs & cost tracking) | ✅ PROVEN |
-| **Phase 11**| Governance Control Plane | GovernanceControlPlane | `tests/governance/` (Risk & approval gates) | ✅ PROVEN |
-| **Phase 12**| Distributed Evaluation | In-Process Multi-Threading | `tests/distributed/` (Retained clean in-process execution) | ✅ PROVEN |
-| **Phase 13**| Competitive Benchmark v2 | CompetitiveBenchmarkV2 | `tests/benchmark_v2/` (Score 98/100 vs competitors) | ✅ PROVEN |
-| **Phase 14**| Final Skill Release | Progressive Skill Package | `ai-os-v4/ai-os-multi-agent-skill/` | ✅ PROVEN |
+### Core Guardrails
+- No agent may act outside its registered capabilities
+- No agent may access tools, data, or systems without explicit permissions
+- No production mutation is allowed without approval and rollback plan
+- No secret, credential, token, or API key may appear in prompts, logs, artifacts, or reports
+- All high-risk actions require audit logging
+- All generated code must pass linting, tests, security checks, and verification before approval
+- All external tool calls must be sandboxed where possible
+- All irreversible operations require human approval
+- All failed tasks must be recoverable, retryable, cancellable, or escalatable
+- All knowledge promoted to persistent memory must pass validation and approval
 
 ---
 
-<a id="17-testing"></a>
-## 17. Testing
+## 6. Traceability Map
 
-### Verified Test Results
-Running `python -m pytest` executes **58 tests** across 11 test suites with **100% pass rate** (58 passed, 0 failed):
-
-```text
-============================= test session starts =============================
-platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0
-collected 58 items
-
-ai-os-v4\ai-os-multi-agent-skill\tools\test_runtime.py (42 tests)        PASSED
-tests\chaos\test_corrupt_snapshot.py (1 test)                          PASSED
-tests\chaos\test_persistence_chaos.py (2 tests)                        PASSED
-tests\chaos\test_sigkill.py (1 test)                                   PASSED
-tests\enforcement\test_budget_enforcement.py (4 tests)                 PASSED
-tests\benchmark\test_agent_benchmark.py (1 test)                       PASSED
-tests\hybrid\test_hybrid_graph.py (2 tests)                             PASSED
-tests\discovery\test_dynamic_discovery.py (1 test)                     PASSED
-tests\compiler\test_prompt_compiler.py (1 test)                         PASSED
-tests\observability\test_observability.py (1 test)                     PASSED
-tests\governance\test_governance.py (3 tests)                          PASSED
-tests\distributed\test_distributed_evaluation.py (1 test)              PASSED
-tests\benchmark_v2\test_benchmark_v2.py (1 test)                       PASSED
-
-============================== 58 passed in 1.82s ==============================
-```
-
----
-
-<a id="18-validation"></a>
-## 18. Validation
-
-### Validator Command & Output
-
-```bash
-python validate_repository.py
-```
-
-```text
-==========================================
-           AI OS VALIDATION               
-==========================================
-Files:                  PASS
-Agents:                 PASS (13/13 Active Agents present)
-Workflows:              PASS
-Schemas:                PASS
-Policies:               PASS
-References:             WARNING (4 broken Markdown links detected)
-Documentation:          PASS
-Registry:               PASS
-Dependencies:           PASS
-Version consistency:    PASS
-------------------------------------------
-Critical errors:        0
-Warnings:               4
-------------------------------------------
-SYSTEM STATUS:          VERIFIED
-```
+| Source Component | Skill Implementation |
+|---|---|
+| Core Runtime Architecture | skill.yaml, orchestrator/, agent lifecycle |
+| Orchestration Architecture | A00, Event Bus, A04, workflow_engine |
+| Agent Architecture | agents/ (A00–A13) |
+| Execution Platform | A04, A06, workflows/execution_workflow.md |
+| Knowledge Platform | A03, knowledge/ |
+| Intelligence Platform | A07, A08, A12 |
+| Governance Platform | policies/, quality/quality_gates.yaml, escalation_matrix.yaml |
+| Infrastructure Platform | platform/ (tool, plugin, security, config) |
+| Operations Platform | platform/observability.yaml, platform/disaster_recovery.yaml |
+| Enterprise Platform | A13, platform/agent_registry.yaml, reports/ |
+| Universal Agent State Machine | orchestrator/state_machine.yaml |
+| Verification Engine | A07, quality/verification_modules.yaml |
+| Policy Engine | A08, policies/ |
+| Production Scheduler | A04, quality/quality_gates.yaml |
+| Enterprise Knowledge Graph | A03, knowledge/ontology/ |
+| Context Manager | A02 |
+| Event-Driven Worker | events/ |
+| Master Orchestrator | A00, orchestrator/master_orchestrator.md |
+| Memory Hierarchy | A02, skill.yaml memory section |
+| Platform Services | platform/ |
+| Agent Lifecycle Manager | platform/agent_registry.yaml |
+| Workflow Engine | workflows/canonical_workflow.yaml |
+| Artifact Store | skill.yaml, A06 outputs |
+| Security Manager | A09, platform/security.yaml |
+| Learning Engine | A12, knowledge/lessons_learned/ |
 
 ---
 
-<a id="26-licence"></a>
-## 26. Licence
+## 7. Definition of Done
 
-**Licence Status**: Not determined from repository.  
-*(No root `LICENSE` file was found in the repository. Please contact the project maintainers for licensing and usage terms).*
+A task is complete only when ALL of these are true:
 
----
-
-<a id="27-contributing"></a>
-## 27. Contributing
-
-We welcome contributions to AI OS Master Tool! Please ensure all pull requests satisfy `validate_repository.py` and pass the full `pytest` battery before submitting.
+1. Task objective met
+2. Acceptance criteria satisfied
+3. All required artifacts produced
+4. Self-validation completed
+5. Verification passed
+6. Policy validation passed
+7. Quality thresholds met (score >= 0.85, confidence >= 0.80)
+8. Security checks passed
+9. Compliance checks passed
+10. Required approvals recorded
+11. Release or publication completed if applicable
+12. Observability enabled
+13. Audit trail complete
+14. Learning captured
+15. Task state moved to Completed, Approved, Published, or Archived

@@ -9,7 +9,7 @@ import sys
 import pytest
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "ai-os-v4", "ai-os-multi-agent-skill"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from runtime.workflow_executor import WorkflowExecutor, WorkflowStep
 

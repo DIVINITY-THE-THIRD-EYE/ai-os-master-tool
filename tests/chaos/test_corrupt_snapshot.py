@@ -8,7 +8,7 @@ import tempfile
 import pytest
 
 import sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "ai-os-v4", "ai-os-multi-agent-skill"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from runtime.event_bus import EventBus
 from runtime.bootstrap import bootstrap_persistence

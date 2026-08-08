@@ -7,7 +7,7 @@ import os
 import sys
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "ai-os-v4", "ai-os-multi-agent-skill"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from runtime.agent_registry import AgentRegistry, AgentRecord
 from runtime.capability_router import CapabilityRouter

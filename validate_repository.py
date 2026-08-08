@@ -6,7 +6,6 @@ import yaml
 from pathlib import Path
 
 BASE_DIR = Path(r"c:\Users\PC\OneDrive\Documents\Master tool")
-AI_OS_SKILL_DIR = BASE_DIR / "ai-os-v4" / "ai-os-multi-agent-skill"
 
 def validate_repository():
     print("==========================================")
@@ -20,9 +19,9 @@ def validate_repository():
     expected_dirs = [
         BASE_DIR / "docs",
         BASE_DIR / "registry",
-        AI_OS_SKILL_DIR / "agents" / "active",
-        AI_OS_SKILL_DIR / "workflows",
-        AI_OS_SKILL_DIR / "runtime",
+        BASE_DIR / "agents",
+        BASE_DIR / "workflows",
+        BASE_DIR / "runtime",
     ]
     
     missing_dirs = [d for d in expected_dirs if not d.exists()]
@@ -33,7 +32,7 @@ def validate_repository():
         print("Files:                  PASS")
 
     # 2. Agents check (registry ↔ spec ↔ runtime)
-    active_agents = list((AI_OS_SKILL_DIR / "agents" / "active").glob("*.md"))
+    active_agents = list((BASE_DIR / "agents" / "active").glob("*.md")) if (BASE_DIR / "agents" / "active").exists() else list((BASE_DIR / "agents").rglob("*.md"))
     agent_ids = set()
     for agent_file in active_agents:
         agent_id = agent_file.name.split("_")[0]
@@ -48,16 +47,16 @@ def validate_repository():
         print("Agents:                 PASS")
 
     # 3. Workflows check
-    workflows_dir = AI_OS_SKILL_DIR / "workflows"
+    workflows_dir = BASE_DIR / "workflows"
     workflows = list(workflows_dir.glob("*.yaml")) if workflows_dir.exists() else []
     print("Workflows:              PASS")
 
     # 4. Schemas check
-    schemas_dir = AI_OS_SKILL_DIR / "schemas"
+    schemas_dir = BASE_DIR / "schemas"
     print("Schemas:                PASS")
 
     # 5. Policies check
-    policies_dir = AI_OS_SKILL_DIR / "policies"
+    policies_dir = BASE_DIR / "policies"
     if policies_dir.exists():
         print("Policies:               PASS")
     else:
