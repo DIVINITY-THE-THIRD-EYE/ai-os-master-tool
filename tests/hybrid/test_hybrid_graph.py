@@ -32,7 +32,7 @@ class TestHybridGraphEngine:
         result = executor.execute("wf-loop", "task-loop", "trace-loop", [step])
         assert result.status == "completed"
         assert step.iteration_count == 2
-        assert step.outputs["quality_score"] == 0.90
+        assert step.outputs["quality_score"] == pytest.approx(0.90)
 
     def test_bounded_loop_max_iterations_exceeded_fails(self):
         """Loop failing to converge within max_iterations fails safely."""
