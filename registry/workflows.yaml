@@ -1,0 +1,11 @@
+workflows:
+  - id: canonical_software_delivery
+    name: Software Delivery Lifecycle Workflow
+    lifecycle: STABLE
+    spec: ai-os-v4/phase_04_workflow_library/
+    runtime_impl: runtime.workflow_executor.WorkflowExecutor
+  - id: emergency_hotfix
+    name: Emergency Hotfix Delivery Workflow
+    lifecycle: STABLE
+    spec: ai-os-v4/phase_04_workflow_library/
+    runtime_impl: runtime.workflow_executor.WorkflowExecutor

@@ -1,7 +1,10 @@
+import logging
 import os
 import sqlite3
 import time
 from typing import Any, Dict
+
+logger = logging.getLogger("ai_os.health_monitor")
 
 
 class HealthMonitor:
@@ -32,7 +35,8 @@ class HealthMonitor:
                 res = conn.execute("PRAGMA integrity_check").fetchone()
                 status["database_integrity"] = "PASS" if (res and res[0].lower() == "ok") else "FAIL"
                 conn.close()
-            except Exception:
+            except sqlite3.Error as e:
+                logger.error(f"Database integrity check failed with SQLite error: {e}")
                 status["database_integrity"] = "ERROR"
                 status["status"] = "UNHEALTHY"
 
@@ -56,7 +60,7 @@ class HealthMonitor:
                 vram_pages = state_manager._vram_conn.execute("PRAGMA page_count").fetchone()[0]
                 page_size = state_manager._vram_conn.execute("PRAGMA page_size").fetchone()[0]
                 status["vram_size_bytes"] = vram_pages * page_size
-            except Exception:
-                pass
+            except sqlite3.Error as e:
+                logger.warning(f"Failed to fetch VRAM metrics from SQLite: {e}")
 
         return status

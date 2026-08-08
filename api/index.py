@@ -3,8 +3,13 @@ Vercel Serverless Function Entry Point for AI OS Master Tool REST API.
 Mounts the FastAPI runtime app for serverless deployment on Vercel.
 """
 
+import logging
 import os
 import sys
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Add skill path to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "ai-os-v4", "ai-os-multi-agent-skill"))
@@ -56,8 +61,8 @@ for aid, name, ver, caps in AGENTS_DEF:
         agent_registry.register(rec)
         agent_registry.configure(aid)
         agent_registry.mark_ready(aid)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.error(f"Failed to register agent {aid}: {e}", exc_info=True)
 
 app = create_app(
     agent_registry=agent_registry,

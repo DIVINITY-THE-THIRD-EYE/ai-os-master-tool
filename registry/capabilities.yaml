@@ -1,0 +1,10 @@
+capabilities:
+  - id: persistence.atomic_flush
+    lifecycle: STABLE
+    description: Ensures zero data loss during process termination and crash recovery.
+  - id: budgets.enforcement
+    lifecycle: STABLE
+    description: Enforces token, cost, time, and API call limits on task execution.
+  - id: quality_gates.enforcement
+    lifecycle: STABLE
+    description: Enforces quality score, coverage, and security policy checks.

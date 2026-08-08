@@ -10,3 +10,7 @@ node_modules/
 *.tmp
 
 .vercel
+
+# Databases and large archives
+*.db
+*.zip

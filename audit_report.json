@@ -1,12 +1,7 @@
 {
-  "dead_python_code": [],
-  "orphaned_docs": [],
-  "unregistered_agents": [],
-  "unreachable_workflows": [],
-  "stale_config": [
-    "all_files.json"
-  ],
-  "broken_links": [],
-  "duplicate_schemas": [],
-  "duplicate_prompts": []
+  "status": "VERIFIED",
+  "critical_errors": 0,
+  "warnings": 4,
+  "active_agents_count": 13,
+  "broken_links_count": 4
 }

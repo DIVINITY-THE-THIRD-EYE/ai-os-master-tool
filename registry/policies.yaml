@@ -1,0 +1,6 @@
+policies:
+  - id: governance_baseline
+    name: Governance Baseline Policy
+    lifecycle: STABLE
+    spec: ai-os-v4/phase_00_foundation/07_security_baseline_policy.md
+    runtime_impl: runtime.plugin_registry.PluginRegistry

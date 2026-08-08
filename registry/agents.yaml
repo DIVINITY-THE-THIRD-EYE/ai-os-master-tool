@@ -1,0 +1,71 @@
+agents:
+  - id: A00
+    name: Master Orchestrator
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/orchestrator/master_orchestrator.md
+    runtime_impl: runtime.workflow_executor.WorkflowExecutor
+  - id: A01
+    name: Intake Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A01_intake_requirements_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A02
+    name: Context Memory Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A02_context_memory_agent.md
+    runtime_impl: runtime.memory_manager.MemoryManager
+  - id: A03
+    name: Knowledge Graph Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A03_knowledge_graph_agent.md
+    runtime_impl: runtime.memory_manager.MemoryManager
+  - id: A04
+    name: Scheduler Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A04_scheduler_agent.md
+    runtime_impl: runtime.capability_router.CapabilityRouter
+  - id: A05
+    name: Domain Authority Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A05_domain_authority_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A06
+    name: Worker Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A06_worker_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A07
+    name: Verification Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A07_verification_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A08
+    name: Policy Decision Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A08_policy_decision_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A09
+    name: Security Compliance Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A09_security_compliance_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A10
+    name: Release Deployment Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A10_release_deployment_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A11
+    name: Observability Operations Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A11_observability_operations_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A12
+    name: Learning Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A12_learning_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord
+  - id: A13
+    name: Human Collaboration Agent
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/agents/active/A13_human_collaboration_agent.md
+    runtime_impl: runtime.agent_registry.AgentRecord

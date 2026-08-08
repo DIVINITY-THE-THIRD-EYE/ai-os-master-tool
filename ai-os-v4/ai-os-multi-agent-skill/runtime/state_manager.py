@@ -101,6 +101,10 @@ class StateManager:
         if self._disk_conn:
             self._disk_conn.close()
 
+    def close(self) -> None:
+        """Alias for shutdown."""
+        self.shutdown()
+
     def _get_connection(self) -> Any:
         if self._vram_conn and self.enable_vram_image:
             return self._vram_conn

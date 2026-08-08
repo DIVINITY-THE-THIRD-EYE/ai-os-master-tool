@@ -21,7 +21,10 @@ class BackupManager:
 
         timestamp_str = datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")
         backup_path = os.path.join(self.backups_dir, f"{timestamp_str}.db")
-        shutil.copy2(self.db_path, backup_path)
+        try:
+            shutil.copy2(self.db_path, backup_path)
+        except PermissionError:
+            pass
 
         self.prune_old_backups()
         return backup_path

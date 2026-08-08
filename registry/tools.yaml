@@ -1,0 +1,11 @@
+tools:
+  - id: tool_file_read
+    name: File Read Tool
+    lifecycle: STABLE
+    spec: ai-os-v4/ai-os-multi-agent-skill/tools/
+    runtime_impl: runtime.plugin_registry.PluginRecord
+  - id: tool_search
+    name: Web Search Tool
+    lifecycle: EXPERIMENTAL
+    spec: ai-os-v4/ai-os-multi-agent-skill/tools/
+    runtime_impl: runtime.plugin_registry.PluginRecord

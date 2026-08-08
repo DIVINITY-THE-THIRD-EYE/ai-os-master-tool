@@ -1,0 +1,6 @@
+schemas:
+  - id: event_payload_schema
+    name: Universal Event Payload Schema
+    lifecycle: STABLE
+    spec: ai-os-v4/phase_11_schemas/
+    runtime_impl: runtime.event_bus.Event

@@ -77,7 +77,8 @@ class PersistenceCoordinator:
 
             try:
                 rows_changed = vram_conn.total_changes
-            except Exception:
+            except (sqlite3.Error, AttributeError) as e:
+                logger.warning(f"Could not retrieve vram_conn.total_changes: {e}")
                 rows_changed = 0
 
             new_image_version = current_image_version + 1
@@ -121,11 +122,15 @@ class PersistenceCoordinator:
                 if os.path.exists(temp_db_path):
                     for attempt in range(5):
                         try:
-                            os.replace(temp_db_path, self.db_path)
+                            disk_target = sqlite3.connect(self.db_path)
+                            vram_conn.backup(disk_target)
+                            disk_target.close()
+                            if os.path.exists(temp_db_path):
+                                os.remove(temp_db_path)
                             break
-                        except (PermissionError, OSError):
+                        except (PermissionError, OSError, sqlite3.Error):
                             if attempt == 4:
-                                raise
+                                os.replace(temp_db_path, self.db_path)
                             time.sleep(0.1 * (2**attempt))
 
                 # Optimize

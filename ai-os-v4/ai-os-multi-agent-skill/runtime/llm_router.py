@@ -126,6 +126,12 @@ class LLMRouter:
         config = DEFAULT_MODEL_ROUTING.get(agent_id, ModelConfig(self.default_provider, "default-model"))
 
         target_provider = force_provider or config.provider
+        
+        # Enforce budget limit if defined
+        current_tokens = sum(r.total_tokens for r in self.usage_history)
+        max_budget = getattr(self, "MAX_TOKEN_BUDGET", None)
+        if max_budget is not None and current_tokens >= max_budget:
+            raise RuntimeError(f"Token budget exceeded: current={current_tokens}, limit={max_budget}")
 
         # Attempt invocation through fallback chain if key is missing or call fails
         providers_to_try = [target_provider] + [p for p in self.fallback_order if p != target_provider]
@@ -307,17 +313,17 @@ class LLMRouter:
             try:
                 json_str = text_clean.split("```json")[1].split("```")[0].strip()
                 return json.loads(json_str)
-            except Exception:
+            except (json.JSONDecodeError, IndexError, ValueError):
                 pass
         elif "```" in text_clean:
             try:
                 json_str = text_clean.split("```")[1].split("```")[0].strip()
                 return json.loads(json_str)
-            except Exception:
+            except (json.JSONDecodeError, IndexError, ValueError):
                 pass
         try:
             return json.loads(text_clean)
-        except Exception:
+        except (json.JSONDecodeError, ValueError):
             return None
 
     def get_total_usage(self) -> Dict[str, Any]:
