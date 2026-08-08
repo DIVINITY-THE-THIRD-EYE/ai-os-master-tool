@@ -90,6 +90,7 @@ class EventBus:
         Returns the number of subscribers notified.
         Persists event if topic is marked as persistence_required.
         """
+        from .events import PersistenceEvent
         if isinstance(event, Event):
             if not event.event_type or not event.agent_id or not event.task_id:
                 raise ValueError("Event must have event_type, agent_id, and task_id")
@@ -98,13 +99,13 @@ class EventBus:
             logger.info(
                 f"[{event_type}] agent={event.agent_id} task={event.task_id} trace={event.trace_id} severity={event.severity}"
             )
-        elif isinstance(event, SystemEvent):
+        elif isinstance(event, (SystemEvent, PersistenceEvent)):
             event_type = event.__class__.__name__
             event_dict = asdict(event)
             event_dict["event_type"] = event_type
             logger.info(f"[{event_type}] System Event published")
         else:
-            raise ValueError("Published object must be an Event or SystemEvent instance")
+            raise ValueError("Published object must be an Event, SystemEvent, or PersistenceEvent instance")
 
         # Persist if required
         if event_type in self._persistence_topics:

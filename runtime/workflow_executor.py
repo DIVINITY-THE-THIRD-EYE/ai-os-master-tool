@@ -48,6 +48,9 @@ class WorkflowStep:
     parallel: bool = False
     max_retries: int = 3
     timeout_seconds: int = 1800  # 30 minutes per skill.yaml budget
+    loop_until: Optional[str] = None
+    max_iterations: int = 5
+    iteration_count: int = 0
     status: StepStatus = StepStatus.PENDING
     retry_count: int = 0
     error: Optional[str] = None
@@ -351,6 +354,17 @@ class WorkflowExecutor:
                 output = self._execute_step(step)
                 if output:
                     step.outputs.update(output)
+                
+                # Check bounded loop condition
+                if step.loop_until:
+                    step.iteration_count += 1
+                    condition_met = self._condition_evaluator.evaluate(step.loop_until, {step.step_id: step.outputs})
+                    if not condition_met:
+                        if step.iteration_count >= step.max_iterations:
+                            raise RuntimeError(f"Bounded loop exceeded max iterations ({step.max_iterations}) for step '{step.step_id}'")
+                        logger.info(f"Step '{step.step_id}' loop condition not met. Iteration {step.iteration_count}/{step.max_iterations}...")
+                        continue
+
                 step.status = StepStatus.COMPLETED
                 logger.info(f"Step '{step.step_id}' completed (attempt {attempt + 1})")
                 return True
