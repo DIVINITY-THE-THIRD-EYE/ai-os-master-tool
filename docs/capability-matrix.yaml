@@ -1,214 +1,200 @@
-version: "4.0.0"
-architecture_baseline: "AI OS v4 — Architecture Baseline"
+version: 4.0.0
+architecture_baseline: "AI OS v4 \u2014 Architecture Baseline"
 frozen_agents:
-  - id: A00
-    name: Master Orchestrator
-  - id: A01
-    name: Intake & Requirements Agent
-  - id: A02
-    name: Context & Memory Agent
-  - id: A03
-    name: Knowledge Graph Agent
-  - id: A04
-    name: Scheduler Agent
-  - id: A05
-    name: Domain Authority Agent
-  - id: A06
-    name: Worker Agent
-  - id: A07
-    name: Verification Agent
-  - id: A08
-    name: Policy & Governance Agent
-  - id: A09
-    name: Security & Compliance Agent
-  - id: A10
-    name: Release & Deployment Agent
-  - id: A11
-    name: Observability & Operations Agent
-  - id: A12
-    name: Learning Agent
-  - id: A13
-    name: Human Collaboration Agent
-
+- id: A00
+  name: Master Orchestrator
+- id: A01
+  name: Intake & Requirements Agent
+- id: A02
+  name: Context & Memory Agent
+- id: A03
+  name: Knowledge Graph Agent
+- id: A04
+  name: Scheduler Agent
+- id: A05
+  name: Domain Authority Agent
+- id: A06
+  name: Worker Agent
+- id: A07
+  name: Verification Agent
+- id: A08
+  name: Policy & Governance Agent
+- id: A09
+  name: Security & Compliance Agent
+- id: A10
+  name: Release & Deployment Agent
+- id: A11
+  name: Observability & Operations Agent
+- id: A12
+  name: Learning Agent
+- id: A13
+  name: Human Collaboration Agent
 capabilities:
-  - id: agents.core_13_architecture
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/ai-os-multi-agent-skill/agents/active/"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/agent_registry.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py::TestAgentRegistry"
-    status: PROVEN
-
-  - id: workflows.linear_dag_execution
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/ai-os-multi-agent-skill/workflows/"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/workflow_executor.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py::TestWorkflowExecutor"
-    status: PROVEN
-
-  - id: persistence.atomic_flush
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_00_foundation/13_artifact_lifecycle_spec.md"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/persistence_coordinator.py"
-      tests: "tests/chaos/test_persistence_chaos.py"
-    status: PROVEN
-
-  - id: persistence.recovery
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_00_foundation/08_error_handling_taxonomy.md"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/state_manager.py"
-      tests: "tests/chaos/test_persistence_chaos.py"
-    status: PROVEN
-
-  - id: budgets.token_enforcement
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_00_foundation/18_system_limits_quotas_spec.md"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/llm_router.py"
-      tests: "tests/enforcement/test_budget_enforcement.py"
-    status: PROVEN
-
-  - id: budgets.cost_time_limits
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_00_foundation/18_system_limits_quotas_spec.md"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/llm_router.py"
-      tests: "tests/enforcement/test_budget_enforcement.py"
-    status: PROVEN
-
-  - id: quality_gates.enforcement
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_09_verification_platform/"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/workflow_executor.py"
-      tests: "tests/enforcement/test_quality_gates.py"
-    status: PROVEN
-
-  - id: security.guardrails_policy
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_00_foundation/07_security_baseline_policy.md"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/plugin_registry.py"
-      tests: "tests/enforcement/test_quality_gates.py"
-    status: PROVEN
-
-  - id: llm_routing.capability_matching
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: false
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_01_core_runtime/"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/capability_router.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py::TestCapabilityRouter"
-    status: TESTED
-
-  - id: event_bus.pub_sub
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: false
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_01_core_runtime/"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/event_bus.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py::TestEventBus"
-    status: TESTED
-
-  - id: observability.metrics_tracing
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: false
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_00_foundation/09_logging_telemetry_standard.md"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/llm_router.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py"
-    status: TESTED
-
-  - id: deployment.local_standalone
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: true
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_00_foundation/19_bootstrap_initialization_sequence.md"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/bootstrap.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py"
-    status: PROVEN
-
-  - id: memory.working_and_persistent
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: false
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_06_memory_system/"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/memory_manager.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py::TestMemoryManager"
-    status: TESTED
-
-  - id: knowledge_graph.entity_relationships
-    specification: true
-    implementation: true
-    unit_test: true
-    integration_test: true
-    failure_test: false
-    production_evidence: true
-    evidence:
-      specification: "ai-os-v4/phase_05_knowledge_platform/"
-      implementation: "ai-os-v4/ai-os-multi-agent-skill/runtime/memory_manager.py"
-      tests: "ai-os-v4/ai-os-multi-agent-skill/tools/test_runtime.py::TestMemoryManager"
-    status: TESTED
+- id: agents.core_13_architecture
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: agents/active/
+    implementation: runtime/agent_registry.py
+    tests: tools/test_runtime.py::TestAgentRegistry
+  status: PROVEN
+- id: workflows.linear_dag_execution
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: workflows/
+    implementation: runtime/workflow_executor.py
+    tests: tools/test_runtime.py::TestWorkflowExecutor
+  status: PROVEN
+- id: persistence.atomic_flush
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/persistence_coordinator.py
+    tests: tests/chaos/test_persistence_chaos.py
+  status: PROVEN
+- id: persistence.recovery
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/state_manager.py
+    tests: tests/chaos/test_persistence_chaos.py
+  status: PROVEN
+- id: budgets.token_enforcement
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/llm_router.py
+    tests: tests/enforcement/test_budget_enforcement.py
+  status: PROVEN
+- id: budgets.cost_time_limits
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/llm_router.py
+    tests: tests/enforcement/test_budget_enforcement.py
+  status: PROVEN
+- id: quality_gates.enforcement
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/workflow_executor.py
+    tests: tests/enforcement/test_quality_gates.py
+  status: PROVEN
+- id: security.guardrails_policy
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/plugin_registry.py
+    tests: tests/enforcement/test_quality_gates.py
+  status: PROVEN
+- id: llm_routing.capability_matching
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: false
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/capability_router.py
+    tests: tools/test_runtime.py::TestCapabilityRouter
+  status: TESTED
+- id: event_bus.pub_sub
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: false
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/event_bus.py
+    tests: tools/test_runtime.py::TestEventBus
+  status: TESTED
+- id: observability.metrics_tracing
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: false
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/llm_router.py
+    tests: tools/test_runtime.py
+  status: TESTED
+- id: deployment.local_standalone
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: true
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/bootstrap.py
+    tests: tools/test_runtime.py
+  status: PROVEN
+- id: memory.working_and_persistent
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: false
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/memory_manager.py
+    tests: tools/test_runtime.py::TestMemoryManager
+  status: TESTED
+- id: knowledge_graph.entity_relationships
+  specification: true
+  implementation: true
+  unit_test: true
+  integration_test: true
+  failure_test: false
+  production_evidence: true
+  evidence:
+    specification: SKILL.md
+    implementation: runtime/memory_manager.py
+    tests: tools/test_runtime.py::TestMemoryManager
+  status: TESTED

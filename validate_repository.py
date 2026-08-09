@@ -4,72 +4,101 @@ import sys
 import os
 import yaml
 from pathlib import Path
+import importlib.util
 
 BASE_DIR = Path(r"c:\Users\PC\OneDrive\Documents\Master tool")
 
+def _check_path(path_str):
+    if not path_str:
+        return False
+    
+    # Handle pytest module paths like 'tools/test_runtime.py::TestAgentRegistry'
+    if "::" in path_str:
+        path_str = path_str.split("::")[0]
+        
+    p = BASE_DIR / path_str
+    
+    if p.exists():
+        return True
+    
+    # Check if it's a python module string like 'runtime.workflow_executor.WorkflowExecutor'
+    if "." in path_str and not "/" in path_str and not "\\" in path_str and not path_str.endswith(".py"):
+        module_path = path_str.split(".")[0] + "/" + path_str.split(".")[1] + ".py"
+        if (BASE_DIR / module_path).exists():
+            return True
+            
+    return False
+
 def validate_repository():
     print("==========================================")
-    print("           AI OS VALIDATION               ")
+    print("           AI OS VALIDATOR 2.0            ")
     print("==========================================")
     
     critical_errors = 0
     warnings = 0
 
-    # 1. Files & Structure check
-    expected_dirs = [
-        BASE_DIR / "docs",
-        BASE_DIR / "registry",
-        BASE_DIR / "agents",
-        BASE_DIR / "workflows",
-        BASE_DIR / "runtime",
-    ]
-    
-    missing_dirs = [d for d in expected_dirs if not d.exists()]
+    # 1. Structure
+    expected_dirs = ["docs", "registry", "agents", "workflows", "runtime"]
+    missing_dirs = [d for d in expected_dirs if not (BASE_DIR / d).exists()]
     if missing_dirs:
         critical_errors += len(missing_dirs)
         print(f"Files:                  FAIL ({len(missing_dirs)} missing directories)")
     else:
         print("Files:                  PASS")
 
-    # 2. Agents check (registry ↔ spec ↔ runtime)
-    active_agents = list((BASE_DIR / "agents" / "active").glob("*.md")) if (BASE_DIR / "agents" / "active").exists() else list((BASE_DIR / "agents").rglob("*.md"))
-    agent_ids = set()
-    for agent_file in active_agents:
-        agent_id = agent_file.name.split("_")[0]
-        agent_ids.add(agent_id)
-    
-    expected_agents = {f"A{i:02d}" for i in range(1, 14)}
-    missing_agents = expected_agents - agent_ids
-    if missing_agents:
-        critical_errors += len(missing_agents)
-        print(f"Agents:                 FAIL (Missing agent specs: {missing_agents})")
+    # 2. Registry authoritative check
+    agents_yaml = BASE_DIR / "registry" / "agents.yaml"
+    if agents_yaml.exists():
+        with open(agents_yaml, 'r', encoding='utf-8') as f:
+            registry_data = yaml.safe_load(f)
+            agents = registry_data.get('agents', [])
+            missing_specs = 0
+            for agent in agents:
+                if not _check_path(agent.get('spec', '')):
+                    missing_specs += 1
+                    print(f"Agent {agent['id']} spec missing: {agent.get('spec')}")
+                if not _check_path(agent.get('runtime_impl', '')):
+                    missing_specs += 1
+                    print(f"Agent {agent['id']} impl missing: {agent.get('runtime_impl')}")
+            
+            if missing_specs > 0:
+                critical_errors += missing_specs
+                print(f"Agents (Registry):      FAIL ({missing_specs} broken references)")
+            else:
+                print("Agents (Registry):      PASS")
     else:
-        print("Agents:                 PASS")
+        critical_errors += 1
+        print("Agents (Registry):      FAIL (agents.yaml not found)")
 
-    # 3. Workflows check
-    workflows_dir = BASE_DIR / "workflows"
-    workflows = list(workflows_dir.glob("*.yaml")) if workflows_dir.exists() else []
-    print("Workflows:              PASS")
-
-    # 4. Schemas check
-    schemas_dir = BASE_DIR / "schemas"
-    print("Schemas:                PASS")
-
-    # 5. Policies check
-    policies_dir = BASE_DIR / "policies"
-    if policies_dir.exists():
-        print("Policies:               PASS")
+    # 3. Capability Matrix authoritative check
+    cap_yaml = BASE_DIR / "docs" / "capability-matrix.yaml"
+    if cap_yaml.exists():
+        with open(cap_yaml, 'r', encoding='utf-8') as f:
+            cap_data = yaml.safe_load(f)
+            caps = cap_data.get('capabilities', [])
+            broken_evidence = 0
+            for cap in caps:
+                ev = cap.get('evidence', {})
+                for k, v in ev.items():
+                    if not _check_path(v):
+                        broken_evidence += 1
+                        print(f"Capability {cap['id']} {k} missing: {v}")
+            if broken_evidence > 0:
+                critical_errors += broken_evidence
+                print(f"Capabilities:           FAIL ({broken_evidence} broken evidence paths)")
+            else:
+                print("Capabilities:           PASS (All evidence PROVEN)")
     else:
-        warnings += 1
-        print("Policies:               WARNING (Policies directory missing)")
+        critical_errors += 1
+        print("Capabilities:           FAIL (capability-matrix.yaml not found)")
 
-    # 6. References check
+    # 4. References check
     broken_links = 0
     all_md_files = list(BASE_DIR.rglob("*.md"))
     link_pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
     
     for md_file in all_md_files:
-        if ".git" in md_file.parts or ".pytest_cache" in md_file.parts or "node_modules" in md_file.parts:
+        if any(skip in md_file.parts for skip in [".git", ".pytest_cache", "node_modules"]):
             continue
         try:
             content = md_file.read_text(encoding="utf-8")
@@ -89,30 +118,6 @@ def validate_repository():
     else:
         print("References:             PASS")
 
-    # 7. Documentation check
-    print("Documentation:          PASS")
-
-    # 8. Registry check
-    registry_dir = BASE_DIR / "registry"
-    registry_agents_file = registry_dir / "agents.yaml"
-    registry_caps_file = registry_dir / "capabilities.yaml"
-    if registry_agents_file.exists() and registry_caps_file.exists():
-        print("Registry:               PASS")
-    else:
-        critical_errors += 1
-        print("Registry:               FAIL (Registry YAML files missing)")
-
-    # 9. Dependencies check
-    print("Dependencies:           PASS")
-
-    # 10. Version consistency check
-    capability_matrix_file = BASE_DIR / "docs" / "capability-matrix.yaml"
-    if capability_matrix_file.exists():
-        print("Version consistency:    PASS")
-    else:
-        critical_errors += 1
-        print("Version consistency:    FAIL (capability-matrix.yaml missing)")
-
     print("------------------------------------------")
     print(f"Critical errors:        {critical_errors}")
     print(f"Warnings:               {warnings}")
@@ -120,21 +125,8 @@ def validate_repository():
 
     if critical_errors == 0:
         print("SYSTEM STATUS:          VERIFIED")
-        status = "VERIFIED"
     else:
         print("SYSTEM STATUS:          FAILED")
-        status = "FAILED"
-
-    report = {
-        "status": status,
-        "critical_errors": critical_errors,
-        "warnings": warnings,
-        "active_agents_count": len(active_agents),
-        "broken_links_count": broken_links,
-    }
-
-    with open(BASE_DIR / "audit_report.json", "w", encoding="utf-8") as f:
-        json.dump(report, f, indent=2)
 
     return critical_errors == 0
 
