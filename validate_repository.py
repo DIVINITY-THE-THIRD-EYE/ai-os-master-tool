@@ -108,6 +108,7 @@ def validate_repository():
                     continue
                 target = (md_file.parent / link).resolve()
                 if not target.exists():
+                    print(f"[BROKEN LINK] File: {md_file.relative_to(BASE_DIR)} | Link: {link}")
                     broken_links += 1
         except Exception:
             pass
