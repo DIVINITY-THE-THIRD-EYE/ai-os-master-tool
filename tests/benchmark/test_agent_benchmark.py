@@ -41,7 +41,7 @@ class TestAgentBenchmark:
         
         start_time = time.perf_counter()
         
-        executor = WorkflowExecutor(step_executor=lambda step: {"status": "ok"})
+        executor = WorkflowExecutor(step_executor=lambda step: {"status": "ok", "cost_usd": 0.001, "tokens": 150})
         result = executor.execute(f"wf-{mode_name}", "task-bench", "trace-bench", steps)
         
         elapsed = round((time.perf_counter() - start_time) * 1000, 3)
@@ -63,3 +63,8 @@ class TestAgentBenchmark:
         assert mode_b["status"] == "completed"
         assert mode_c["status"] == "completed"
         assert mode_d["status"] == "completed"
+
+        assert mode_a["steps_completed"] == 10
+        assert mode_b["steps_completed"] == 10
+        assert mode_c["steps_completed"] == 10
+        assert mode_d["steps_completed"] == 10
