@@ -1,5 +1,5 @@
 """
-Phase 8 Dynamic Discovery Test Suite.
+Phase 7 Dynamic Discovery Test Suite.
 Verifies dynamic loading and capability matching from registry/agents.yaml.
 """
 
@@ -39,3 +39,13 @@ class TestDynamicDiscovery:
         assert selected is not None
         assert selected.agent_id == "A01"
         assert selected.name == "Intake Agent"
+
+    def test_master_registry_find_agent_by_id(self):
+        """Verify direct agent lookup via MasterRegistry discovery helper."""
+        a00 = MasterRegistry.find_agent_by_id("A00")
+        assert a00 is not None
+        assert a00["name"] == "Master Orchestrator"
+
+        a01 = MasterRegistry.find_agent_by_id("A01")
+        assert a01 is not None
+        assert a01["name"] == "Intake Agent"

@@ -1,11 +1,11 @@
 """
-AI OS Master Registry Service — exposes system capability lifecycle statuses.
+AI OS Master Registry Service — exposes system capability lifecycle statuses and discovery APIs.
 """
 
 import os
 import yaml
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 
 REGISTRY_DIR = Path(r"c:\Users\PC\OneDrive\Documents\Master tool\registry")
 
@@ -17,13 +17,28 @@ class MasterRegistry:
             try:
                 data = yaml.safe_load(yaml_file.read_text(encoding="utf-8"))
                 key = yaml_file.stem
-                if isinstance(data, dict):
-                    result[key] = data
-                else:
-                    result[key] = data
+                result[key] = data
             except Exception:
                 pass
         return result
+
+    @staticmethod
+    def find_agent_by_id(agent_id: str) -> Optional[dict]:
+        status = MasterRegistry.get_status()
+        agents = status.get("agents", {}).get("agents", [])
+        for agent in agents:
+            if agent.get("id") == agent_id:
+                return agent
+        return None
+
+    @staticmethod
+    def find_workflow_by_id(workflow_id: str) -> Optional[dict]:
+        status = MasterRegistry.get_status()
+        workflows = status.get("workflows", {}).get("workflows", [])
+        for wf in workflows:
+            if isinstance(wf, dict) and wf.get("id") == workflow_id:
+                return wf
+        return None
 
     @staticmethod
     def print_summary() -> str:

@@ -1,5 +1,5 @@
 """
-Phase 9 Prompt Compiler Test Suite.
+Phase 8 Prompt Compiler Test Suite.
 """
 
 import os
@@ -18,10 +18,13 @@ class TestPromptCompiler:
             domain_rules=["Must comply with PCI-DSS", "No plain text tokens"],
             security_policy="Zero secrets in prompt or log",
             tools=["tool_file_read"],
-            quality_gates={"min_quality_score": 0.85}
+            quality_gates={"min_quality_score": 0.85},
+            platform_instructions="Use standard POSIX formatting"
         )
         
+        assert "COMPILER VERSION: 1.0.0" in compiled
         assert "A01 Intake Agent" in compiled
         assert "PCI-DSS" in compiled
         assert "Zero secrets" in compiled
         assert "min_quality_score" in compiled
+        assert "POSIX formatting" in compiled
