@@ -83,8 +83,9 @@ class TestP0CorrectnessFixes:
         scheduler.register_node(node_low)
         scheduler.register_node(node_high)
         
-        # Execute N1
+        # Execute and complete N1
         scheduler.execute_node("N1")
+        scheduler.complete_node("N1")
         
         # Attempting N2 without approval artifact raises SecurityViolationError
         with pytest.raises(SecurityViolationError) as exc_info:
@@ -97,6 +98,7 @@ class TestP0CorrectnessFixes:
         
         assert scheduler.can_execute_node("N2") is True
         scheduler.execute_node("N2")
+        scheduler.complete_node("N2")
         assert scheduler.nodes["N2"].executed is True
 
     def test_tool_gateway_sandboxed_execution_interception(self):
