@@ -6,7 +6,7 @@ import yaml
 from pathlib import Path
 import importlib.util
 
-BASE_DIR = Path(r"c:\Users\PC\OneDrive\Documents\Master tool")
+BASE_DIR = Path(__file__).parent.resolve()
 
 def _check_path(path_str):
     if not path_str:

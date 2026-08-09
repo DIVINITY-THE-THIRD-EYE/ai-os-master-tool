@@ -7,7 +7,7 @@ import yaml
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-REGISTRY_DIR = Path(r"c:\Users\PC\OneDrive\Documents\Master tool\registry")
+REGISTRY_DIR = Path(__file__).parent.parent.resolve() / "registry"
 
 class MasterRegistry:
     @staticmethod
